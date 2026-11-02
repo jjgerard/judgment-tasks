@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Investigación sobre lenguaje en la Universidad Nacional de Educación a Distancia</title>
+<script src="https://unpkg.com/jspsych@8.3.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-survey-html-form@2.1.0"></script>
+<link href="https://unpkg.com/jspsych@8.3.0/css/jspsych.css" rel="stylesheet">
+<style>
+/* ---- Base text size: consent, language questions, transitions ---- */
+.jspsych-display-element { font-size: clamp(20px, 3.4vw, 32px); line-height: 1.35; }
+/* picture task uses slightly smaller text so picture + sentence + buttons fit a landscape phone */
+.jspsych-display-element.picture-task { font-size: clamp(22px, min(3.8vw, 7.4vh), 34px); }   /* limited by screen height too */
+.picture-task .jspsych-content { position: relative; }   /* so the logo sits below the progress bar, not over it */
+@media (min-width: 1000px) {   /* desktop: big text (up to the original 64px) */
+  .jspsych-display-element, .jspsych-display-element.picture-task { font-size: clamp(40px, 4vw, 64px); }
+}
+
+/* compact progress bar (the default one wastes a lot of height on a landscape phone) */
+#jspsych-progressbar-container { font-size: 14px; padding: 4px 0; margin-bottom: 0.3em; }
+
+/* ---- Accessibility: big tap targets, visible focus, text can always be pinch-zoomed ---- */
+.jspsych-btn { font-size: 1em; min-height: 44px; padding: 0.35em 1.1em; }
+.jspsych-display-element select { font-size: 1em; min-height: 44px; max-width: 100%; }
+.jspsych-display-element img { max-width: 100%; height: auto; }
+.jspsych-display-element :focus-visible { outline: 3px solid #005fcc; outline-offset: 2px; }
+
+/* ---- Consent ---- */
+.consent-page { max-width: 100%; margin: 0 auto; padding: 4px 8px; text-align: left; line-height: 1.3; }
+.consent-page h1 { font-size: 1.2em; margin: 0.5em 0 0.2em; line-height: 1.2; }
+.consent-page h1.consent-title > div { margin: 0.15em 0; }
+.consent-page p { margin: 0.3em 0; }
+.consent-page ul { margin: 0.2em 0 0.2em 1.2em; padding-left: 0; }
+.consent-page li { margin: 0.2em 0; }
+.consent-page img.crest { width: 22%; max-width: 300px; margin: 4px 0; }
+.jspsych-display-element img.page-logo { position: fixed; top: var(--logo-top, 30px); right: 6px; z-index: 5; width: 20%; max-width: 350px; height: auto; max-height: 12vh; object-fit: contain; object-position: right top; }
+.transition-logo { text-align: right; padding: 4px; }
+.transition-logo img { width: 30%; max-width: 450px; }
+.transition-text { padding: 4px 10px; font-size: 1.5em; line-height: 1.25; }
+.transition-text p { margin: 0.3em 0; }
+
+/* ---- Language questions: two columns to save height ---- */
+.lang-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.3em 1em; text-align: left; margin: 0.3em auto; padding: 0 0.6em; max-width: 100%; box-sizing: border-box; }
+.lang-grid .lang-row { display: flex; align-items: center; gap: 0.4em; }
+.lang-grid label { white-space: nowrap; }
+/* proficiency question: language name above its dropdown, so the longer level names (e.g. "Principiante (A1-A2)") fit */
+.lang-grid .lang-row.stacked { flex-direction: column; align-items: stretch; gap: 0.1em; }
+.lang-grid .lang-row.stacked select { width: 100%; }
+@media (orientation: portrait) { .lang-grid { grid-template-columns: 1fr; } }   /* dropdowns stacked vertically on upright phones */
+.lang-grid select { flex: 1 1 auto; min-width: 0; }
+.jspsych-content p { margin: 0.3em 0; }
+
+/* ---- Reduced LEAP-Q (combo) ---- */
+.leap-demo { display: flex; flex-direction: column; gap: 0.5em; align-items: center; margin: 0.3em 0; text-align: left; }
+.leap-demo .lang-row { display: flex; align-items: center; gap: 0.9em; flex-wrap: wrap; justify-content: center; }
+.leap-demo label { display: inline-flex; align-items: center; gap: 0.35em; min-height: 44px; }
+.leap-demo input[type=radio] { width: 1.1em; height: 1.1em; }
+.leap-langs { display: flex; flex-direction: column; gap: 0.3em; margin: 0.3em auto; padding: 0 0.6em; box-sizing: border-box; max-width: 100%; }
+.leap-row { display: grid; grid-template-columns: 1.2em minmax(0, 1fr) minmax(0, 1fr); gap: 0.4em; align-items: center; text-align: left; }
+.leap-row select { width: 100%; min-width: 0; }
+@media (orientation: portrait) { .leap-row { grid-template-columns: 1.2em minmax(0, 1fr); } .leap-row .leap-num { grid-row: span 2; } }
+
+/* ---- Picture task ---- */
+.intro-img { width: 45%; max-width: 400px; }
+/* Koko sits directly above the sentence, so the sentence gets the full width (less wrapping) */
+.koko-row { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.1em 0 0.2em; text-align: center; }
+.koko-row > div { line-height: 1.2; }
+.jspsych-display-element img.intro-img { height: auto; max-height: 40vh; object-fit: contain; }
+.jspsych-display-element img.story-img { display: block; width: 100%; height: 34vh; object-fit: contain; margin: 0 auto; }
+.jspsych-display-element img.monkey-img { display: block; height: 12vh; width: auto; max-width: 30%; flex: none; margin: 0 auto; }
+
+/* ---- Grammaticality-slider task ---- */
+.jspsych-display-element.slider-task { font-size: 18px; line-height: 1.4; }
+.slider-task .jspsych-content { width: 60%; max-width: 650px; margin-top: 0; font-size: 1.5em; line-height: 1.3; }
+.slider-task div.directions { width: 100%; }
+.slider-task div.directions p { margin: 0.35em 0; }
+.slider-task div#jspsych-html-slider-response-wrapper { margin: 0.4em 0 2.6em !important; width: 100%; }
+@media (max-width: 1200px) {
+  .slider-task .jspsych-content { width: 100%; max-width: 100%; }
+}
+@media (max-height: 420px) {   /* short landscape phones: keep the Siguiente button in view */
+  .jspsych-display-element.slider-task { font-size: 15px; }
+  .slider-task div#jspsych-html-slider-response-wrapper { margin: 0.2em 0 2.2em !important; }
+}
+@media (max-height: 340px) {
+  .jspsych-display-element.slider-task { font-size: 12.5px; }
+}
+
+/* ---- Landscape prompt: shown on phones held upright ---- */
+#rotate-prompt { display: none; position: fixed; inset: 0; z-index: 99999; background: #fff; color: #000;
+  flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1em; }
+#rotate-prompt p { font-size: 6.5vw; font-weight: bold; margin: 0.5em 0 0; line-height: 1.25; max-width: 90%; }
+#rotate-prompt svg { width: 22vw; height: 22vw; }
+/* only while the slider trials are running (class set by those trials, removed by every other screen) */
+@media (orientation: portrait) and (max-width: 820px) and (pointer: coarse) { html.landscape-required #rotate-prompt { display: flex; } }
+@media (prefers-reduced-motion: no-preference) {
+  #rotate-prompt svg { animation: turn 2.4s ease-in-out infinite; }
+  @keyframes turn { 0%, 25% { transform: rotate(0deg); } 65%, 100% { transform: rotate(-90deg); } }
+}
+</style>
+</head>
+<body>
+<div id="rotate-prompt" role="alert">
+  <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="30" y="8" width="40" height="84" rx="7" fill="none" stroke="#000" stroke-width="5"/><circle cx="50" cy="84" r="3" fill="#000"/></svg>
+  <p>Por favor, gira tu teléfono a orientación horizontal para continuar.</p>
+</div>
+<script>
+
+/* ------------------------------------------------------------------
+   Combined experiment: Spanish + English grammaticality-judgement (slider) tasks,
+   back to back. The order of the two tasks is randomised per participant
+   (counterbalanced). The language-background questions always come first.
+   ------------------------------------------------------------------ */
+
+const timestamp = Date.now();
+const experiment_version = 'spanish_english_gj_combo';
+const filename = timestamp + '_' + experiment_version;
+
+const jsPsych = initJsPsych({
+  show_progress_bar: true,
+  auto_update_progress_bar: false,   // updated manually across both tasks
+  message_progress_bar: 'Progreso',
+  on_finish: function(){ saveData(filename, jsPsych.data.get().csv()); }
+});
+
+// random task order: ['es','en'] (Spanish first) or ['en','es'] (English first)
+const task_order = jsPsych.randomization.shuffle(['es', 'en']);
+const language_name = {es: 'español', en: 'inglés'};
+
+jsPsych.data.addProperties({
+  subject: timestamp,
+  experiment: experiment_version,
+  task_order: task_order.join('>')
+});
+
+// overall progress bar over both tasks; each task adds its own trials when it is built
+let total_trials = 0;
+let trials_done = 0;
+function advance(){
+  trials_done++;
+  jsPsych.progressBar.progress = Math.min(trials_done / total_trials, 1);
+}
+
+// landscape prompt is only needed for the slider judgment trials
+function requireLandscape(){ document.documentElement.classList.add('landscape-required'); }
+
+// switch between CSS looks
+function setStyle(cls){
+  return function(){
+    const d = jsPsych.getDisplayContainerElement();
+    d.classList.remove('slider-task', 'picture-task');
+    document.documentElement.classList.remove('landscape-required');   // landscape only needed for the slider trials
+    if(cls){ d.classList.add(cls); }
+  };
+}
+
+// The logo is fixed to the top right of the screen, just below the progress bar
+// (measured, so it never covers the bar whatever the bar's height or the page's scroll position).
+function placeLogo(){
+  const bar = document.getElementById('jspsych-progressbar-container');
+  const bottom = bar ? bar.getBoundingClientRect().bottom : 0;
+  document.documentElement.style.setProperty('--logo-top', Math.round(bottom + 4) + 'px');
+}
+window.addEventListener('resize', placeLogo);
+
+const logo = '<img class="page-logo" src="media/coloring/uned.png" alt="UNED">';
+
+/* ============================ CONSENT ============================ */
+
+const consent1 = "<div>Investigación sobre lenguaje en la Universidad Nacional de Educación a Distancia</div><div>Comprensión, producción y procesamiento de oraciones</div><div>Formulario de consentimiento informado del participante</div>";
+const consent2 = "Gracias por participar en este estudio para la Escuela de Comunicación y Medios de la Universidad de Ulster. Te agradecemos mucho tu participación, ya que proporcionará datos valiosos para el estudio científico del lenguaje.";
+const consent3 = "Por favor, asegúrate de utilizar tu teléfono móvil en orientación horizontal.";
+const consent4 = "Objetivo del estudio";
+const consent5 = "Esta investigación la lleva a cabo la Dra. Silvia Sánchez Calderón y la Dra. Gloria Chamorro Galán de la Universidad Nacional de Educación a Distancia y la Dra. Juliana Gerard de la Universidad de Ulster.";
+const consent6 = "Te invitamos a participar en este proyecto de investigación porque cumples con el perfil de participantes que buscamos: personas adultas cuya lengua materna es el español y que han aprendido/están aprendiendo inglés como lengua extranjera.";
+const consent7 = "";
+const consent8 = "";
+const consent9 = "Procedimiento";
+const consent10 = "El estudio durará hasta 20 minutos.";
+const consent11 = "Primero, responderás a dos preguntas sobre tu conocimiento de idiomas.";
+const consent12 = "Después, realizarás dos tareas breves: una con oraciones en español y otra con oraciones en inglés. Su orden puede variar.";
+const consent13 = "";
+const consent14 = "En cada una de ellas, se te pedirá que leas en silencio oraciones que pueden contener errores gramaticales.";
+const consent14b = "A continuación, tendrás que indicar cómo de natural te suena cada oración utilizando la escala deslizante.";
+const consent15 = "Ten en cuenta que algunas preguntas están diseñadas para comprobar tu atención.";
+const consent15b = "Al terminar, podrás participar de forma voluntaria en el sorteo de 2 cupones (30 € cada uno) escribiendo tu correo electrónico en la última pantalla. Tu correo se guardará por separado de tus respuestas, sin relacionarlo con ellas, y se utilizará únicamente para el sorteo.";
+const consent16 = "Tu consentimiento indica que:";
+const consent17 = "";
+const consent18 = "Eliges libre y voluntariamente participar en este proyecto de investigación.";
+const consent19 = "Comprendes que tu participación es voluntaria y que puedes retirar tus datos del estudio en cualquier momento.";
+const consent20 = "Estás de acuerdo en que los investigadores registren los datos de esta sesión, sabiendo que se guardarán de forma segura por la investigadora principal (Dra. Juliana Gerard) en un ordenador de la Universidad de Ulster, sin incluir información que permita identificarte personalmente, y que se utilizará exclusivamente con fines de investigación.";
+const consent21 = "Si aceptas participar, haz clic en «Siguiente» para continuar:";
+
+// list item, only shown when the text is not empty (a consent line can be switched off by setting it to '')
+const li = function(t, bold){ return t ? '<li>' + (bold ? '<b>' + t + '</b>' : t) + '</li>' : ''; };
+
+const consent = {
+  type: jsPsychInstructions,
+  pages: [
+    '<div class="consent-page">' +
+      '<img class="crest" src="media/coloring/uned.png" alt="UNED">' +
+      '<h1 class="consent-title">' + consent1 + '</h1>' +
+      '<p>' + consent2 + '</p>' +
+      '<p><b>' + consent3 + '</b></p>' +
+      '<h1>' + consent4 + '</h1>' +
+      '<ul>' + li(consent5) + li(consent6) + li(consent7) + li(consent8, true) + '</ul>' +
+      '<h1>' + consent9 + '</h1>' +
+      '<ul>' + li(consent10) + li(consent11) + li(consent12) + li(consent13) + li(consent14) + li(consent14b) + li(consent15, true) + li(consent15b) + '</ul>' +
+      '<h1>' + consent16 + '</h1>' +
+      '<ul>' + li(consent17) + li(consent18) + li(consent19) + li(consent20) + '</ul>' +
+      '<p>' + consent21 + '</p>' +
+    '</div>'
+  ],
+  button_label_next: 'Siguiente',
+  allow_backward: false,
+  show_clickable_nav: true,
+  on_start: setStyle(''),
+  data: {trial_phase: 'consent'}
+};
+
+/* ===================== TRANSITION SCREENS ===================== */
+
+function transitionScreen(text, phase){
+  return {
+    type: jsPsychInstructions,
+    pages: [
+      '<div class="transition-logo"><img src="media/coloring/uned.png" alt="UNED"></div>' +
+      '<div class="transition-text"><p>' + text + '</p></div>'
+    ],
+    button_label_next: 'Siguiente',
+    allow_backward: false,
+    show_clickable_nav: true,
+    on_start: setStyle(''),
+    data: {trial_phase: phase}
+  };
+}
+
+const transition_language = transitionScreen('Ahora, te pediremos unos breves datos sobre tu perfil lingüístico', 'transition_language');
+const transition_ready    = transitionScreen('¿Estás preparado/a para iniciar la primera tarea? Las oraciones estarán en ' + language_name[task_order[0]] + '.', 'transition_ready');
+const transition_between  = transitionScreen('Has terminado la primera parte del estudio. Ahora comenzará la segunda parte: las oraciones estarán en ' + language_name[task_order[1]] + '. ¿Estás preparado/a?', 'transition_between');
+
+/* ===================== LANGUAGE QUESTIONS ===================== */
+/* Always presented first (after consent), whichever task comes first. */
+
+const language_names = ["Español", "Inglés", "Afrikáans", "Alemán", "Amhárico", "Árabe", "Armenio", "Azerbaiyano", "Bengalí", "Bielorruso", "Birmano", "Bosnio", "Búlgaro", "Canarés", "Catalán", "Checo", "Chichewa", "Chino (Simplificado)", "Chino (Tradicional)", "Cingalés", "Coreano", "Corso", "Criollo haitiano", "Croata", "Danés", "Eslovaco", "Esloveno", "Esperanto", "Estonio", "Euskera", "Filipino", "Finés", "Francés", "Frisio", "Galés", "Gallego", "Gaélico escocés", "Georgiano", "Griego", "Guyaratí", "Hausa", "Hawaiano", "Hebreo", "Hindi", "Hmong", "Holandés", "Húngaro", "Igbo", "Indonesio", "Irlandés", "Islandés", "Italiano", "Japonés", "Javanés", "Kazajo", "Kirguís", "Kinyarwanda", "Kurdo (Kurmanji)", "Lao", "Latín", "Letón", "Lituano", "Luxemburgués", "Macedonio", "Malgache", "Malayo", "Malayalam", "Maltés", "Maorí", "Maratí", "Mongol", "Nepalí", "Noruego", "Odia (Oriya)", "Pastú", "Persa", "Polaco", "Portugués", "Punyabí", "Rumano", "Ruso", "Samoano", "Serbio", "Sesotho", "Shona", "Sindhi", "Somalí", "Sueco", "Suajili", "Sundanés", "Tátaro", "Tailandés", "Tamil", "Tayiko", "Telugu", "Turco", "Turcomano", "Ucraniano", "Uigur", "Urdu", "Uzbeko", "Vietnamita", "Xhosa", "Yídish", "Yoruba", "Zulú"];
+
+
+// Spanish text for the browser's own form-validation messages
+function spanishValidation(){
+  const container = jsPsych.getDisplayElement();
+  container.querySelectorAll('input, select').forEach(function(el){
+    el.addEventListener('invalid', function(){
+      const v = el.validity;
+      if(v.customError){ return; }   // keep a message that is already set (e.g. language listed twice)
+      let msg = 'Por favor, completa este campo.';
+      if(el.tagName === 'SELECT'){ msg = 'Por favor, selecciona una opción de la lista.'; }
+      else if(el.type === 'radio'){ msg = 'Por favor, selecciona una opción.'; }
+      else if(el.type === 'email'){ msg = 'Por favor, escribe un correo electrónico válido o deja el campo vacío.'; }
+      else if(el.type === 'number'){
+        msg = (v.valueMissing) ? 'Por favor, escribe tu edad.' : 'Por favor, escribe una edad válida (en años).';
+      }
+      el.setCustomValidity(msg);
+    });
+    const clear = function(){ el.setCustomValidity(''); };
+    el.addEventListener('input', clear);
+    el.addEventListener('change', clear);
+    if(el.type === 'radio'){
+      // choosing any option of a radio group clears the message on every button of the group
+      el.addEventListener('change', function(){
+        container.querySelectorAll('input[type=radio]').forEach(function(r){ if(r.name === el.name){ r.setCustomValidity(''); } });
+      });
+    }
+  });
+}
+
+/* =============== REDUCED LEAP-Q (first page only, items highlighted by the lab) ===============
+   Screen 1: age + sex.  Screen 2: languages in order of acquisition (first language first),
+   each with a self-rated proficiency level. */
+
+const language_options = '<option value="">Lengua</option>' +
+  language_names.map(function(l){ return '<option value="' + l + '">' + l + '</option>'; }).join('');
+
+const level_options = '<option value="">Nivel</option>' +
+  '<option value="Principiante (A1-A2)">Principiante (A1-A2)</option>' +
+  '<option value="Intermedio (B1-B2)">Intermedio (B1-B2)</option>' +
+  '<option value="Avanzado (C1-C2)">Avanzado (C1-C2)</option>' +
+  '<option value="Nativo">Nativo</option>';
+
+const leap_demo = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>Por favor, indica tu edad y tu sexo:</p>',
+  html: '<div class="leap-demo">' +
+          '<div class="lang-row"><label for="age">Edad</label>' +
+            '<input type="number" id="age" name="age" inputmode="numeric" min="1" max="120" step="1" required style="width:5em; font-size:1em; min-height:44px;"></div>' +
+          '<div class="lang-row" role="radiogroup" aria-label="Sexo">' +
+            '<label><input type="radio" name="sex" value="Hombre" required> Hombre</label>' +
+            '<label><input type="radio" name="sex" value="Mujer" required> Mujer</label>' +
+          '</div>' +
+        '</div>',
+  button_label: 'Siguiente',
+  on_start: setStyle(''),
+  on_load: spanishValidation,
+  data: {trial_phase: 'leap_demographics'}
+};
+
+const leap_languages = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>Por favor, indica todas las lenguas que hablas <b>en orden de adquisición</b> (tu lengua materna primero) y tu <b>nivel de competencia lingüística</b> en cada una (principiante A1-A2, intermedio B1-B2, avanzado C1-C2 o nativo):</p>',
+  html: function(){
+    let h = '<div class="leap-langs">';
+    for(let i = 1; i <= 5; i++){
+      h += '<div class="leap-row">' +
+             '<span class="leap-num" aria-hidden="true">' + i + '</span>' +
+             '<select id="language' + i + '" name="language' + i + '" aria-label="Lengua ' + i + '"' + (i === 1 ? ' required' : '') + '>' + language_options + '</select>' +
+             '<select id="level' + i + '" name="level' + i + '" aria-label="Nivel de la lengua ' + i + '"' + (i === 1 ? ' required' : '') + '>' + level_options + '</select>' +
+           '</div>';
+    }
+    return h + '</div>';
+  },
+  button_label: 'Siguiente',
+  on_load: function(){
+    spanishValidation();
+    const c = jsPsych.getDisplayElement();
+    const lang = function(i){ return c.querySelector('#language' + i); };
+    const lev = function(i){ return c.querySelector('#level' + i); };
+    // a level is needed for every language listed (and a language for every level chosen); no language twice
+    const refresh = function(){
+      for(let i = 1; i <= 5; i++){
+        const filled = lang(i).value !== '' || lev(i).value !== '';
+        lang(i).required = (i === 1) || filled;
+        lev(i).required = (i === 1) || filled;
+        let dup = false;
+        for(let j = 1; j < i; j++){ if(lang(i).value !== '' && lang(i).value === lang(j).value){ dup = true; } }
+        lang(i).setCustomValidity(dup ? 'Esta lengua ya está en la lista.' : '');
+      }
+    };
+    for(let i = 1; i <= 5; i++){
+      lang(i).addEventListener('change', refresh);
+      lev(i).addEventListener('change', refresh);
+      // keep the duplicate message from being cleared by the generic handler
+      lang(i).addEventListener('input', refresh);
+    }
+    refresh();
+  },
+  data: {trial_phase: 'leap_languages'},
+  on_finish: function(data){
+    const langs = [], levels = [];
+    for(let i = 1; i <= 5; i++){
+      const l = (data.response['language' + i] || '').trim();
+      if(l.length > 0){ langs.push(l); levels.push(data.response['level' + i] || ''); }
+    }
+    data.languages = langs.join('|');     // in order of acquisition, first language first
+    data.levels = levels.join('|');
+  }
+};
+
+/* ============================================================
+   GRAMMATICALITY-SLIDER TASK, built once per language (Spanish and English)
+   ============================================================ */
+
+const test_sentences = {
+  1: {
+    s_m_match_gram: "El chico lavó a la chica antes de ponerse melancólico",
+    s_m_mismatch_gram: "El chico lavó a las chicas antes de ponerse melancólico",
+    s_f_match_gram: "La chica lavó al chico antes de ponerse melancólica",
+    s_f_mismatch_gram: "La chica lavó a los chicos antes de ponerse melancólica",
+    s_m_match_ungram: "El chico lavó a la chica antes de ponerse melancólica",
+    p_m_mismatch_ungram: "Los chicos lavaron a la chica antes de ponerse melancólica",
+    s_f_match_ungram: "La chica lavó al chico antes de ponerse melancólico",
+    p_f_mismatch_ungram: "Las chicas lavaron al chico antes de ponerse melancólico",
+  },
+  2: {
+    s_m_match_gram: "El chico tocó a la chica antes de sentirse animado",
+    s_m_mismatch_gram: "El chico tocó a las chicas antes de sentirse animado",
+    s_f_match_gram: "La chica tocó al chico antes de sentirse animada",
+    s_f_mismatch_gram: "La chica tocó a los chicos antes de sentirse animada",
+    s_m_match_ungram: "El chico tocó a la chica antes de sentirse animada",
+    p_m_mismatch_ungram: "Los chicos tocaron a la chica antes de sentirse animada",
+    s_f_match_ungram: "La chica tocó al chico antes de sentirse animado",
+    p_f_mismatch_ungram: "Las chicas tocaron al chico antes de sentirse animado",
+  },
+  3: {
+    s_m_match_gram: "El chico pintó a la chica antes de ponerse pensativo",
+    s_m_mismatch_gram: "El chico pintó a las chicas antes de ponerse pensativo",
+    s_f_match_gram: "La chica pintó al chico antes de ponerse pensativa",
+    s_f_mismatch_gram: "La chica pintó a los chicos antes de ponerse pensativa",
+    s_m_match_ungram: "El chico pintó a la chica antes de ponerse pensativa",
+    p_m_mismatch_ungram: "Los chicos pintaron a la chica antes de ponerse pensativa",
+    s_f_match_ungram: "La chica pintó al chico antes de ponerse pensativo",
+    p_f_mismatch_ungram: "Las chicas pintaron al chico antes de ponerse pensativo",
+  },
+  4: {
+    s_m_match_gram: "El chico tocó a la chica antes de quedarse escondido",
+    s_m_mismatch_gram: "El chico tocó a las chicas antes de quedarse escondido",
+    s_f_match_gram: "La chica tocó al chico antes de quedarse escondida",
+    s_f_mismatch_gram: "La chica tocó a los chicos antes de quedarse escondida",
+    s_m_match_ungram: "El chico tocó a la chica antes de quedarse escondida",
+    p_m_mismatch_ungram: "Los chicos tocaron a la chica antes de quedarse escondida",
+    s_f_match_ungram: "La chica tocó al chico antes de quedarse escondido",
+    p_f_mismatch_ungram: "Las chicas tocaron al chico antes de quedarse escondido",
+  },
+  5: {
+    s_m_match_gram: "El chico peinó a la chica antes de ponerse ansioso",
+    s_m_mismatch_gram: "El chico peinó a las chicas antes de ponerse ansioso",
+    s_f_match_gram: "La chica peinó al chico antes de ponerse ansiosa",
+    s_f_mismatch_gram: "La chica peinó a los chicos antes de ponerse ansiosa",
+    s_m_match_ungram: "El chico peinó a la chica antes de ponerse ansiosa",
+    p_m_mismatch_ungram: "Los chicos peinaron a la chica antes de ponerse ansiosa",
+    s_f_match_ungram: "La chica peinó al chico antes de ponerse ansioso",
+    p_f_mismatch_ungram: "Las chicas peinaron al chico antes de ponerse ansioso",
+  },
+  6: {
+    s_m_match_gram: "El chico consoló a la chica antes de ponerse tenso",
+    s_m_mismatch_gram: "El chico consoló a las chicas antes de ponerse tenso",
+    s_f_match_gram: "La chica consoló al chico antes de ponerse tensa",
+    s_f_mismatch_gram: "La chica consoló a los chicos antes de ponerse tensa",
+    s_m_match_ungram: "El chico consoló a la chica antes de ponerse tensa",
+    p_m_mismatch_ungram: "Los chicos consolaron a la chica antes de ponerse tensa",
+    s_f_match_ungram: "La chica consoló al chico antes de ponerse tenso",
+    p_f_mismatch_ungram: "Las chicas consolaron al chico antes de ponerse tenso",
+  },
+  7: {
+    s_m_match_gram: "El chico animó a la chica antes de ponerse nervioso",
+    s_m_mismatch_gram: "El chico animó a las chicas antes de ponerse nervioso",
+    s_f_match_gram: "La chica animó al chico antes de ponerse nerviosa",
+    s_f_mismatch_gram: "La chica animó a los chicos antes de ponerse nerviosa",
+    s_m_match_ungram: "El chico animó a la chica antes de ponerse nerviosa",
+    p_m_mismatch_ungram: "Los chicos animaron a la chica antes de ponerse nerviosa",
+    s_f_match_ungram: "La chica animó al chico antes de ponerse nervioso",
+    p_f_mismatch_ungram: "Las chicas animaron al chico antes de ponerse nervioso",
+  },
+  8: {
+    s_m_match_gram: "El chico salpicó a la chica antes de ponerse contento",
+    s_m_mismatch_gram: "El chico salpicó a las chicas antes de ponerse contento",
+    s_f_match_gram: "La chica salpicó al chico antes de ponerse contenta",
+    s_f_mismatch_gram: "La chica salpicó a los chicos antes de ponerse contenta",
+    s_m_match_ungram: "El chico salpicó a la chica antes de ponerse contenta",
+    p_m_mismatch_ungram: "Los chicos salpicaron a la chica antes de ponerse contenta",
+    s_f_match_ungram: "La chica salpicó al chico antes de ponerse contento",
+    p_f_mismatch_ungram: "Las chicas salpicaron al chico antes de ponerse contento",
+  },
+  9: {
+    s_m_match_gram: "El chico escondió a la chica antes de ponerse miedoso",
+    s_m_mismatch_gram: "El chico escondió a las chicas antes de ponerse miedoso",
+    s_f_match_gram: "La chica escondió al chico antes de ponerse miedosa",
+    s_f_mismatch_gram: "La chica escondió a los chicos antes de ponerse miedosa",
+    s_m_match_ungram: "El chico escondió a la chica antes de ponerse miedosa",
+    p_m_mismatch_ungram: "Los chicos escondieron a la chica antes de ponerse miedosa",
+    s_f_match_ungram: "La chica escondió al chico antes de ponerse miedoso",
+    p_f_mismatch_ungram: "Las chicas escondieron al chico antes de ponerse miedoso",
+  },
+  10: {
+    s_m_match_gram: "El chico quedó con la chica antes de ponerse guapo",
+    s_m_mismatch_gram: "El chico quedó con las chicas antes de ponerse guapo",
+    s_f_match_gram: "La chica quedó con el chico antes de ponerse guapa",
+    s_f_mismatch_gram: "La chica quedó con los chicos antes de ponerse guapa",
+    s_m_match_ungram: "El chico quedó con la chica antes de ponerse guapa",
+    p_m_mismatch_ungram: "Los chicos quedaron con la chica antes de ponerse guapa",
+    s_f_match_ungram: "La chica quedó con el chico antes de ponerse guapo",
+    p_f_mismatch_ungram: "Las chicas quedaron con el chico antes de ponerse guapo",
+  },
+  11: {
+    s_m_match_gram: "El chico abrazó a la chica antes de ponerse contento",
+    s_m_mismatch_gram: "El chico abrazó a las chicas antes de ponerse contento",
+    s_f_match_gram: "La chica abrazó al chico antes de ponerse contenta",
+    s_f_mismatch_gram: "La chica abrazó a los chicos antes de ponerse contenta",
+    s_m_match_ungram: "El chico abrazó a la chica antes de ponerse contenta",
+    p_m_mismatch_ungram: "Los chicos abrazaron a la chica antes de ponerse contenta",
+    s_f_match_ungram: "La chica abrazó al chico antes de ponerse contento",
+    p_f_mismatch_ungram: "Las chicas abrazaron al chico antes de ponerse contento",
+  },
+  12: {
+    s_m_match_gram: "El chico limpió a la chica antes de ponerse furioso",
+    s_m_mismatch_gram: "El chico limpió a las chicas antes de ponerse furioso",
+    s_f_match_gram: "La chica limpió al chico antes de ponerse furiosa",
+    s_f_mismatch_gram: "La chica limpió a los chicos antes de ponerse furiosa",
+    s_m_match_ungram: "El chico limpió a la chica antes de ponerse furiosa",
+    p_m_mismatch_ungram: "Los chicos limpiaron a la chica antes de ponerse furiosa",
+    s_f_match_ungram: "La chica limpió al chico antes de ponerse furioso",
+    p_f_mismatch_ungram: "Las chicas limpiaron al chico antes de ponerse furioso",
+  },
+  13: {
+    s_m_match_gram: "El chico peinó a la chica antes de volverse cariñoso",
+    s_m_mismatch_gram: "El chico peinó a las chicas antes de volverse cariñoso",
+    s_f_match_gram: "La chica peinó al chico antes de volverse cariñosa",
+    s_f_mismatch_gram: "La chica peinó a los chicos antes de volverse cariñosa",
+    s_m_match_ungram: "El chico peinó a la chica antes de volverse cariñosa",
+    p_m_mismatch_ungram: "Los chicos peinaron a la chica antes de volverse cariñosa",
+    s_f_match_ungram: "La chica peinó al chico antes de volverse cariñoso",
+    p_f_mismatch_ungram: "Las chicas peinaron al chico antes de volverse cariñoso",
+  },
+  14: {
+    s_m_match_gram: "El chico alimentó a la chica antes de quedarse dormido",
+    s_m_mismatch_gram: "El chico alimentó a las chicas antes de quedarse dormido",
+    s_f_match_gram: "La chica alimentó al chico antes de quedarse dormida",
+    s_f_mismatch_gram: "La chica alimentó a los chicos antes de quedarse dormida",
+    s_m_match_ungram: "El chico alimentó a la chica antes de quedarse dormida",
+    p_m_mismatch_ungram: "Los chicos alimentaron a la chica antes de quedarse dormida",
+    s_f_match_ungram: "La chica alimentó al chico antes de quedarse dormido",
+    p_f_mismatch_ungram: "Las chicas alimentaron al chico antes de quedarse dormido",
+  },
+  15: {
+    s_m_match_gram: "El chico vio a la chica antes de sentirse enfadado",
+    s_m_mismatch_gram: "El chico vio a las chicas antes de sentirse enfadado",
+    s_f_match_gram: "La chica vio al chico antes de sentirse enfadada",
+    s_f_mismatch_gram: "La chica vio a los chicos antes de sentirse enfadada",
+    s_m_match_ungram: "El chico vio a la chica antes de sentirse enfadada",
+    p_m_mismatch_ungram: "Los chicos vieron a la chica antes de sentirse enfadada",
+    s_f_match_ungram: "La chica vio al chico antes de sentirse enfadado",
+    p_f_mismatch_ungram: "Las chicas vieron al chico antes de sentirse enfadado",
+  },
+  16: {
+    s_m_match_gram: "El chico empujó a la chica antes de sentirse desconcertado",
+    s_m_mismatch_gram: "El chico empujó a las chicas antes de sentirse desconcertado",
+    s_f_match_gram: "La chica empujó al chico antes de sentirse desconcertada",
+    s_f_mismatch_gram: "La chica empujó a los chicos antes de sentirse desconcertada",
+    s_m_match_ungram: "El chico empujó a la chica antes de sentirse desconcertada",
+    p_m_mismatch_ungram: "Los chicos empujaron a la chica antes de sentirse desconcertada",
+    s_f_match_ungram: "La chica empujó al chico antes de sentirse desconcertado",
+    p_f_mismatch_ungram: "Las chicas empujaron al chico antes de sentirse desconcertado",
+  },
+  17: {
+    s_m_match_gram: "El chico admiró a la chica antes de sentirse frustrado",
+    s_m_mismatch_gram: "El chico admiró a las chicas antes de sentirse frustrado",
+    s_f_match_gram: "La chica admiró al chico antes de sentirse frustrada",
+    s_f_mismatch_gram: "La chica admiró a los chicos antes de sentirse frustrada",
+    s_m_match_ungram: "El chico admiró a la chica antes de sentirse frustrada",
+    p_m_mismatch_ungram: "Los chicos admiraron a la chica antes de sentirse frustrada",
+    s_f_match_ungram: "La chica admiró al chico antes de sentirse frustrado",
+    p_f_mismatch_ungram: "Las chicas admiraron al chico antes de sentirse frustrado",
+  },
+  18: {
+    s_m_match_gram: "El chico abandonó a la chica antes de sentirse deprimido",
+    s_m_mismatch_gram: "El chico abandonó a las chicas antes de sentirse deprimido",
+    s_f_match_gram: "La chica abandonó al chico antes de sentirse deprimida",
+    s_f_mismatch_gram: "La chica abandonó a los chicos antes de sentirse deprimida",
+    s_m_match_ungram: "El chico abandonó a la chica antes de sentirse deprimida",
+    p_m_mismatch_ungram: "Los chicos abandonaron a la chica antes de sentirse deprimida",
+    s_f_match_ungram: "La chica abandonó al chico antes de sentirse deprimido",
+    p_f_mismatch_ungram: "Las chicas abandonaron al chico antes de sentirse deprimido",
+  },
+  19: {
+    s_m_match_gram: "El chico le hizo cosquillas a la chica antes de sentirse avergonzado",
+    s_m_mismatch_gram: "El chico le hizo cosquillas a las chicas antes de sentirse avergonzado",
+    s_f_match_gram: "La chica le hizo cosquillas al chico antes de sentirse avergonzada",
+    s_f_mismatch_gram: "La chica le hizo cosquillas a los chicos antes de sentirse avergonzada",
+    s_m_match_ungram: "El chico le hizo cosquillas a la chica antes de sentirse avergonzada",
+    p_m_mismatch_ungram: "Los chicos le hicieron cosquillas a la chica antes de sentirse avergonzada",
+    s_f_match_ungram: "La chica le hizo cosquillas al chico antes de sentirse avergonzado",
+    p_f_mismatch_ungram: "Las chicas le hicieron cosquillas al chico antes de sentirse avergonzado",
+  },
+  20: {
+    s_m_match_gram: "El chico entrenó a la chica antes de sentirse molesto",
+    s_m_mismatch_gram: "El chico entrenó a las chicas antes de sentirse molesto",
+    s_f_match_gram: "La chica entrenó al chico antes de sentirse molesta",
+    s_f_mismatch_gram: "La chica entrenó a los chicos antes de sentirse molesta",
+    s_m_match_ungram: "El chico entrenó a la chica antes de sentirse molesta",
+    p_m_mismatch_ungram: "Los chicos entrenaron a la chica antes de sentirse molesta",
+    s_f_match_ungram: "La chica entrenó al chico antes de sentirse molesto",
+    p_f_mismatch_ungram: "Las chicas entrenaron al chico antes de sentirse molesto",
+  },
+  21: {
+    s_m_match_gram: "El chico consoló a la chica antes de ponerse pálido",
+    s_m_mismatch_gram: "El chico consoló a las chicas antes de ponerse pálido",
+    s_f_match_gram: "La chica consoló al chico antes de ponerse pálida",
+    s_f_mismatch_gram: "La chica consoló a los chicos antes de ponerse pálida",
+    s_m_match_ungram: "El chico consoló a la chica antes de ponerse pálida",
+    p_m_mismatch_ungram: "Los chicos consolaron a la chica antes de ponerse pálida",
+    s_f_match_ungram: "La chica consoló al chico antes de ponerse pálido",
+    p_f_mismatch_ungram: "Las chicas consolaron al chico antes de ponerse pálido",
+  },
+  22: {
+    s_m_match_gram: "El chico halagó a la chica antes de ponerse rojo",
+    s_m_mismatch_gram: "El chico halagó a las chicas antes de ponerse rojo",
+    s_f_match_gram: "La chica halagó al chico antes de ponerse roja",
+    s_f_mismatch_gram: "La chica halagó a los chicos antes de ponerse roja",
+    s_m_match_ungram: "El chico halagó a la chica antes de ponerse roja",
+    p_m_mismatch_ungram: "Los chicos halagaron a la chica antes de ponerse roja",
+    s_f_match_ungram: "La chica halagó al chico antes de ponerse rojo",
+    p_f_mismatch_ungram: "Las chicas halagaron al chico antes de ponerse rojo",
+  },
+  23: {
+    s_m_match_gram: "El chico miró a la chica antes de sentirse apático",
+    s_m_mismatch_gram: "El chico miró a las chicas antes de sentirse apático",
+    s_f_match_gram: "La chica miró al chico antes de sentirse apática",
+    s_f_mismatch_gram: "La chica miró a los chicos antes de sentirse apática",
+    s_m_match_ungram: "El chico miró a la chica antes de sentirse apática",
+    p_m_mismatch_ungram: "Los chicos miraron a la chica antes de sentirse apática",
+    s_f_match_ungram: "La chica miró al chico antes de sentirse apático",
+    p_f_mismatch_ungram: "Las chicas miraron al chico antes de sentirse apático",
+  },
+  24: {
+    s_m_match_gram: "El chico siguió a la chica antes de sentirse relajado",
+    s_m_mismatch_gram: "El chico siguió a las chicas antes de sentirse relajado",
+    s_f_match_gram: "La chica siguió al chico antes de sentirse relajada",
+    s_f_mismatch_gram: "La chica siguió a los chicos antes de sentirse relajada",
+    s_m_match_ungram: "El chico siguió a la chica antes de sentirse relajada",
+    p_m_mismatch_ungram: "Los chicos siguieron a la chica antes de sentirse relajada",
+    s_f_match_ungram: "La chica siguió al chico antes de sentirse relajado",
+    p_f_mismatch_ungram: "Las chicas siguieron al chico antes de sentirse relajado",
+  },
+  25: {
+    s_m_match_gram: "El chico advirtió a la chica antes de sentirse cansado",
+    s_m_mismatch_gram: "El chico advirtió a las chicas antes de sentirse cansado",
+    s_f_match_gram: "La chica advirtió al chico antes de sentirse cansada",
+    s_f_mismatch_gram: "La chica advirtió a los chicos antes de sentirse cansada",
+    s_m_match_ungram: "El chico advirtió a la chica antes de sentirse cansada",
+    p_m_mismatch_ungram: "Los chicos advirtieron a la chica antes de sentirse cansada",
+    s_f_match_ungram: "La chica advirtió al chico antes de sentirse cansado",
+    p_f_mismatch_ungram: "Las chicas advirtieron al chico antes de sentirse cansado",
+  },
+  26: {
+    s_m_match_gram: "El chico instruyó a la chica antes de sentirse preparado",
+    s_m_mismatch_gram: "El chico instruyó a las chicas antes de sentirse preparado",
+    s_f_match_gram: "La chica instruyó al chico antes de sentirse preparada",
+    s_f_mismatch_gram: "La chica instruyó a los chicos antes de sentirse preparada",
+    s_m_match_ungram: "El chico instruyó a la chica antes de sentirse preparada",
+    p_m_mismatch_ungram: "Los chicos instruyeron a la chica antes de sentirse preparada",
+    s_f_match_ungram: "La chica instruyó al chico antes de sentirse preparado",
+    p_f_mismatch_ungram: "Las chicas instruyeron al chico antes de sentirse preparado",
+  },
+  27: {
+    s_m_match_gram: "El chico se burló de la chica antes de sentirse hambriento",
+    s_m_mismatch_gram: "El chico se burló de las chicas antes de sentirse hambriento",
+    s_f_match_gram: "La chica se burló del chico antes de sentirse hambrienta",
+    s_f_mismatch_gram: "La chica se burló de los chicos antes de sentirse hambrienta",
+    s_m_match_ungram: "El chico se burló de la chica antes de sentirse hambrienta",
+    p_m_mismatch_ungram: "Los chicos se burlaron de la chica antes de sentirse hambrienta",
+    s_f_match_ungram: "La chica se burló del chico antes de sentirse hambriento",
+    p_f_mismatch_ungram: "Las chicas se burlaron del chico antes de sentirse hambriento",
+  },
+  28: {
+    s_m_match_gram: "El chico dejó a la chica antes de volverse frío",
+    s_m_mismatch_gram: "El chico dejó a las chicas antes de volverse frío",
+    s_f_match_gram: "La chica dejó al chico antes de volverse fría",
+    s_f_mismatch_gram: "La chica dejó a los chicos antes de volverse fría",
+    s_m_match_ungram: "El chico dejó a la chica antes de volverse fría",
+    p_m_mismatch_ungram: "Los chicos dejaron a la chica antes de volverse fría",
+    s_f_match_ungram: "La chica dejó al chico antes de volverse frío",
+    p_f_mismatch_ungram: "Las chicas dejaron al chico antes de volverse frío",
+  },
+  29: {
+    s_m_match_gram: "El chico vendó a la chica antes de ponerse histérico",
+    s_m_mismatch_gram: "El chico vendó a las chicas antes de ponerse histérico",
+    s_f_match_gram: "La chica vendó al chico antes de ponerse histérica",
+    s_f_mismatch_gram: "La chica vendó a los chicos antes de ponerse histérica",
+    s_m_match_ungram: "El chico vendó a la chica antes de ponerse histérica",
+    p_m_mismatch_ungram: "Los chicos vendaron a la chica antes de ponerse histérica",
+    s_f_match_ungram: "La chica vendó al chico antes de ponerse histérico",
+    p_f_mismatch_ungram: "Las chicas vendaron al chico antes de ponerse histérico",
+  },
+  30: {
+    s_m_match_gram: "El chico interrogó a la chica antes de sentirse desanimado",
+    s_m_mismatch_gram: "El chico interrogó a las chicas antes de sentirse desanimado",
+    s_f_match_gram: "La chica interrogó al chico antes de sentirse desanimada",
+    s_f_mismatch_gram: "La chica interrogó a los chicos antes de sentirse desanimada",
+    s_m_match_ungram: "El chico interrogó a la chica antes de sentirse desanimada",
+    p_m_mismatch_ungram: "Los chicos interrogaron a la chica antes de sentirse desanimada",
+    s_f_match_ungram: "La chica interrogó al chico antes de sentirse desanimado",
+    p_f_mismatch_ungram: "Las chicas interrogaron al chico antes de sentirse desanimado",
+  },
+  31: {
+    s_m_match_gram: "El chico besó a la chica antes de quedarse callado",
+    s_m_mismatch_gram: "El chico besó a las chicas antes de quedarse callado",
+    s_f_match_gram: "La chica besó al chico antes de quedarse callada",
+    s_f_mismatch_gram: "La chica besó a los chicos antes de quedarse callada",
+    s_m_match_ungram: "El chico besó a la chica antes de quedarse callada",
+    p_m_mismatch_ungram: "Los chicos besaron a la chica antes de quedarse callada",
+    s_f_match_ungram: "La chica besó al chico antes de quedarse callado",
+    p_f_mismatch_ungram: "Las chicas besaron al chico antes de quedarse callado",
+  },
+  32: {
+    s_m_match_gram: "El chico sedujo a la chica antes de ponerse eufórico",
+    s_m_mismatch_gram: "El chico sedujo a las chicas antes de ponerse eufórico",
+    s_f_match_gram: "La chica sedujo al chico antes de ponerse eufórica",
+    s_f_mismatch_gram: "La chica sedujo a los chicos antes de ponerse eufórica",
+    s_m_match_ungram: "El chico sedujo a la chica antes de ponerse eufórica",
+    p_m_mismatch_ungram: "Los chicos sedujeron a la chica antes de ponerse eufórica",
+    s_f_match_ungram: "La chica sedujo al chico antes de ponerse eufórico",
+    p_f_mismatch_ungram: "Las chicas sedujeron al chico antes de ponerse eufórico",
+  },
+};
+
+const filler_sentences = [
+  ["La chica preparó la mochila del colegio y se puso contenta", true],
+  ["El chico olvidó sus deberes y terminó enfadada", false],
+  ["La mujer explicó el error, pero parecía frustrada", true],
+  ["El hombre tiró el gráfico y se sintió preocupada por ello", false],
+  ["El chico se sintió molesto por tener que coger un pañuelo durante la clase", true],
+  ["La chica que estaba despistado se recompuso rápidamente detrás del escenario", false],
+  ["El hombre se sintió orgulloso después de terminar el informe", true],
+  ["La mujer se mostró simpático antes de comenzar la formación", false],
+  ["La chica pintó una tarjeta y se sintió emocionada por el resultado", true],
+  ["El chico tropezó en el pasillo y se sintió avergonzada", false],
+  ["La mujer programó las citas y se mostró enfadada por la falta de tiempo libre", true],
+  ["El hombre organizó los archivos, pero parecía confundida con las fechas", false],
+  ["El chico envolvió el regalo y se mostró discreto sobre lo que había dentro", true],
+  ["La chica olvidó la fiambrera en casa y se sintió avergonzado", false],
+  ["El hombre se miró al espejo y sintió que estaba preparado para la entrevista", true],
+  ["La mujer se sintió seguro de sí mismo y respondió a preguntas difíciles", false],
+  ["El chico se puso competitivo y decidió terminar el rompecabezas más rápido", true],
+  ["La chica fue respetuoso y decidió no interrumpir el espectáculo", false],
+  ["La mujer se quedó tranquila y estuvo pensando en silencio", true],
+  ["El hombre habló demasiado pronto y se sintió molesta por ello", false],
+];
+
+const en_test_sentences = {
+  1: {
+    s_m_match_gram: "The boy washed the girl before hearing himself",
+    s_f_match_gram: "The girl washed the boy before hearing herself",
+    s_m_match_ungram: "The boy washed the girl before hearing herself",
+    s_f_match_ungram: "The girl washed the boy before hearing himself",
+  },
+  2: {
+    s_m_match_gram: "The boy fanned the girl before hugging himself",
+    s_f_match_gram: "The girl fanned the boy before hugging herself",
+    s_m_match_ungram: "The boy fanned the girl before hugging herself",
+    s_f_match_ungram: "The girl fanned the boy before hugging himself",
+  },
+  3: {
+    s_m_match_gram: "The boy painted the girl before washing himself",
+    s_f_match_gram: "The girl painted the boy before washing herself",
+    s_m_match_ungram: "The boy painted the girl before washing herself",
+    s_f_match_ungram: "The girl painted the boy before washing himself",
+  },
+  4: {
+    s_m_match_gram: "The boy tagged the girl before hiding himself",
+    s_f_match_gram: "The girl tagged the boy before hiding herself",
+    s_m_match_ungram: "The boy tagged the girl before hiding herself",
+    s_f_match_ungram: "The girl tagged the boy before hiding himself",
+  },
+  5: {
+    s_m_match_gram: "The boy brushed the girl before covering himself",
+    s_f_match_gram: "The girl brushed the boy before covering herself",
+    s_m_match_ungram: "The boy brushed the girl before covering herself",
+    s_f_match_ungram: "The girl brushed the boy before covering himself",
+  },
+  6: {
+    s_m_match_gram: "The boy dried the girl before feeding himself",
+    s_f_match_gram: "The girl dried the boy before feeding herself",
+    s_m_match_ungram: "The boy dried the girl before feeding herself",
+    s_f_match_ungram: "The girl dried the boy before feeding himself",
+  },
+  7: {
+    s_m_match_gram: "The boy lifted the girl before dressing himself",
+    s_f_match_gram: "The girl lifted the boy before dressing herself",
+    s_m_match_ungram: "The boy lifted the girl before dressing herself",
+    s_f_match_ungram: "The girl lifted the boy before dressing himself",
+  },
+  8: {
+    s_m_match_gram: "The boy splashed the girl before cleaning himself",
+    s_f_match_gram: "The girl splashed the boy before cleaning herself",
+    s_m_match_ungram: "The boy splashed the girl before cleaning herself",
+    s_f_match_ungram: "The girl splashed the boy before cleaning himself",
+  },
+  9: {
+    s_m_match_gram: "The boy buried the girl before drawing himself",
+    s_f_match_gram: "The girl buried the boy before drawing herself",
+    s_m_match_ungram: "The boy buried the girl before drawing herself",
+    s_f_match_ungram: "The girl buried the boy before drawing himself",
+  },
+  10: {
+    s_m_match_gram: "The boy patted the girl before combing himself",
+    s_f_match_gram: "The girl patted the boy before combing herself",
+    s_m_match_ungram: "The boy patted the girl before combing herself",
+    s_f_match_ungram: "The girl patted the boy before combing himself",
+  },
+  11: {
+    s_m_match_gram: "The boy hugged the girl before patting himself",
+    s_f_match_gram: "The girl hugged the boy before patting herself",
+    s_m_match_ungram: "The boy hugged the girl before patting herself",
+    s_f_match_ungram: "The girl hugged the boy before patting himself",
+  },
+  12: {
+    s_m_match_gram: "The boy scrubbed the girl before seeing himself",
+    s_f_match_gram: "The girl scrubbed the boy before seeing herself",
+    s_m_match_ungram: "The boy scrubbed the girl before seeing herself",
+    s_f_match_ungram: "The girl scrubbed the boy before seeing himself",
+  },
+  13: {
+    s_m_match_gram: "The boy combed the girl before scrubbing himself",
+    s_f_match_gram: "The girl combed the boy before scrubbing herself",
+    s_m_match_ungram: "The boy combed the girl before scrubbing herself",
+    s_f_match_ungram: "The girl combed the boy before scrubbing himself",
+  },
+  14: {
+    s_m_match_gram: "The boy fed the girl before painting himself",
+    s_f_match_gram: "The girl fed the boy before painting herself",
+    s_m_match_ungram: "The boy fed the girl before painting herself",
+    s_f_match_ungram: "The girl fed the boy before painting himself",
+  },
+  15: {
+    s_m_match_gram: "The boy saw the girl before hearing himself",
+    s_f_match_gram: "The girl saw the boy before hearing herself",
+    s_m_match_ungram: "The boy saw the girl before hearing herself",
+    s_f_match_ungram: "The girl saw the boy before hearing himself",
+  },
+  16: {
+    s_m_match_gram: "The boy pushed the girl before splashing himself",
+    s_f_match_gram: "The girl pushed the boy before splashing herself",
+    s_m_match_ungram: "The boy pushed the girl before splashing herself",
+    s_f_match_ungram: "The girl pushed the boy before splashing himself",
+  },
+};
+
+const en_filler_sentences = [
+  ["The girl packed her school bag and reminded herself to bring her project", true],
+  ["The boy forgot his homework and blamed herself for the bad grade", false],
+  ["The woman explained the mistake and defended herself in the meeting", true],
+  ["The man dropped the chart and blamed herself for the confusion", false],
+  ["The boy excused himself to get a tissue during class", true],
+  ["The girl who forgot her lines quickly composed himself backstage", false],
+  ["The man congratulated himself after finishing the report", true],
+  ["The woman introduced himself before beginning the training", false],
+  ["The girl painted a card and signed it for herself", true],
+  ["The boy tripped in the hallway and embarrassed herself", false],
+  ["The woman scheduled the appointments and reminded herself to confirm them", true],
+  ["The man organized the files but confused herself about the dates", false],
+  ["The boy wrapped the present and hid it from himself", true],
+  ["The girl blamed himself for forgetting the lunchbox", false],
+  ["The man looked in the mirror and adjusted himself before the speech", true],
+  ["The woman composed himself and answered the tough question", false],
+  ["The boy challenged himself to finish the puzzle faster", true],
+  ["The girl reminded himself not to interrupt during the show", false],
+  ["The woman thought quietly and reassured herself about her choice", true],
+  ["The man spoke too soon and corrected herself awkwardly", false],
+];
+
+// Controls per participant: the poster describes 16 controls, 50/50 grammatical/ungrammatical,
+// drawn at random from the 20 fillers (10 grammatical + 10 ungrammatical) of each language.
+const N_CONTROLS_PER_PARTICIPANT = 16;
+
+const SLIDER_TEXT = {
+  es: {
+    next: 'Siguiente',
+    instructions:
+      '<p>Ahora leerás algunas oraciones de práctica.</p>' +
+      '<p>Por favor, evalúa el grado de naturalidad de las oraciones eligiendo una puntuación en la escala.</p>' +
+      '<p><b>Debes responder lo más rápido posible, pero con precisión, y seleccionar las puntuaciones en <i>cualquier</i> parte de la escala (<i>no solo</i> en los extremos).</b></p>' +
+      '<p>Por favor, guíate por tu primera reacción, sin intentar analizar la oración.</p>' +
+      '<p>No hay una única respuesta correcta; por favor, utiliza tu propia intuición para elegir una puntuación.</p>',
+    start: '<p>Ahora comenzaremos el experimento.</p>',
+    prompt: '¿Cómo de natural te suena esta oración? Utiliza la barra deslizante de arriba.',
+    labels: ['Mal', 'Bien'],
+    sure: '¿Estás seguro/a de tu respuesta?',
+    practice: [['Esta es una oración de práctica', 'Yes'], ['Práctica de esta oración es', 'No'], ['Esta oración tiene algo incorrecto consigo mismo', 'No']],
+    tests: test_sentences, fillers: filler_sentences,
+    // 32 items x 8 conditions, 8 lists; plural ('mismatch') conditions are dropped -> 16 test sentences each
+    n_items: 32,
+    cond_order: ['s_m_match_gram', 's_m_mismatch_gram', 's_f_match_gram', 's_f_mismatch_gram',
+                 's_m_match_ungram', 'p_m_mismatch_ungram', 's_f_match_ungram', 'p_f_mismatch_ungram'],
+    list_starts: [0, 1, 7, 2, 6, 3, 5, 4]
+  },
+  en: {
+    next: 'Next',
+    instructions:
+      '<p>You will now read some practice sentences.</p>' +
+      '<p>Please rate how grammatical the sentences are by choosing a rating on the scale.</p>' +
+      '<p><b>You should answer as quickly but accurately as possible, and select ratings at <i>any</i> part of the scale (<i>not just</i> the endpoints).</b></p>' +
+      '<p>Please rely on your first reaction, without trying to analyze the sentence.</p>' +
+      '<p>There is no single right answer; please use your own intuitions to choose a rating.</p>',
+    start: '<p>Now we will begin the experiment.</p>',
+    prompt: 'How grammatical is this sentence? Use the slider above.',
+    labels: ['Bad (Ungrammatical)', 'Good (Grammatical)'],
+    sure: 'Are you sure about your response?',
+    practice: [['This is a practice sentence', 'Yes'], ['Practice of this sentence is', 'No'], ['This sentence has something wrong with himself', 'No']],
+    tests: en_test_sentences, fillers: en_filler_sentences,
+    // 16 items x 4 singular conditions, 4 lists: every participant sees all 16 items, 4 per condition
+    n_items: 16,
+    cond_order: ['s_m_match_gram', 's_f_match_gram', 's_m_match_ungram', 's_f_match_ungram'],
+    list_starts: [0, 1, 2, 3]
+  }
+};
+
+function makeSliderBlock(L){
+  const T = SLIDER_TEXT[L];
+
+  // Latin square: item i gets condition (start + i) mod number-of-conditions, one random list per participant
+  const list_number = jsPsych.randomization.randomInt(0, T.list_starts.length - 1);
+
+  const practice_items = T.practice.map(function(p, i){
+    return {sentence: p[0], condition: 'training', grammaticality: p[1], item: (i + 1) + '_training'};
+  });
+
+  // No plural sentences in this study: the 'mismatch' conditions (plural subject or object) are dropped.
+  // Spanish: each list assigns one of 8 conditions to every one of the 32 items, so each participant sees the
+  // 16 items that fall into the 4 singular ('match') conditions. English: 16 items x 4 conditions.
+  // Either way: 16 test sentences, 4 per condition.
+  const trial_items = [];
+  for(let i = 1; i <= T.n_items; i++){
+    const cond = T.cond_order[(T.list_starts[list_number] + i - 1) % T.cond_order.length];
+    if(cond.indexOf('mismatch') !== -1){ continue; }
+    trial_items.push({
+      sentence: T.tests[i][cond],
+      condition: cond,
+      grammaticality: cond.endsWith('_ungram') ? 'No' : 'Yes',
+      item: i + '_test'
+    });
+  }
+  // controls: N_CONTROLS_PER_PARTICIPANT sentences, half grammatical and half ungrammatical, chosen at random
+  const all_fillers = T.fillers.map(function(f, k){
+    return {sentence: f[0], condition: 'filler', grammaticality: f[1] ? 'Yes' : 'No', item: (k + 1) + '_filler'};
+  });
+  const half = N_CONTROLS_PER_PARTICIPANT / 2;
+  jsPsych.randomization.shuffle(all_fillers.filter(function(f){ return f.grammaticality === 'Yes'; })).slice(0, half).forEach(function(f){ trial_items.push(f); });
+  jsPsych.randomization.shuffle(all_fillers.filter(function(f){ return f.grammaticality === 'No'; })).slice(0, half).forEach(function(f){ trial_items.push(f); });
+
+  const instructions = {
+    type: jsPsychInstructions,
+    pages: ['<div class="directions" style="width:80%; margin:auto;" align="left">' + T.instructions + '</div>'],
+    button_label_next: T.next,
+    allow_backward: false,
+    show_clickable_nav: true,
+    on_start: setStyle('slider-task'),
+    data: {trial_phase: 'slider_instructions'}
+  };
+
+  const instructions2 = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: T.start,
+    choices: [T.next],
+    on_start: requireLandscape,
+    data: {trial_phase: 'slider_start'}
+  };
+
+  const sentence2 = {
+    type: jsPsychHtmlSliderResponse,
+    stimulus: function(){ return jsPsych.evaluateTimelineVariable('sentence') + '.'; },
+    prompt: '<p style="margin:0.3em 0;">' + T.prompt + '</p>',
+    labels: T.labels,
+    // jsPsych draws each end label in a box as wide as the slider, centred on the slider's end,
+    // so the slider must be at most ~half the screen width or the page overflows and phones zoom out.
+    slider_width: function(){ return Math.max(160, Math.min(500, Math.floor(window.innerWidth * 0.45))); },
+    require_movement: true,
+    button_label: T.next,
+    on_start: requireLandscape,
+    post_trial_gap: 500,
+    data: {
+      trial_phase: 'slider_sentence',
+      sentence: jsPsych.timelineVariable('sentence'),
+      condition: jsPsych.timelineVariable('condition'),
+      grammaticality: jsPsych.timelineVariable('grammaticality'),
+      item: jsPsych.timelineVariable('item')
+    },
+    on_finish: advance
+  };
+
+  // Practice sentences: the answer must be on the right side of the midline (50).
+  //   grammatical sentence ('Yes')   -> rating must not be below 50
+  //   ungrammatical sentence ('No')  -> rating must not be above 50
+  // If it is on the wrong side, the "next" click is blocked and a red message is shown
+  // on the same screen; the participant can adjust the slider and try again.
+  const practice_trial = function(item){
+    return Object.assign({}, sentence2, {
+      stimulus: item.sentence + '.',
+      data: {trial_phase: 'slider_practice', sentence: item.sentence, condition: item.condition,
+             grammaticality: item.grammaticality, item: item.item},
+      on_load: function(){
+        const container = jsPsych.getDisplayElement();
+        const slider = container.querySelector('#jspsych-html-slider-response-response');
+        const button = container.querySelector('#jspsych-html-slider-response-next');
+
+        // red message, space reserved so the layout does not jump
+        const msg = document.createElement('p');
+        msg.textContent = T.sure;
+        msg.setAttribute('role', 'alert');
+        msg.style.cssText = 'color:red; font-weight:bold; visibility:hidden; margin:0.3em 0;';
+        button.parentNode.insertBefore(msg, button);
+
+        const is_wrong = function(){
+          const v = Number(slider.value);
+          return (item.grammaticality === 'Yes') ? (v < 50) : (v > 50);
+        };
+        // capture phase on the container: runs before the plugin's own click handler
+        container.addEventListener('click', function(e){
+          if(e.target === button && is_wrong()){
+            e.stopPropagation();
+            msg.style.visibility = 'visible';
+          }
+        }, true);
+        slider.addEventListener('input', function(){ msg.style.visibility = 'hidden'; });
+      }
+    });
+  };
+
+  const practice1 = {
+    timeline: practice_items.map(practice_trial),
+    randomize_order: false
+  };
+
+  // Shuffle the test items and the fillers separately, then spread the fillers
+  // evenly through the trials. All test items and all fillers are shown.
+  const tests = jsPsych.randomization.shuffle(trial_items.filter(function(t){ return t.condition !== 'filler'; }));
+  const fills = jsPsych.randomization.shuffle(trial_items.filter(function(t){ return t.condition === 'filler'; }));
+  const n_all = tests.length + fills.length;
+  const ordered_items = [];
+  let ti = 0, fi = 0;
+  for(let k = 0; k < n_all; k++){
+    const filler_due = Math.floor((k + 1) * fills.length / n_all) > Math.floor(k * fills.length / n_all);
+    ordered_items.push(filler_due ? fills[fi++] : tests[ti++]);
+  }
+
+  total_trials += practice_items.length + ordered_items.length;
+
+  const procedure = {
+    timeline: [sentence2],
+    timeline_variables: ordered_items,
+    randomize_order: false
+  };
+
+  return {timeline: [instructions, practice1, instructions2, procedure],
+          data: {task: 'slider_' + L, sentence_language: L, slider_list: list_number + 1}};
+}
+
+const slider_blocks = {es: makeSliderBlock('es'), en: makeSliderBlock('en')};
+
+/* ============================ END ============================ */
+
+const final = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>Gracias por tu participación. Si deseas entrar en el sorteo de 2 cupones (30 € cada uno), por favor, escribe tu correo electrónico a continuación:</p>',
+  html: '<div class="lang-row" style="justify-content:center;"><label for="raffle_email">Correo electrónico (opcional)</label>' +
+        '<input type="email" id="raffle_email" name="raffle_email" autocomplete="email" inputmode="email" style="width:min(18em, 90%); font-size:1em; min-height:44px;"></div>' +
+        '<p>Haz clic en «Enviar» para enviar tus respuestas.</p>',
+  button_label: 'Enviar',
+  on_start: setStyle(''),
+  on_load: spanishValidation,
+  data: {trial_phase: 'final'},
+  on_finish: function(data){
+    // the e-mail is kept OUT of the answers file: remember it, then blank it in the data
+    raffle_email = ((data.response && data.response.raffle_email) || '').trim();
+    data.response = null;
+  }
+};
+
+// ---- Optional raffle e-mail: saved on its own, apart from the answers ----
+let raffle_email = '';
+const LEAVE_URL = "https://www.uned.es/universidad/inicio/en/";   // where participants go after finishing
+function leave(){ window.location = LEAVE_URL; }
+
+function saveRaffleEmailAndLeave(){
+  if(!raffle_email){ leave(); return; }
+  // A separate file with a random name (the answers are named with the timestamp), so the two cannot be matched.
+  const cell = /^[=+\-@]/.test(raffle_email) ? "'" + raffle_email : raffle_email;   // never let a spreadsheet read it as a formula
+  const x = new XMLHttpRequest();
+  x.open('POST', 'write_data.php');
+  x.setRequestHeader('Content-Type', 'application/json');
+  x.onload = leave;
+  x.onerror = leave;
+  x.send(JSON.stringify({filename: 'raffle_email_' + jsPsych.randomization.randomID(12), filedata: 'email\n"' + cell.replace(/"/g, '""') + '"\n'}));
+}
+
+// The data are sent to the server and the participant is only sent on once the server has accepted them.
+// If saving fails it is retried; after 3 failed attempts the participant can try again, download the
+// answers, or continue anyway.
+function saveData(name, data){
+  let attempts = 0;
+  const showMsg = function(html){ jsPsych.getDisplayElement().innerHTML = '<div class="consent-page" style="text-align:center">' + html + '</div>'; };
+  const failed = function(){
+    if(attempts < 3){ setTimeout(attempt, 1500 * attempts); return; }
+    showMsg('<p>No se han podido guardar tus respuestas.</p><p>Comprueba tu conexión a internet e inténtalo de nuevo.</p>' +
+      '<div><button class="jspsych-btn" id="retry-save">Intentarlo de nuevo</button> ' +
+      '<button class="jspsych-btn" id="download-save">Descargar mis respuestas</button> ' +
+      '<button class="jspsych-btn" id="continue-anyway">Continuar de todos modos</button></div>');
+    document.getElementById('retry-save').onclick = function(){ attempts = 0; attempt(); };
+    document.getElementById('continue-anyway').onclick = saveRaffleEmailAndLeave;
+    document.getElementById('download-save').onclick = function(){
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([data], {type: 'text/csv'}));
+      a.download = name + '.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+    };
+  };
+  const attempt = function(){
+    attempts++;
+    showMsg('<p>Guardando tus respuestas... por favor, no cierres esta página.</p>');
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'write_data.php');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.timeout = 20000;
+    xhr.onload = function(){
+      let ok = xhr.status >= 200 && xhr.status < 300;
+      try { const j = JSON.parse(xhr.responseText); if(j && j.ok === false){ ok = false; } } catch(e) {}
+      if(ok){ saveRaffleEmailAndLeave(); } else { failed(); }
+    };
+    xhr.onerror = failed;
+    xhr.ontimeout = failed;
+    xhr.send(JSON.stringify({filename: name, filedata: data}));
+  };
+  attempt();
+}
+
+/* ======================= FULL TIMELINE ======================= */
+
+jsPsych.run([
+  consent,
+  transition_language,
+  leap_demo,
+  leap_languages,
+  transition_ready,
+  slider_blocks[task_order[0]],
+  transition_between,
+  slider_blocks[task_order[1]],
+  final
+]);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Language Research at Ulster University</title>
+<script src="https://unpkg.com/jspsych@8.3.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
+<link href="https://unpkg.com/jspsych@8.3.0/css/jspsych.css" rel="stylesheet">
+<style>
+
+/* ---- Base text size: consent, language questions, transitions ---- */
+.jspsych-display-element { font-size: clamp(20px, 3.4vw, 32px); line-height: 1.35; }
+/* picture task uses slightly smaller text so picture + sentence + buttons fit a landscape phone */
+.jspsych-display-element.picture-task { font-size: clamp(22px, min(3.8vw, 7.4vh), 34px); }   /* limited by screen height too */
+.picture-task .jspsych-content { position: relative; }   /* so the logo sits below the progress bar, not over it */
+@media (min-width: 1000px) {   /* desktop: big text (up to the original 64px) */
+  .jspsych-display-element, .jspsych-display-element.picture-task { font-size: clamp(40px, 4vw, 64px); }
+}
+
+/* compact progress bar (the default one wastes a lot of height on a landscape phone) */
+#jspsych-progressbar-container { font-size: 14px; padding: 4px 0; margin-bottom: 0.3em; }
+
+/* ---- Accessibility: big tap targets, visible focus, text can always be pinch-zoomed ---- */
+.jspsych-btn { font-size: 1em; min-height: 44px; padding: 0.35em 1.1em; }
+.jspsych-display-element select { font-size: 1em; min-height: 44px; max-width: 100%; }
+.jspsych-display-element img { max-width: 100%; height: auto; }
+.jspsych-display-element :focus-visible { outline: 3px solid #005fcc; outline-offset: 2px; }
+
+/* ---- Consent ---- */
+.consent-page { max-width: 100%; margin: 0 auto; padding: 4px 8px; text-align: left; line-height: 1.3; }
+.consent-page h1 { font-size: 1.2em; margin: 0.5em 0 0.2em; line-height: 1.2; }
+.consent-page h1.consent-title > div { margin: 0.15em 0; }
+.consent-page p { margin: 0.3em 0; }
+.consent-page ul { margin: 0.2em 0 0.2em 1.2em; padding-left: 0; }
+.consent-page li { margin: 0.2em 0; }
+.consent-page img.crest { width: 22%; max-width: 300px; margin: 4px 0; }
+.jspsych-display-element img.page-logo { position: fixed; top: var(--logo-top, 30px); right: 6px; z-index: 5; width: 20%; max-width: 350px; height: auto; max-height: 12vh; object-fit: contain; object-position: right top; }
+.transition-logo { text-align: right; padding: 4px; }
+.transition-logo img { width: 30%; max-width: 450px; }
+.transition-text { padding: 4px 10px; font-size: 1.5em; line-height: 1.25; }
+.transition-text p { margin: 0.3em 0; }
+
+/* ---- Language questions: two columns to save height ---- */
+.lang-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.3em 1em; text-align: left; margin: 0.3em auto; padding: 0 0.6em; max-width: 100%; box-sizing: border-box; }
+.lang-grid .lang-row { display: flex; align-items: center; gap: 0.4em; }
+.lang-grid label { white-space: nowrap; }
+/* proficiency question: language name above its dropdown, so the longer level names (e.g. "Principiante (A1-A2)") fit */
+.lang-grid .lang-row.stacked { flex-direction: column; align-items: stretch; gap: 0.1em; }
+.lang-grid .lang-row.stacked select { width: 100%; }
+@media (orientation: portrait) { .lang-grid { grid-template-columns: 1fr; } }   /* dropdowns stacked vertically on upright phones */
+.lang-grid select { flex: 1 1 auto; min-width: 0; }
+.jspsych-content p { margin: 0.3em 0; }
+
+/* ---- Reduced LEAP-Q (combo) ---- */
+.leap-demo { display: flex; flex-direction: column; gap: 0.5em; align-items: center; margin: 0.3em 0; text-align: left; }
+.leap-demo .lang-row { display: flex; align-items: center; gap: 0.9em; flex-wrap: wrap; justify-content: center; }
+.leap-demo label { display: inline-flex; align-items: center; gap: 0.35em; min-height: 44px; }
+.leap-demo input[type=radio] { width: 1.1em; height: 1.1em; }
+.leap-langs { display: flex; flex-direction: column; gap: 0.3em; margin: 0.3em auto; padding: 0 0.6em; box-sizing: border-box; max-width: 100%; }
+.leap-row { display: grid; grid-template-columns: 1.2em minmax(0, 1fr) minmax(0, 1fr); gap: 0.4em; align-items: center; text-align: left; }
+.leap-row select { width: 100%; min-width: 0; }
+@media (orientation: portrait) { .leap-row { grid-template-columns: 1.2em minmax(0, 1fr); } .leap-row .leap-num { grid-row: span 2; } }
+
+/* ---- Picture task ---- */
+.intro-img { width: 45%; max-width: 400px; }
+/* Koko sits directly above the sentence, so the sentence gets the full width (less wrapping) */
+.koko-row { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.1em 0 0.2em; text-align: center; }
+.koko-row > div { line-height: 1.2; }
+.jspsych-display-element img.intro-img { height: auto; max-height: 40vh; object-fit: contain; }
+.jspsych-display-element img.story-img { display: block; width: 100%; height: 34vh; object-fit: contain; margin: 0 auto; }
+.jspsych-display-element img.monkey-img { display: block; height: 12vh; width: auto; max-width: 30%; flex: none; margin: 0 auto; }
+
+/* ---- Grammaticality-slider task ---- */
+.jspsych-display-element.slider-task { font-size: 18px; line-height: 1.4; }
+.slider-task .jspsych-content { width: 60%; max-width: 650px; margin-top: 0; font-size: 1.5em; line-height: 1.3; }
+.slider-task div.directions { width: 100%; }
+.slider-task div.directions p { margin: 0.35em 0; }
+.slider-task div#jspsych-html-slider-response-wrapper { margin: 0.4em 0 2.6em !important; width: 100%; }
+@media (max-width: 1200px) {
+  .slider-task .jspsych-content { width: 100%; max-width: 100%; }
+}
+@media (max-height: 420px) {   /* short landscape phones: keep the Siguiente button in view */
+  .jspsych-display-element.slider-task { font-size: 15px; }
+  .slider-task div#jspsych-html-slider-response-wrapper { margin: 0.2em 0 2.2em !important; }
+}
+@media (max-height: 340px) {
+  .jspsych-display-element.slider-task { font-size: 12.5px; }
+}
+
+/* ---- Landscape prompt: shown on phones held upright ---- */
+#rotate-prompt { display: none; position: fixed; inset: 0; z-index: 99999; background: #fff; color: #000;
+  flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1em; }
+#rotate-prompt p { font-size: 6.5vw; font-weight: bold; margin: 0.5em 0 0; line-height: 1.25; max-width: 90%; }
+#rotate-prompt svg { width: 22vw; height: 22vw; }
+/* only while the slider trials are running (class set by those trials, removed by every other screen) */
+@media (orientation: portrait) and (max-width: 820px) and (pointer: coarse) { html.landscape-required #rotate-prompt { display: flex; } }
+@media (prefers-reduced-motion: no-preference) {
+  #rotate-prompt svg { animation: turn 2.4s ease-in-out infinite; }
+  @keyframes turn { 0%, 25% { transform: rotate(0deg); } 65%, 100% { transform: rotate(-90deg); } }
+}
+
+.phone-img { display: block; width: 40%; max-width: 260px; margin: 0.4em auto; }
+.save-buttons button { margin: 0.4em; }
+</style>
+</head>
+<body>
+<div id="rotate-prompt" role="alert">
+  <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="30" y="8" width="40" height="84" rx="7" fill="none" stroke="#000" stroke-width="5"/><circle cx="50" cy="84" r="3" fill="#000"/></svg>
+  <p>Please turn your phone to landscape (horizontal) orientation to continue.</p>
+</div>
+<script>
+
+/* ------------------------------------------------------------------
+   English grammaticality-judgement task (reflexives: himself / herself)
+   Platform: Prolific
+   Design (same as the English task in the Spanish-English combo):
+     - 16 test sentences: 16 items x 4 singular conditions (4 lists, one drawn at random),
+       4 sentences per condition. Plural conditions are not used.
+     - 16 control sentences, 8 grammatical + 8 ungrammatical, drawn at random from 20.
+     - 3 practice sentences. A practice answer on the wrong side of the midline cannot be submitted.
+   ------------------------------------------------------------------ */
+
+/* ======================= SETTINGS (edit here) ======================= */
+const EXPERIMENT_NAME = 'english_ajt_prolific';
+const LOGO_SRC = 'https://julianagerard.com/UlsterU/media/ulster.jpg';   // logo on the consent page
+const PHONE_IMG_SRC = 'media/phones_old.png';                           // picture of a phone in landscape (hidden if the file is missing)
+const SAVE_URL = 'write_data.php';                                      // server script that stores the data (see /server)
+const PLATFORM = 'prolific';
+const COMPLETION_URL = 'https://app.prolific.com/submissions/complete?cc=DEA45BD6';   // Prolific completion code of this study
+
+/* ======================= SET-UP ======================= */
+
+const jsPsych = initJsPsych({
+  show_progress_bar: true,
+  auto_update_progress_bar: false,   // updated manually
+  message_progress_bar: 'Progress',
+  on_finish: function(){ saveAndLeave(jsPsych.data.get().csv()); }
+});
+
+// keep only letters, digits, _ and - from anything that comes from the URL (it ends up in the file name)
+function clean(s){ return String(s == null ? '' : s).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40); }
+
+const timestamp = Date.now();
+// Prolific adds ?PROLIFIC_PID=...&STUDY_ID=...&SESSION_ID=... to the study link
+const participant_id = clean(jsPsych.data.getURLVariable('PROLIFIC_PID'));
+const platform_data = {
+  prolific_pid: participant_id,
+  study_id: clean(jsPsych.data.getURLVariable('STUDY_ID')),
+  session_id: clean(jsPsych.data.getURLVariable('SESSION_ID'))
+};
+const filename = timestamp + '_' + (participant_id || 'noid');
+
+jsPsych.data.addProperties(Object.assign({
+  subject: timestamp,
+  experiment: EXPERIMENT_NAME,
+  platform: PLATFORM
+}, platform_data));
+
+// progress bar over the practice + test + control trials (added when the task is built)
+let total_trials = 0;
+let trials_done = 0;
+function advance(){
+  trials_done++;
+  jsPsych.progressBar.progress = Math.min(trials_done / total_trials, 1);
+}
+
+// landscape prompt: only needed while the slider trials run
+function requireLandscape(){ document.documentElement.classList.add('landscape-required'); }
+
+function setStyle(cls){
+  return function(){
+    const d = jsPsych.getDisplayContainerElement();
+    d.classList.remove('slider-task', 'picture-task');
+    document.documentElement.classList.remove('landscape-required');
+    if(cls){ d.classList.add(cls); }
+  };
+}
+
+/* ======================= CONSENT ======================= */
+
+const consent1 = 'Language research at Ulster University';
+const consent2a = 'Sentence comprehension, production, and processing costs';
+const consent2b = 'Participant consent form';
+const consent3 = 'Thank you for participating in this study for the School of Communication and Media at Ulster University. Your participation provides valuable data for the scientific study of language, and is greatly appreciated.';
+const consent4 = 'Please make sure that you use a smartphone in landscape orientation.';
+const consent5 = 'Purpose of the study';
+const consent6 = 'This research is being conducted by Dr Juliana Gerard at Ulster University and Dr Adina Camelia Bleotu at the University of Bucharest.';
+const consent7 = 'We are inviting you to participate in this research project because you are an adult native speaker of English.';
+const consent8 = 'Procedure';
+const consent9 = 'The study will last for up to 10 minutes.';
+const consent10 = 'You will be asked to silently read sentences which may contain grammatical errors.';
+const consent11 = 'You will then be asked to "rate" the grammaticality of the sentences by selecting a rating on a sliding scale.';
+const consent12 = 'Please note: Some of the questions are designed to check for attention. <b>Your survey may not be approved if these questions are answered incorrectly</b>.';
+const consent13 = 'Your agreement indicates that:';
+const consent14 = 'You are at least 18 years of age.';
+const consent15 = 'You freely and voluntarily choose to participate in this research project.';
+const consent16 = 'You understand that your participation is voluntary and you are free to withdraw your information from the study at any time.';
+const consent17 = "You agree to the researchers recording the data from this session, knowing that this material will be saved on the Chief Investigator's (Dr Juliana Gerard) secure University computer without any personal identifying information, to be used for research purposes only.";
+const consent18 = 'If you consent to participate, please click "Next" to continue:';
+
+const consent = {
+  type: jsPsychInstructions,
+  pages: [
+    '<div class="consent-page">' +
+      '<img class="crest" src="' + LOGO_SRC + '" alt="Ulster University">' +
+      '<h1 class="consent-title"><div>' + consent1 + '</div><div>' + consent2a + '</div><div>' + consent2b + '</div></h1>' +
+      '<p>' + consent3 + '</p>' +
+      '<p><b>' + consent4 + '</b></p>' +
+      '<img class="phone-img" src="' + PHONE_IMG_SRC + '" alt="" onerror="this.style.display=\'none\'">' +
+      '<h1>' + consent5 + '</h1>' +
+      '<ul><li>' + consent6 + '</li><li>' + consent7 + '</li></ul>' +
+      '<h1>' + consent8 + '</h1>' +
+      '<ul><li>' + consent9 + '</li><li>' + consent10 + '</li><li>' + consent11 + '</li><li><b>' + consent12 + '</b></li></ul>' +
+      '<h1>' + consent13 + '</h1>' +
+      '<ul><li>' + consent14 + '</li><li>' + consent15 + '</li><li>' + consent16 + '</li><li>' + consent17 + '</li></ul>' +
+      '<p>' + consent18 + '</p>' +
+    '</div>'
+  ],
+  button_label_next: 'Next',
+  allow_backward: false,
+  show_clickable_nav: true,
+  on_start: setStyle(''),
+  data: {trial_phase: 'consent'}
+};
+
+/* ======================= STIMULI ======================= */
+
+const en_test_sentences = {
+  1: {
+    s_m_match_gram: "The boy washed the girl before hearing himself",
+    s_f_match_gram: "The girl washed the boy before hearing herself",
+    s_m_match_ungram: "The boy washed the girl before hearing herself",
+    s_f_match_ungram: "The girl washed the boy before hearing himself",
+  },
+  2: {
+    s_m_match_gram: "The boy fanned the girl before hugging himself",
+    s_f_match_gram: "The girl fanned the boy before hugging herself",
+    s_m_match_ungram: "The boy fanned the girl before hugging herself",
+    s_f_match_ungram: "The girl fanned the boy before hugging himself",
+  },
+  3: {
+    s_m_match_gram: "The boy painted the girl before washing himself",
+    s_f_match_gram: "The girl painted the boy before washing herself",
+    s_m_match_ungram: "The boy painted the girl before washing herself",
+    s_f_match_ungram: "The girl painted the boy before washing himself",
+  },
+  4: {
+    s_m_match_gram: "The boy tagged the girl before hiding himself",
+    s_f_match_gram: "The girl tagged the boy before hiding herself",
+    s_m_match_ungram: "The boy tagged the girl before hiding herself",
+    s_f_match_ungram: "The girl tagged the boy before hiding himself",
+  },
+  5: {
+    s_m_match_gram: "The boy brushed the girl before covering himself",
+    s_f_match_gram: "The girl brushed the boy before covering herself",
+    s_m_match_ungram: "The boy brushed the girl before covering herself",
+    s_f_match_ungram: "The girl brushed the boy before covering himself",
+  },
+  6: {
+    s_m_match_gram: "The boy dried the girl before feeding himself",
+    s_f_match_gram: "The girl dried the boy before feeding herself",
+    s_m_match_ungram: "The boy dried the girl before feeding herself",
+    s_f_match_ungram: "The girl dried the boy before feeding himself",
+  },
+  7: {
+    s_m_match_gram: "The boy lifted the girl before dressing himself",
+    s_f_match_gram: "The girl lifted the boy before dressing herself",
+    s_m_match_ungram: "The boy lifted the girl before dressing herself",
+    s_f_match_ungram: "The girl lifted the boy before dressing himself",
+  },
+  8: {
+    s_m_match_gram: "The boy splashed the girl before cleaning himself",
+    s_f_match_gram: "The girl splashed the boy before cleaning herself",
+    s_m_match_ungram: "The boy splashed the girl before cleaning herself",
+    s_f_match_ungram: "The girl splashed the boy before cleaning himself",
+  },
+  9: {
+    s_m_match_gram: "The boy buried the girl before drawing himself",
+    s_f_match_gram: "The girl buried the boy before drawing herself",
+    s_m_match_ungram: "The boy buried the girl before drawing herself",
+    s_f_match_ungram: "The girl buried the boy before drawing himself",
+  },
+  10: {
+    s_m_match_gram: "The boy patted the girl before combing himself",
+    s_f_match_gram: "The girl patted the boy before combing herself",
+    s_m_match_ungram: "The boy patted the girl before combing herself",
+    s_f_match_ungram: "The girl patted the boy before combing himself",
+  },
+  11: {
+    s_m_match_gram: "The boy hugged the girl before patting himself",
+    s_f_match_gram: "The girl hugged the boy before patting herself",
+    s_m_match_ungram: "The boy hugged the girl before patting herself",
+    s_f_match_ungram: "The girl hugged the boy before patting himself",
+  },
+  12: {
+    s_m_match_gram: "The boy scrubbed the girl before seeing himself",
+    s_f_match_gram: "The girl scrubbed the boy before seeing herself",
+    s_m_match_ungram: "The boy scrubbed the girl before seeing herself",
+    s_f_match_ungram: "The girl scrubbed the boy before seeing himself",
+  },
+  13: {
+    s_m_match_gram: "The boy combed the girl before scrubbing himself",
+    s_f_match_gram: "The girl combed the boy before scrubbing herself",
+    s_m_match_ungram: "The boy combed the girl before scrubbing herself",
+    s_f_match_ungram: "The girl combed the boy before scrubbing himself",
+  },
+  14: {
+    s_m_match_gram: "The boy fed the girl before painting himself",
+    s_f_match_gram: "The girl fed the boy before painting herself",
+    s_m_match_ungram: "The boy fed the girl before painting herself",
+    s_f_match_ungram: "The girl fed the boy before painting himself",
+  },
+  15: {
+    s_m_match_gram: "The boy saw the girl before hearing himself",
+    s_f_match_gram: "The girl saw the boy before hearing herself",
+    s_m_match_ungram: "The boy saw the girl before hearing herself",
+    s_f_match_ungram: "The girl saw the boy before hearing himself",
+  },
+  16: {
+    s_m_match_gram: "The boy pushed the girl before splashing himself",
+    s_f_match_gram: "The girl pushed the boy before splashing herself",
+    s_m_match_ungram: "The boy pushed the girl before splashing herself",
+    s_f_match_ungram: "The girl pushed the boy before splashing himself",
+  },
+};
+
+const en_filler_sentences = [
+  ["The girl packed her school bag and reminded herself to bring her project", true],
+  ["The boy forgot his homework and blamed herself for the bad grade", false],
+  ["The woman explained the mistake and defended herself in the meeting", true],
+  ["The man dropped the chart and blamed herself for the confusion", false],
+  ["The boy excused himself to get a tissue during class", true],
+  ["The girl who forgot her lines quickly composed himself backstage", false],
+  ["The man congratulated himself after finishing the report", true],
+  ["The woman introduced himself before beginning the training", false],
+  ["The girl painted a card and signed it for herself", true],
+  ["The boy tripped in the hallway and embarrassed herself", false],
+  ["The woman scheduled the appointments and reminded herself to confirm them", true],
+  ["The man organized the files but confused herself about the dates", false],
+  ["The boy wrapped the present and hid it from himself", true],
+  ["The girl blamed himself for forgetting the lunchbox", false],
+  ["The man looked in the mirror and adjusted himself before the speech", true],
+  ["The woman composed himself and answered the tough question", false],
+  ["The boy challenged himself to finish the puzzle faster", true],
+  ["The girl reminded himself not to interrupt during the show", false],
+  ["The woman thought quietly and reassured herself about her choice", true],
+  ["The man spoke too soon and corrected herself awkwardly", false],
+];
+
+// Controls per participant: 16, half grammatical and half ungrammatical, drawn at random from the 20.
+const N_CONTROLS_PER_PARTICIPANT = 16;
+
+const SLIDER_TEXT = {
+  next: 'Next',
+  instructions:
+    '<p>You will now read some practice sentences.</p>' +
+    '<p>Please rate how grammatical the sentences are by choosing a rating on the scale.</p>' +
+    '<p><b>You should answer as quickly but accurately as possible, and select ratings at <i>any</i> part of the scale (<i>not just</i> the endpoints).</b></p>' +
+    '<p>Please rely on your first reaction, without trying to analyze the sentence.</p>' +
+    '<p>There is no single right answer; please use your own intuitions to choose a rating.</p>',
+  start: '<p>Now we will begin the experiment.</p>',
+  prompt: 'How grammatical is this sentence? Use the slider above.',
+  labels: ['Bad (Ungrammatical)', 'Good (Grammatical)'],
+  sure: 'Are you sure about your response?',
+  practice: [['This is a practice sentence', 'Yes'], ['Practice of this sentence is', 'No'], ['This sentence has something wrong with himself', 'No']],
+  tests: en_test_sentences, fillers: en_filler_sentences,
+  // 16 items x 4 singular conditions, 4 lists: every participant sees all 16 items, 4 per condition
+  n_items: 16,
+  cond_order: ['s_m_match_gram', 's_f_match_gram', 's_m_match_ungram', 's_f_match_ungram'],
+  list_starts: [0, 1, 2, 3]
+};
+
+function makeSliderBlock(){
+  const T = SLIDER_TEXT;
+
+  // Latin square: item i gets condition (start + i) mod number-of-conditions, one random list per participant
+  const list_number = jsPsych.randomization.randomInt(0, T.list_starts.length - 1);
+
+  const practice_items = T.practice.map(function(p, i){
+    return {sentence: p[0], condition: 'training', grammaticality: p[1], item: (i + 1) + '_training'};
+  });
+
+  // No plural sentences in this study: the 'mismatch' conditions (plural subject or object) are dropped.
+  // Spanish: each list assigns one of 8 conditions to every one of the 32 items, so each participant sees the
+  // 16 items that fall into the 4 singular ('match') conditions. English: 16 items x 4 conditions.
+  // Either way: 16 test sentences, 4 per condition.
+  const trial_items = [];
+  for(let i = 1; i <= T.n_items; i++){
+    const cond = T.cond_order[(T.list_starts[list_number] + i - 1) % T.cond_order.length];
+    if(cond.indexOf('mismatch') !== -1){ continue; }
+    trial_items.push({
+      sentence: T.tests[i][cond],
+      condition: cond,
+      grammaticality: cond.endsWith('_ungram') ? 'No' : 'Yes',
+      item: i + '_test'
+    });
+  }
+  // controls: N_CONTROLS_PER_PARTICIPANT sentences, half grammatical and half ungrammatical, chosen at random
+  const all_fillers = T.fillers.map(function(f, k){
+    return {sentence: f[0], condition: 'filler', grammaticality: f[1] ? 'Yes' : 'No', item: (k + 1) + '_filler'};
+  });
+  const half = N_CONTROLS_PER_PARTICIPANT / 2;
+  jsPsych.randomization.shuffle(all_fillers.filter(function(f){ return f.grammaticality === 'Yes'; })).slice(0, half).forEach(function(f){ trial_items.push(f); });
+  jsPsych.randomization.shuffle(all_fillers.filter(function(f){ return f.grammaticality === 'No'; })).slice(0, half).forEach(function(f){ trial_items.push(f); });
+
+  const instructions = {
+    type: jsPsychInstructions,
+    pages: ['<div class="directions" style="width:80%; margin:auto;" align="left">' + T.instructions + '</div>'],
+    button_label_next: T.next,
+    allow_backward: false,
+    show_clickable_nav: true,
+    on_start: setStyle('slider-task'),
+    data: {trial_phase: 'slider_instructions'}
+  };
+
+  const instructions2 = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: T.start,
+    choices: [T.next],
+    on_start: requireLandscape,
+    data: {trial_phase: 'slider_start'}
+  };
+
+  const sentence2 = {
+    type: jsPsychHtmlSliderResponse,
+    stimulus: function(){ return jsPsych.evaluateTimelineVariable('sentence') + '.'; },
+    prompt: '<p style="margin:0.3em 0;">' + T.prompt + '</p>',
+    labels: T.labels,
+    // jsPsych draws each end label in a box as wide as the slider, centred on the slider's end,
+    // so the slider must be at most ~half the screen width or the page overflows and phones zoom out.
+    slider_width: function(){ return Math.max(160, Math.min(500, Math.floor(window.innerWidth * 0.45))); },
+    require_movement: true,
+    button_label: T.next,
+    on_start: requireLandscape,
+    post_trial_gap: 500,
+    data: {
+      trial_phase: 'slider_sentence',
+      sentence: jsPsych.timelineVariable('sentence'),
+      condition: jsPsych.timelineVariable('condition'),
+      grammaticality: jsPsych.timelineVariable('grammaticality'),
+      item: jsPsych.timelineVariable('item')
+    },
+    on_finish: advance
+  };
+
+  // Practice sentences: the answer must be on the right side of the midline (50).
+  //   grammatical sentence ('Yes')   -> rating must not be below 50
+  //   ungrammatical sentence ('No')  -> rating must not be above 50
+  // If it is on the wrong side, the "next" click is blocked and a red message is shown
+  // on the same screen; the participant can adjust the slider and try again.
+  const practice_trial = function(item){
+    return Object.assign({}, sentence2, {
+      stimulus: item.sentence + '.',
+      data: {trial_phase: 'slider_practice', sentence: item.sentence, condition: item.condition,
+             grammaticality: item.grammaticality, item: item.item},
+      on_load: function(){
+        const container = jsPsych.getDisplayElement();
+        const slider = container.querySelector('#jspsych-html-slider-response-response');
+        const button = container.querySelector('#jspsych-html-slider-response-next');
+
+        // red message, space reserved so the layout does not jump
+        const msg = document.createElement('p');
+        msg.textContent = T.sure;
+        msg.setAttribute('role', 'alert');
+        msg.style.cssText = 'color:red; font-weight:bold; visibility:hidden; margin:0.3em 0;';
+        button.parentNode.insertBefore(msg, button);
+
+        const is_wrong = function(){
+          const v = Number(slider.value);
+          return (item.grammaticality === 'Yes') ? (v < 50) : (v > 50);
+        };
+        // capture phase on the container: runs before the plugin's own click handler
+        container.addEventListener('click', function(e){
+          if(e.target === button && is_wrong()){
+            e.stopPropagation();
+            msg.style.visibility = 'visible';
+          }
+        }, true);
+        slider.addEventListener('input', function(){ msg.style.visibility = 'hidden'; });
+      }
+    });
+  };
+
+  const practice1 = {
+    timeline: practice_items.map(practice_trial),
+    randomize_order: false
+  };
+
+  // Shuffle the test items and the fillers separately, then spread the fillers
+  // evenly through the trials. All test items and all fillers are shown.
+  const tests = jsPsych.randomization.shuffle(trial_items.filter(function(t){ return t.condition !== 'filler'; }));
+  const fills = jsPsych.randomization.shuffle(trial_items.filter(function(t){ return t.condition === 'filler'; }));
+  const n_all = tests.length + fills.length;
+  const ordered_items = [];
+  let ti = 0, fi = 0;
+  for(let k = 0; k < n_all; k++){
+    const filler_due = Math.floor((k + 1) * fills.length / n_all) > Math.floor(k * fills.length / n_all);
+    ordered_items.push(filler_due ? fills[fi++] : tests[ti++]);
+  }
+
+  total_trials += practice_items.length + ordered_items.length;
+
+  const procedure = {
+    timeline: [sentence2],
+    timeline_variables: ordered_items,
+    randomize_order: false
+  };
+
+  return {timeline: [instructions, practice1, instructions2, procedure],
+          data: {task: 'ajt_english', slider_list: list_number + 1}};
+}
+
+
+
+const slider_block = makeSliderBlock();
+
+/* ======================= END, SAVING AND LEAVING ======================= */
+
+const final = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p>Thank you for your participation!</p> <p>Please click "Submit" to send your responses</p>',
+  choices: ['Submit'],
+  on_start: setStyle(''),
+  data: {trial_phase: 'final'}
+};
+
+function showMessage(html){ jsPsych.getDisplayElement().innerHTML = '<div class="consent-page" style="text-align:center">' + html + '</div>'; }
+
+function leave(){ window.location = COMPLETION_URL; }
+
+// The data are sent to the server and the participant is only sent on once the server has accepted them.
+// If saving fails, it is retried; after 3 failed attempts the participant can try again, download their
+// data, or continue anyway.
+function saveAndLeave(csv){
+  let attempts = 0;
+  const failed = function(){
+    if(attempts < 3){ setTimeout(attempt, 1500 * attempts); return; }
+    showMessage('<p>Your responses could not be saved.</p><p>Please check your internet connection and try again.</p>' +
+      '<div class="save-buttons"><button class="jspsych-btn" id="retry-save">Try again</button> ' +
+      '<button class="jspsych-btn" id="download-save">Download my responses</button> ' +
+      '<button class="jspsych-btn" id="continue-anyway">Continue anyway</button></div>');
+    document.getElementById('retry-save').onclick = function(){ attempts = 0; attempt(); };
+    document.getElementById('continue-anyway').onclick = leave;
+    document.getElementById('download-save').onclick = function(){
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
+      a.download = filename + '.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+    };
+  };
+  const attempt = function(){
+    attempts++;
+    showMessage('<p>Saving your responses... please do not close this page.</p>');
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', SAVE_URL);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.timeout = 20000;
+    xhr.onload = function(){
+      let ok = xhr.status >= 200 && xhr.status < 300;
+      try { const j = JSON.parse(xhr.responseText); if(j && j.ok === false){ ok = false; } } catch(e) {}
+      if(ok){ leave(); } else { failed(); }
+    };
+    xhr.onerror = failed;
+    xhr.ontimeout = failed;
+    xhr.send(JSON.stringify({filename: filename, filedata: csv}));
+  };
+  attempt();
+}
+
+/* ======================= RUN ======================= */
+
+jsPsych.run([consent, slider_block, final]);
+
+</script>
+</body>
+</html>

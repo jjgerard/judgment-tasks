@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ricerca sull'acquisizione del linguaggio</title>
+<script src="https://unpkg.com/jspsych@8.3.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-survey-html-form@2.1.0"></script>
+<link href="https://unpkg.com/jspsych@8.3.0/css/jspsych.css" rel="stylesheet">
+<style>
+/* ---- Base text size: consent, language questions, transitions ---- */
+.jspsych-display-element { font-size: clamp(20px, 3.4vw, 32px); line-height: 1.35; }
+/* picture task uses slightly smaller text so picture + sentence + buttons fit a landscape phone */
+.jspsych-display-element.picture-task { font-size: clamp(22px, min(3.8vw, 7.4vh), 34px); }   /* limited by screen height too */
+.picture-task .jspsych-content { position: relative; }   /* so the logo sits below the progress bar, not over it */
+@media (min-width: 1000px) {   /* desktop: big text (up to the original 64px) */
+  .jspsych-display-element, .jspsych-display-element.picture-task { font-size: clamp(40px, 4vw, 64px); }
+}
+
+/* compact progress bar (the default one wastes a lot of height on a landscape phone) */
+#jspsych-progressbar-container { font-size: 14px; padding: 4px 0; margin-bottom: 0.3em; }
+
+/* ---- Accessibility: big tap targets, visible focus, text can always be pinch-zoomed ---- */
+.jspsych-btn { font-size: 1em; min-height: 44px; padding: 0.35em 1.1em; }
+.jspsych-display-element select { font-size: 1em; min-height: 44px; max-width: 100%; }
+.jspsych-display-element img { max-width: 100%; height: auto; }
+.jspsych-display-element :focus-visible { outline: 3px solid #005fcc; outline-offset: 2px; }
+
+/* ---- Consent ---- */
+.consent-page { max-width: 100%; margin: 0 auto; padding: 4px 8px; text-align: left; line-height: 1.3; }
+.consent-page h1 { font-size: 1.2em; margin: 0.5em 0 0.2em; line-height: 1.2; }
+.consent-page h1.consent-title > div { margin: 0.15em 0; }
+.consent-page p { margin: 0.3em 0; }
+.consent-page ul { margin: 0.2em 0 0.2em 1.2em; padding-left: 0; }
+.consent-page li { margin: 0.2em 0; }
+.consent-page img.crest { width: 22%; max-width: 300px; margin: 4px 0; }
+.jspsych-display-element img.page-logo { position: fixed; top: var(--logo-top, 30px); right: 6px; z-index: 5; width: 20%; max-width: 350px; height: auto; max-height: 12vh; object-fit: contain; object-position: right top; }
+.transition-logo { text-align: right; padding: 4px; }
+.transition-logo img { width: 30%; max-width: 450px; }
+.transition-text { padding: 4px 10px; font-size: 1.5em; line-height: 1.25; }
+.transition-text p { margin: 0.3em 0; }
+
+/* ---- Language questions: two columns to save height ---- */
+.lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3em 1em; text-align: left; margin: 0.3em auto; padding: 0 0.6em; max-width: 100%; box-sizing: border-box; }
+.lang-grid .lang-row { display: flex; align-items: center; gap: 0.4em; }
+.lang-grid label { white-space: nowrap; }
+@media (orientation: portrait) { .lang-grid { grid-template-columns: 1fr; } }   /* dropdowns stacked vertically on upright phones */
+.lang-grid select { flex: 1 1 auto; min-width: 0; }
+.jspsych-content p { margin: 0.3em 0; }
+
+/* ---- Picture task ---- */
+.intro-img { width: 45%; max-width: 400px; }
+/* Koko sits directly above the sentence, so the sentence gets the full width (less wrapping) */
+.koko-row { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.1em 0 0.2em; text-align: center; }
+.koko-row > div { line-height: 1.2; }
+.jspsych-display-element img.intro-img { height: auto; max-height: 40vh; object-fit: contain; }
+.jspsych-display-element img.story-img { display: block; width: 100%; height: 34vh; object-fit: contain; margin: 0 auto; }
+.jspsych-display-element img.monkey-img { display: block; height: 12vh; width: auto; max-width: 30%; flex: none; margin: 0 auto; }
+
+/* ---- Grammaticality-slider task ---- */
+.jspsych-display-element.slider-task { font-size: 18px; line-height: 1.4; }
+.slider-task .jspsych-content { width: 60%; max-width: 650px; margin-top: 0; font-size: 1.5em; line-height: 1.3; }
+.slider-task div.directions { width: 100%; }
+.slider-task div.directions p { margin: 0.35em 0; }
+.slider-task div#jspsych-html-slider-response-wrapper { margin: 0.4em 0 2.6em !important; width: 100%; }
+@media (max-width: 1200px) {
+  .slider-task .jspsych-content { width: 100%; max-width: 100%; }
+}
+@media (max-height: 420px) {   /* short landscape phones: keep the Avanti button in view */
+  .jspsych-display-element.slider-task { font-size: 15px; }
+  .slider-task div#jspsych-html-slider-response-wrapper { margin: 0.2em 0 2.2em !important; }
+}
+@media (max-height: 340px) {
+  .jspsych-display-element.slider-task { font-size: 12.5px; }
+}
+
+/* ---- Landscape prompt: shown on phones held upright ---- */
+#rotate-prompt { display: none; position: fixed; inset: 0; z-index: 99999; background: #fff; color: #000;
+  flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1em; }
+#rotate-prompt p { font-size: 6.5vw; font-weight: bold; margin: 0.5em 0 0; line-height: 1.25; max-width: 90%; }
+#rotate-prompt svg { width: 22vw; height: 22vw; }
+/* only while the slider trials are running (class set by those trials, removed by every other screen) */
+@media (orientation: portrait) and (max-width: 820px) and (pointer: coarse) { html.landscape-required #rotate-prompt { display: flex; } }
+@media (prefers-reduced-motion: no-preference) {
+  #rotate-prompt svg { animation: turn 2.4s ease-in-out infinite; }
+  @keyframes turn { 0%, 25% { transform: rotate(0deg); } 65%, 100% { transform: rotate(-90deg); } }
+}
+</style>
+</head>
+<body>
+<div id="rotate-prompt" role="alert">
+  <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="30" y="8" width="40" height="84" rx="7" fill="none" stroke="#000" stroke-width="5"/><circle cx="50" cy="84" r="3" fill="#000"/></svg>
+  <p>Per favore, ruota il telefono in orizzontale per continuare.</p>
+</div>
+<script>
+
+/* ------------------------------------------------------------------
+   Combined experiment: picture true/false task + grammaticality-slider task
+   Order of the two tasks is randomised per participant (counterbalanced).
+   Language-background questions always come first (after consent).
+   ------------------------------------------------------------------ */
+
+// ---- Italian version: please confirm these two settings ----
+const LOGO_SRC = 'media/coloring/logo_it.png';      // TODO: logo of the Italian partner institution
+const REDIRECT_URL = 'https://www.ulster.ac.uk/';   // TODO: page participants are sent to after finishing
+
+const timestamp = Date.now();
+const experiment_version = 'italian_ac_combo';
+const filename = timestamp + '_' + experiment_version;
+
+const jsPsych = initJsPsych({
+  show_progress_bar: true,
+  auto_update_progress_bar: false,   // updated manually across both tasks
+  message_progress_bar: 'Avanzamento',
+  on_finish: function(){ saveData(filename, jsPsych.data.get().csv()); }
+});
+
+// random task order: ['picture','slider'] or ['slider','picture']
+const task_order = jsPsych.randomization.shuffle(['picture', 'slider']);
+
+jsPsych.data.addProperties({
+  subject: timestamp,
+  experiment: experiment_version,
+  task_order: task_order.join('>')
+});
+
+// overall progress bar: 20 picture trials + slider trials (3 practice + test + fillers);
+// the slider part is added once its items are built (see slider_block)
+let total_trials = 20;
+let trials_done = 0;
+function advance(){
+  trials_done++;
+  jsPsych.progressBar.progress = Math.min(trials_done / total_trials, 1);
+}
+
+// landscape prompt is only needed for the slider judgment trials
+function requireLandscape(){ document.documentElement.classList.add('landscape-required'); }
+
+// switch between the two CSS looks
+function setStyle(cls){
+  return function(){
+    const d = jsPsych.getDisplayContainerElement();
+    d.classList.remove('slider-task', 'picture-task');
+    document.documentElement.classList.remove('landscape-required');   // landscape only needed for the slider trials
+    if(cls){ d.classList.add(cls); }
+  };
+}
+
+// The logo is fixed to the top right of the screen, just below the progress bar
+// (measured, so it never covers the bar whatever the bar's height or the page's scroll position).
+function placeLogo(){
+  const bar = document.getElementById('jspsych-progressbar-container');
+  const bottom = bar ? bar.getBoundingClientRect().bottom : 0;
+  document.documentElement.style.setProperty('--logo-top', Math.round(bottom + 4) + 'px');
+}
+window.addEventListener('resize', placeLogo);
+
+const logo = '<img class="page-logo" src="' + LOGO_SRC + '" alt="Logo">';
+
+/* ============================ CONSENT ============================ */
+
+const consent1 = "<div>Ricerca sull'acquisizione del linguaggio presso [NOME DELL'UNIVERSITÀ ITALIANA]</div><div>Elaborazione delle frasi e meccanismi di memoria in bambini e adulti</div><div>Modulo di consenso informato del partecipante</div>";
+const consent2 = "Grazie per aver accettato di partecipare a questo studio per la Scuola di Comunicazione e Media dell'Università dell'Ulster. Ti siamo molto grati per la tua partecipazione, che fornirà dati preziosi per lo studio scientifico del linguaggio.";
+const consent3 = "Per favore, assicurati di usare uno smartphone in orientamento orizzontale.";
+const consent4 = "Scopo dello studio";
+const consent5 = "Questa ricerca è condotta da [NOMI DEI RICERCATORI] dell'[UNIVERSITÀ ITALIANA] e dalla Dott.ssa Juliana Gerard dell'Università dell'Ulster.";
+const consent6 = "Ti invitiamo a partecipare a questo progetto di ricerca perché sei un adulto di madrelingua italiana.";
+const consent7 = "Lo scopo di questo progetto di ricerca è comprendere meglio come gli esseri umani comprendono il linguaggio.";
+const consent8 = "Questo studio è stato progettato anche per i bambini della scuola dell'infanzia, per comprendere lo sviluppo del linguaggio nei bambini.";
+const consent9 = "Procedura";
+const consent10 = "Lo studio durerà meno di 20 minuti.";
+const consent11 = "Per prima cosa, risponderai a due domande sulla tua conoscenza delle lingue.";
+const consent12 = "Poi svolgerai due brevi compiti.";
+const consent13 = "In uno di essi, ti verrà chiesto di guardare una serie di disegni con personaggi di una serie televisiva per bambini e di rispondere a domande vero o falso sui disegni. Per favore, guarda i disegni e leggi la descrizione prima di rispondere a ogni domanda.";
+const consent14 = "Nell'altro, ti verrà chiesto di leggere in silenzio frasi che possono contenere errori grammaticali e di valutarne la grammaticalità selezionando un punteggio su una scala scorrevole.";
+const consent15 = "Tieni presente che alcune domande sono pensate per verificare la tua attenzione.";
+const consent16 = "Il tuo consenso indica che:";
+const consent17 = "Hai almeno 18 anni.";
+const consent18 = "Scegli di partecipare a questo progetto di ricerca liberamente e volontariamente.";
+const consent19 = "Comprendi che la tua partecipazione è volontaria e che sei libero/a di ritirarti dallo studio in qualsiasi momento.";
+const consent20 = "Accetti che le ricercatrici registrino i dati di questa sessione, sapendo che questo materiale sarà salvato sul disco rigido della ricercatrice principale di questo progetto senza alcuna informazione personale identificativa e sarà utilizzato esclusivamente per gli obiettivi di questo progetto.";
+const consent21 = "Se accetti di partecipare, fai clic su \"Avanti\" per continuare:";
+
+const consent = {
+  type: jsPsychInstructions,
+  pages: [
+    '<div class="consent-page">' +
+      '<img class="crest" src="' + LOGO_SRC + '" alt="Logo">' +
+      '<h1 class="consent-title">' + consent1 + '</h1>' +
+      '<p>' + consent2 + '</p>' +
+      '<p><b>' + consent3 + '</b></p>' +
+      '<h1>' + consent4 + '</h1>' +
+      '<ul>' +
+        '<li>' + consent5 + '</li>' +
+        '<li>' + consent6 + '</li>' +
+        '<li>' + consent7 + '</li>' +
+        '<li><b>' + consent8 + '</b></li>' +
+      '</ul>' +
+      '<h1>' + consent9 + '</h1>' +
+      '<ul>' +
+        '<li>' + consent10 + '</li>' +
+        '<li>' + consent11 + '</li>' +
+        '<li>' + consent12 + '</li>' +
+        '<li>' + consent13 + '</li>' +
+        '<li>' + consent14 + '</li>' +
+        '<li><b>' + consent15 + '</b></li>' +
+      '</ul>' +
+      '<h1>' + consent16 + '</h1>' +
+      '<ul>' +
+        '<li>' + consent17 + '</li>' +
+        '<li>' + consent18 + '</li>' +
+        '<li>' + consent19 + '</li>' +
+        '<li>' + consent20 + '</li>' +
+      '</ul>' +
+      '<p>' + consent21 + '</p>' +
+    '</div>'
+  ],
+  button_label_next: 'Avanti',
+  allow_backward: false,
+  show_clickable_nav: true,
+  on_start: setStyle(''),
+  data: {trial_phase: 'consent'}
+};
+
+/* ===================== TRANSITION SCREENS ===================== */
+
+function transitionScreen(text, phase){
+  return {
+    type: jsPsychInstructions,
+    pages: [
+      '<div class="transition-logo"><img src="' + LOGO_SRC + '" alt="Logo"></div>' +
+      '<div class="transition-text"><p>' + text + '</p></div>'
+    ],
+    button_label_next: 'Avanti',
+    allow_backward: false,
+    show_clickable_nav: true,
+    on_start: setStyle(''),
+    data: {trial_phase: phase}
+  };
+}
+
+const transition_language = transitionScreen('Ora ti chiederemo alcuni brevi dati sul tuo profilo linguistico', 'transition_language');
+const transition_ready    = transitionScreen('Sei pronto/a per iniziare il compito successivo?', 'transition_ready');
+const transition_between  = transitionScreen('Hai terminato la prima parte dello studio. Ora inizierà la seconda parte. Sei pronto/a?', 'transition_between');
+
+/* ===================== LANGUAGE QUESTIONS ===================== */
+/* Always presented first (after consent), whichever task comes first. */
+
+const language_codes = ["it", "en", "es", "fr", "de", "pt", "ro", "ca", "af", "sq", "am", "ar", "hy", "az", "eu", "be", "bn", "bs", "bg", "my", "zh-Hans", "zh-Hant", "co", "hr", "cs", "da", "nl", "eo", "et", "fil", "fi", "fy", "gl", "ka", "el", "gu", "ht", "ha", "haw", "he", "hi", "hmn", "hu", "is", "ig", "id", "ga", "ja", "jv", "kn", "kk", "km", "rw", "ko", "ku", "ky", "lo", "la", "lv", "lt", "lb", "mk", "mg", "ms", "ml", "mt", "mi", "mr", "mn", "ne", "no", "or", "ps", "fa", "pl", "pa", "ru", "sm", "gd", "sr", "st", "sn", "sd", "si", "sk", "sl", "so", "su", "sw", "sv", "tg", "ta", "tt", "te", "th", "tr", "tk", "uk", "ur", "ug", "uz", "vi", "cy", "xh", "yi", "yo", "zu", "sc", "fur", "nap", "scn", "vec"];
+const language_names = (function(){
+  let dn = null;
+  try { dn = new Intl.DisplayNames(['it'], {type: 'language'}); } catch(e) {}
+  const cap = function(s){ return s.charAt(0).toUpperCase() + s.slice(1); };
+  const names = [];
+  language_codes.forEach(function(c){
+    let n = dn ? dn.of(c) : c;
+    if(!n || n === c){ return; }
+    n = cap(n);
+    if(names.indexOf(n) < 0){ names.push(n); }
+  });
+  if(names.length === 0){ return language_codes.concat(['Dialetto', 'Altra lingua']); }
+  const first = names.slice(0, 2);   // Italiano, Inglese
+  const rest = names.slice(2).sort(function(a, b){ return a.localeCompare(b, 'it'); });
+  return first.concat(rest, ['Dialetto', 'Altra lingua']);
+})();
+
+
+// Browser validation messages for required <select> fields, in Italian
+function spanishValidation(){
+  document.querySelectorAll('select[required]').forEach(function(sel){
+    sel.addEventListener('invalid', function(){ sel.setCustomValidity('Seleziona un\'opzione dall\'elenco.'); });
+    sel.addEventListener('change',  function(){ sel.setCustomValidity(''); });
+  });
+}
+
+let reported_languages = [];   // filled after the first language question
+
+const language_options = '<option value=""></option>' +
+  language_names.map(function(l){ return '<option value="' + l + '">' + l + '</option>'; }).join('');
+
+const leap_survey1 = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>Per favore, indica tutte le lingue che parli <b>in ordine di dominanza</b>:</p>',
+  html: function(){
+    let h = '<div class="lang-grid">';
+    for(let i = 1; i <= 5; i++){
+      h += '<div class="lang-row"><label for="language' + i + '">' + i + '</label>' +
+           '<select id="language' + i + '" name="language' + i + '"' + (i === 1 ? ' required' : '') + '>' +
+           language_options + '</select></div>';
+    }
+    return h + '</div>';
+  },
+  button_label: 'Avanti',
+  on_start: setStyle(''),
+  on_load: spanishValidation,
+  data: {trial_phase: 'languages'},
+  on_finish: function(data){
+    reported_languages = [];
+    for(let i = 1; i <= 5; i++){
+      const l = (data.response['language' + i] || '').trim();
+      if(l.length > 0){ reported_languages.push(l); }
+    }
+    data.languages = reported_languages.join('|');
+  }
+};
+
+const leap_survey2 = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>Per favore, indica il tuo <b>livello di competenza linguistica</b> in ciascuna delle lingue indicate di seguito:</p>',
+  html: function(){
+    const fluencies = '<option value=""></option><option value="Madrelingua">Madrelingua</option><option value="Avanzato">Avanzato</option><option value="Intermedio">Intermedio</option><option value="Principiante">Principiante</option>';
+    let h = '';
+    reported_languages.forEach(function(language, i){
+      h += '<div class="lang-row"><label for="fluency' + (i + 1) + '">' + language + ':</label>' +
+           '<select id="fluency' + (i + 1) + '" name="fluency' + (i + 1) + '" required>' + fluencies + '</select></div>';
+    });
+    return '<div class="lang-grid">' + h + '</div>';
+  },
+  button_label: 'Avanti',
+  on_load: spanishValidation,
+  data: {trial_phase: 'languages_fluency'},
+  on_finish: function(data){ data.languages = reported_languages.join('|'); }
+};
+
+/* ============================================================
+   TASK 1: PICTURE TRUE/FALSE TASK (from ac_spa1)
+   ============================================================ */
+
+const picture_block = (function(){
+
+  let s1 = "Questo è Joey. <br> A lui piace colorare le cose in modi divertenti.";
+  let s2 = "Joey ha colorato alcuni disegni di Dora, Diego e Topolino.";
+  let s3 = "Questo è Koko, l'amico di Joey.<br>Koko ci dirà cosa c'è nei disegni, ma a volte Koko sbaglia il colore.";
+  let s4 = "Per favore, guarda i disegni e le loro descrizioni. <br><br>Dopo ogni descrizione, Koko dirà una frase sui colori del disegno.";
+  let s5 = "<b>Per favore, rispondi se la frase è vera o falsa.</b><br>Dovresti rispondere in fretta, in base alla tua prima impressione (senza pensarci troppo).";
+  let test_pngs = ["wash_eat_mickey", "fan_hug_mickey", "paint_pick_mickey", "tag_read_mickey", "brush_pet_mickey", "dry_bake_mickey", "lift_catch_mickey", "splash_fly_mickey"];
+  let control_pngs = ["bury_kick_mickey_control", "pat_paint", "hug_open", "scrub_build_mickey_control", "comb_ring_mickey_control", "feed_ride", "poke_throw_mickey_control", "push_drive"];
+  let training_pngs = ["training_1", "training_1", "training_2_mickey", "training_3_mickey"];
+  let training_descriptions = ["In questo disegno, abbiamo Dora con dell'uva e Diego con una fragola.", "Riprova, Koko: In questo disegno, abbiamo Dora con dell'uva e Diego con una fragola.", "In questo disegno, Dora e Topolino si stanno provando dei vestiti<br>e poi Dora ha un cappello e anche Topolino ha un cappello.", "In questo disegno, Diego e Topolino hanno un pastello a cera e un pennello<br>e poi Diego ha un secchiello e anche Topolino ha un secchiello."];
+  let test_descriptions = ["In questo disegno, Topolino sta lavando Diego<br>e poi Topolino sta mangiando una mela e anche Diego sta mangiando una mela.", "In questo disegno, Topolino sta facendo vento a Diego<br>e poi Diego sta abbracciando un orso e anche Topolino sta abbracciando un orso.", "In questo disegno, Topolino sta dipingendo Diego<br>e poi Topolino sta cogliendo un fiore e anche Diego sta cogliendo un fiore.", "In questo disegno, Topolino sta acchiappando Diego<br>e poi Topolino sta leggendo un libro e anche Diego sta leggendo un libro.", "In questo disegno, Diego sta spazzolando Topolino<br>e poi Topolino sta accarezzando un cane e anche Diego sta accarezzando un cane.", "In questo disegno, Diego sta asciugando Topolino<br>e poi Diego sta preparando una torta e anche Topolino sta preparando una torta.", "In questo disegno, Diego sta sollevando Topolino<br>e poi Diego sta pescando un pesce e anche Topolino sta pescando un pesce.", "In questo disegno, Diego sta schizzando Topolino<br>e poi Topolino sta facendo volare un aquilone e anche Diego sta facendo volare un aquilone."];
+  let control_descriptions = ["In questo disegno, Dora sta seppellendo Topolino<br>e poi Dora sta dando un calcio a un pallone e anche Topolino sta dando un calcio a un pallone.", "In questo disegno, Dora sta dando un colpetto a Diego<br>e poi Diego sta dipingendo un leone e anche Dora sta dipingendo un leone.", "In questo disegno, Dora sta abbracciando Diego<br>e poi Diego sta aprendo una scatola e anche Dora sta aprendo una scatola.", "In questo disegno, Dora sta strofinando Topolino<br>e poi Dora sta costruendo una torre e anche Topolino sta costruendo una torre.", "In questo disegno, Topolino sta pettinando Dora<br>e poi Topolino sta suonando una campana e anche Dora sta suonando una campana.", "In questo disegno, Diego sta dando da mangiare a Dora<br>e poi Diego sta andando in bici e anche Dora sta andando in bici.", "In questo disegno, Topolino sta toccando Dora con il dito<br>e poi Topolino sta lanciando una palla e anche Dora sta lanciando una palla.", "In questo disegno, Diego sta spingendo Dora<br>e poi Diego sta guidando una macchina e anche Dora sta guidando una macchina."];
+  let training_sentences = ["Dora ha dell'uva gialla!\"", "Diego ha una fragola gialla!\"", "Dora si è provata una sciarpa prima che Topolino comprasse il cappello verde\"", "Topolino ha preso un pennello prima che Diego disegnasse il secchiello rosso\""];
+  let true_ac = ["Topolino ha lavato Diego prima di mangiare la mela arancione\"", "Topolino ha fatto vento a Diego prima di abbracciare l'orso rosso\"", "Topolino ha dipinto Diego prima di cogliere il fiore verde\"", "Topolino ha acchiappato Diego prima di leggere il libro giallo\"", "Diego ha spazzolato Topolino prima di accarezzare il cane verde\"", "Diego ha asciugato Topolino prima di preparare la torta viola\"", "Diego ha sollevato Topolino prima di pescare il pesce rosso\"", "Diego ha schizzato Topolino prima di far volare l'aquilone rosso\""];
+  let false_ac = ["Topolino ha lavato Diego prima di mangiare la mela blu\"", "Topolino ha fatto vento a Diego prima di abbracciare l'orso blu\"", "Topolino ha dipinto Diego prima di cogliere il fiore marrone\"", "Topolino ha acchiappato Diego prima di leggere il libro verde\"", "Diego ha spazzolato Topolino prima di accarezzare il cane viola\"", "Diego ha asciugato Topolino prima di preparare la torta rossa\"", "Diego ha sollevato Topolino prima di pescare il pesce marrone\"", "Diego ha schizzato Topolino prima di far volare l'aquilone blu\""];
+  let true_subj = ["Topolino ha lavato Diego prima che mangiasse la mela arancione\"", "Topolino ha fatto vento a Diego prima che abbracciasse l'orso rosso\"", "Topolino ha dipinto Diego prima che cogliesse il fiore verde\"", "Topolino ha acchiappato Diego prima che leggesse il libro giallo\"", "Diego ha spazzolato Topolino prima che accarezzasse il cane verde\"", "Diego ha asciugato Topolino prima che preparasse la torta viola\"", "Diego ha sollevato Topolino prima che pescasse il pesce rosso\"", "Diego ha schizzato Topolino prima che facesse volare l'aquilone rosso\""];
+  let false_subj = ["Topolino ha lavato Diego prima che mangiasse la mela blu\"", "Topolino ha fatto vento a Diego prima che abbracciasse l'orso blu\"", "Topolino ha dipinto Diego prima che cogliesse il fiore marrone\"", "Topolino ha acchiappato Diego prima che leggesse il libro verde\"", "Diego ha spazzolato Topolino prima che accarezzasse il cane viola\"", "Diego ha asciugato Topolino prima che preparasse la torta rossa\"", "Diego ha sollevato Topolino prima che pescasse il pesce marrone\"", "Diego ha schizzato Topolino prima che facesse volare l'aquilone blu\""];
+  let true_control_subject = ["Dora ha seppellito Topolino prima che lei desse un calcio al pallone viola\"", "Dora ha dato un colpetto a Diego prima che lei dipingesse il leone blu\"", "Dora ha abbracciato Diego prima che lei aprisse la scatola verde\"", "Dora ha strofinato Topolino prima che lei costruisse la torre marrone\"", "Topolino ha pettinato Dora prima che lui suonasse la campana arancione\"", "Diego ha dato da mangiare a Dora prima che lui salisse sulla bici gialla\"", "Topolino ha toccato Dora con il dito prima che lui lanciasse la palla gialla\"", "Diego ha spinto Dora prima che lui guidasse la macchina verde\""];
+  let false_control_subject = ["Dora ha seppellito Topolino prima che lei desse un calcio al pallone arancione\"", "Dora ha dato un colpetto a Diego prima che lei dipingesse il leone verde\"", "Dora ha abbracciato Diego prima che lei aprisse la scatola blu\"", "Dora ha strofinato Topolino prima che lei costruisse la torre verde\"", "Topolino ha pettinato Dora prima che lui suonasse la campana verde\"", "Diego ha dato da mangiare a Dora prima che lui salisse sulla bici verde\"", "Topolino ha toccato Dora con il dito prima che lui lanciasse la palla rossa\"", "Diego ha spinto Dora prima che lui guidasse la macchina viola\""];
+  let false_control_object = ["Dora ha seppellito Topolino prima che lui desse un calcio al pallone viola\"", "Dora ha dato un colpetto a Diego prima che lui dipingesse il leone blu\"", "Dora ha abbracciato Diego prima che lui aprisse la scatola verde\"", "Dora ha strofinato Topolino prima che lui costruisse la torre marrone\"", "Topolino ha pettinato Dora prima che lei suonasse la campana arancione\"", "Diego ha dato da mangiare a Dora prima che lei salisse sulla bici gialla\"", "Topolino ha toccato Dora con il dito prima che lei lanciasse la palla gialla\"", "Diego ha spinto Dora prima che lei guidasse la macchina verde\""];
+  let true_control_object = ["Dora ha seppellito Topolino prima che lui desse un calcio al pallone arancione\"", "Dora ha dato un colpetto a Diego prima che lui dipingesse il leone verde\"", "Dora ha abbracciato Diego prima che lui aprisse la scatola blu\"", "Dora ha strofinato Topolino prima che lui costruisse la torre verde\"", "Topolino ha pettinato Dora prima che lei suonasse la campana verde\"", "Diego ha dato da mangiare a Dora prima che lei salisse sulla bici verde\"", "Topolino ha toccato Dora con il dito prima che lei lanciasse la palla rossa\"", "Diego ha spinto Dora prima che lei guidasse la macchina viola\""];
+  let training_preambles = ["l'uva di Dora", "la fragola di Diego", "questo disegno di Topolino e Dora", "questo disegno di Topolino e Diego"];
+  let test_preambles = [["questo disegno di Diego e Topolino"], ["questo disegno di Topolino e Diego"]];
+  let control_preambles = [["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"], ["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"], ["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"]];
+
+function shuffle(array) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+}
+ 
+
+var control_list = [];
+var test_list = [];
+
+for (var i = 0; i < true_subj.length; i++) { //for length of items (8)
+   control_list.push(i);       // push item numbers (0-7)
+   test_list.push(i);       // push item numbers (0-7)
+}
+
+shuffle(control_list);
+shuffle(test_list);
+//assigned separately so that the same items don't always follow each other
+
+var alt = [];
+
+for (var i = 0; i < true_subj.flat().length+4; i++) {
+   alt.push(i);
+}
+
+
+let training_correct = ['1','0','1','0']; //note coding for truth values: 1 = false, 0 = true - based on order of presentation b/c true is presented first
+
+
+let corrects = ['1','0','1','0','1','0','1','0','1','0','1','0','1','0','1','0']
+
+shuffle(corrects)
+
+var conditions = [];
+let training_conditions = ['training','training','training','training'];
+
+if(corrects[1]=='1'){ // assign tense condition (infinitive or subjunctive based on the SECOND item in 'conditions' - if 1, then infinitive
+    if(corrects[2]=='1'){  // assign list order based on the THIRD item in 'conditions' - if 1, then subject first
+        conditions.push([' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive']);
+    }else{ // else 0, then object first
+        conditions.push([' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive']);
+    }
+    var true_test_sentences = true_ac;
+    var false_test_sentences = false_ac;
+} else { // else 0, then subjunctive
+    if(corrects[2]=='1'){ // assign list order based on the THIRD item in 'conditions' - if 1, then subject first
+        conditions.push([' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive']);
+       //   conditions.push([' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun']);
+    }else{ // else 0, then object first
+        conditions.push([' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive']);
+        //conditions.push([' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun']);
+    }
+    var true_test_sentences = true_subj;
+    var false_test_sentences = false_subj;
+    //var true_test_sentences = true_pronoun;
+    //var false_test_sentences = false_pronoun;
+}
+
+//build sentence list
+
+var true_false = 0; //to keep track of which true/false to use
+var sentence_counts = 0; //to keep track of the trial_items;
+var sentences = [];
+var control_sentences = [];
+
+var descriptions = [];
+var preambles = [];
+var pngs = [];
+
+var c = 0
+var t = 0
+
+for(var i = 0; i < control_list.length/2; i++){
+    
+    c = control_list[sentence_counts]; // c & t are the number of the item from the SHUFFLED test/control lists
+    t = test_list[sentence_counts];   //(e.g. if the shuffled list starts with the 5th item and sentence_counts is 0, then item_list[sentence_counts] = 5])
+                        // this way, c/t reference the same item across sentences, conditions, preambles and descriptions
+                        // while true/false is independently assigned via the shuffled 'corrects' variable
+    
+        //add control item
+    if(corrects[2]=='1'){ //if list 1, starting with subject
+        if(corrects[true_false]=='0'){ // if the item is true (remember coding with 0 for true, see above)
+            sentences.push(true_control_subject[c]); //push the true control SUBJECT version for that item
+        } else {  // else false
+            sentences.push(false_control_subject[c]); // push the false SUBJECT version
+        }
+    } else { //else list 2, starting with object
+        if(corrects[true_false]=='0'){ // if the item is true
+            sentences.push(true_control_object[c]); //push the true control OBJECT version for that item
+        } else {  // else false
+            sentences.push(false_control_object[c]); //push the false control OBJECT version for that item
+        }
+    }
+    
+    descriptions.push(control_descriptions[c]);
+    pngs.push(control_pngs[c]);
+    preambles.push(control_preambles[c][c%2]); //extra c needed since different control items have different choices between 2 options
+    
+    true_false++; //increment the true_false variable to the next item
+    
+    //add test item
+    if(corrects[true_false]=='0'){ // if true
+            sentences.push(true_test_sentences[t]);
+    } else {  // else false
+            sentences.push(false_test_sentences[t]);
+    }
+    
+    descriptions.push(test_descriptions[t]);
+    pngs.push(test_pngs[t]);
+    preambles.push(test_preambles[t%2]); //no extra t needed, since the 2 options are the same for all test items
+    
+    true_false++; //increment the true_false variable to the next item
+    sentence_counts++;  //increment the sentence counts variable for the next set of control and test items
+    c = control_list[sentence_counts]; //update values of c and t
+    t = test_list[sentence_counts];
+    
+    //add other condition control item
+    if(corrects[2]=='1'){ //if list 1, starting with subject
+        if(corrects[true_false]=='0'){ // if the item is true
+            sentences.push(true_control_object[c]); //now, push the true OBJECT control item
+        } else {  // else false
+            sentences.push(false_control_object[c]);
+        }
+    } else { //else list 2, starting with object
+        if(corrects[true_false]=='0'){ // if the item is true
+            sentences.push(true_control_subject[c]); // now, push the true SUBJECT control item
+        } else {  // else false
+            sentences.push(false_control_subject[c]);
+        }
+    }
+    
+    descriptions.push(control_descriptions[c]);
+    pngs.push(control_pngs[c]);
+    preambles.push(control_preambles[c][c%2]);
+    
+    true_false++; //increment the true_false variable to the next item
+    
+    //add test item
+    if(corrects[true_false]=='0'){ // if true
+            sentences.push(true_test_sentences[t]);
+    } else {  // else false
+            sentences.push(false_test_sentences[t]);
+    }
+    
+    descriptions.push(test_descriptions[t]);
+    pngs.push(test_pngs[t]);
+    preambles.push(test_preambles[t%2]);
+    
+    true_false++; //increment the true_false variable to the next item
+    sentence_counts++;  //increment the sentence counts variable for the next set of control and test items
+
+}
+
+var png = training_pngs.concat(pngs);//.flat();
+var description = training_descriptions.concat(descriptions);//.flat();
+var preamble = training_preambles.concat(preambles);//.flat();
+var sentence = training_sentences.concat(sentences);//.flat();
+var condition = training_conditions.concat(conditions[0]);//.flat();
+var correct_response = training_correct.concat(corrects);//.flat();
+
+  const nb = function(t){ return String(t).replace(/<br>/g, ' '); };   // line breaks -> spaces (saves space)
+
+  const setup = {
+    type: jsPsychInstructions,
+    pages: [
+      '<div style="width:100%">' + logo + '<img class="intro-img" src="coloring/joey.png" alt="">' + nb(s1) + '</div>',
+      '<div style="width:100%">' + logo + '<img class="story-img" src="coloring/joey2_mickey.png" alt="">' + nb(s2) + '</div>',
+      '<div style="width:100%">' + logo + '<img class="story-img" src="coloring/joey_koko_mickey.png" alt="">' + nb(s3) + '</div>',
+      '<div style="width:100%">' + logo + '<img class="story-img" src="coloring/joey_koko_mickey.png" alt="">' + nb(s4) + '</div>',
+      '<div style="width:100%">' + logo + '<img class="story-img" src="coloring/joey_koko.png" alt="">' + nb(s5) + '</div>'
+    ],
+    button_label_next: 'Avanti',
+    allow_backward: false,
+    show_clickable_nav: true,
+    on_start: setStyle('picture-task'),
+    on_load: placeLogo,
+    data: {trial_phase: 'picture_setup'}
+  };
+
+  const tv = function(name){ return jsPsych.evaluateTimelineVariable(name); };
+
+  const procedure = {
+    timeline: [
+      { // description
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function(){
+          return '<div style="width:100%">' + logo +
+            '<img class="story-img" src="coloring/' + tv('png') + '.png" alt="">' +
+            nb(tv('description')) + '</div>';
+        },
+        choices: ['Avanti'],
+        on_load: placeLogo,
+        data: {condition: jsPsych.timelineVariable('condition'), correct_response: jsPsych.timelineVariable('correct_response'), trial_phase: 'description'}
+      },
+      { // preamble
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function(){
+          const pre = 'Va bene Koko, puoi dirci come ha colorato Joey';
+          return '<div style="width:100%">' + logo +
+            '<img class="story-img" src="coloring/' + tv('png') + '.png" alt="">' +
+            '<div class="koko-row"><img class="monkey-img" src="coloring/monkey.jpg" alt="Koko"><div>' +
+            pre + ' ' + tv('preamble') + '?</div></div></div>';
+        },
+        choices: ['Avanti'],
+        on_load: placeLogo,
+        data: {condition: jsPsych.timelineVariable('condition'), correct_response: jsPsych.timelineVariable('correct_response'), trial_phase: 'preamble'}
+      },
+      { // test sentence
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function(){
+          return '<div style="width:100%">' + logo +
+            '<img class="story-img" src="coloring/' + tv('png') + '.png" alt="">' +
+            '<div class="koko-row"><img class="monkey-img" src="coloring/monkey.jpg" alt="Koko"><div>"Ok: ' +
+            nb(tv('sentence')) + '</div></div></div>';
+        },
+        choices: ['Vero', 'Falso'],
+        on_load: placeLogo,
+        data: {condition: jsPsych.timelineVariable('condition'), correct_response: jsPsych.timelineVariable('correct_response'), trial_phase: 'test_sentence'},
+        on_finish: function(data){
+          // coding: 0 = true (first button), 1 = false (second button)
+          data.accuracy = (String(data.response) === String(data.correct_response));
+          advance();
+        }
+      }
+    ],
+    timeline_variables: png.map(function(p, i){
+      return {png: png[i], description: description[i], preamble: preamble[i], sentence: sentence[i],
+              condition: condition[i], correct_response: correct_response[i]};
+    })
+  };
+
+  return {timeline: [setup, procedure], data: {task: 'picture'}};
+})();
+
+/* ============================================================
+   TASK 2: GRAMMATICALITY-SLIDER TASK (from ac_gram_rom, in Spanish)
+   ============================================================ */
+
+const test_sentences = {
+  1: {
+    s_m_match_gram: "Il ragazzo ha lavato la ragazza prima di diventare malinconico",
+    s_f_match_gram: "La ragazza ha lavato il ragazzo prima di diventare malinconica",
+    s_m_match_ungram: "Il ragazzo ha lavato la ragazza prima di diventare malinconica",
+    s_f_match_ungram: "La ragazza ha lavato il ragazzo prima di diventare malinconico",
+  },
+  2: {
+    s_m_match_gram: "Il ragazzo ha toccato la ragazza prima di sentirsi allegro",
+    s_f_match_gram: "La ragazza ha toccato il ragazzo prima di sentirsi allegra",
+    s_m_match_ungram: "Il ragazzo ha toccato la ragazza prima di sentirsi allegra",
+    s_f_match_ungram: "La ragazza ha toccato il ragazzo prima di sentirsi allegro",
+  },
+  3: {
+    s_m_match_gram: "Il ragazzo ha dipinto la ragazza prima di diventare pensieroso",
+    s_f_match_gram: "La ragazza ha dipinto il ragazzo prima di diventare pensierosa",
+    s_m_match_ungram: "Il ragazzo ha dipinto la ragazza prima di diventare pensierosa",
+    s_f_match_ungram: "La ragazza ha dipinto il ragazzo prima di diventare pensieroso",
+  },
+  4: {
+    s_m_match_gram: "Il ragazzo ha toccato la ragazza prima di diventare nascosto",
+    s_f_match_gram: "La ragazza ha toccato il ragazzo prima di diventare nascosta",
+    s_m_match_ungram: "Il ragazzo ha toccato la ragazza prima di diventare nascosta",
+    s_f_match_ungram: "La ragazza ha toccato il ragazzo prima di diventare nascosto",
+  },
+  5: {
+    s_m_match_gram: "Il ragazzo ha pettinato la ragazza prima di diventare ansioso",
+    s_f_match_gram: "La ragazza ha pettinato il ragazzo prima di diventare ansiosa",
+    s_m_match_ungram: "Il ragazzo ha pettinato la ragazza prima di diventare ansiosa",
+    s_f_match_ungram: "La ragazza ha pettinato il ragazzo prima di diventare ansioso",
+  },
+  6: {
+    s_m_match_gram: "Il ragazzo ha consolato la ragazza prima di diventare teso",
+    s_f_match_gram: "La ragazza ha consolato il ragazzo prima di diventare tesa",
+    s_m_match_ungram: "Il ragazzo ha consolato la ragazza prima di diventare tesa",
+    s_f_match_ungram: "La ragazza ha consolato il ragazzo prima di diventare teso",
+  },
+  7: {
+    s_m_match_gram: "Il ragazzo ha incoraggiato la ragazza prima di diventare nervoso",
+    s_f_match_gram: "La ragazza ha incoraggiato il ragazzo prima di diventare nervosa",
+    s_m_match_ungram: "Il ragazzo ha incoraggiato la ragazza prima di diventare nervosa",
+    s_f_match_ungram: "La ragazza ha incoraggiato il ragazzo prima di diventare nervoso",
+  },
+  8: {
+    s_m_match_gram: "Il ragazzo ha schizzato la ragazza prima di diventare contento",
+    s_f_match_gram: "La ragazza ha schizzato il ragazzo prima di diventare contenta",
+    s_m_match_ungram: "Il ragazzo ha schizzato la ragazza prima di diventare contenta",
+    s_f_match_ungram: "La ragazza ha schizzato il ragazzo prima di diventare contento",
+  },
+  9: {
+    s_m_match_gram: "Il ragazzo ha nascosto la ragazza prima di diventare pauroso",
+    s_f_match_gram: "La ragazza ha nascosto il ragazzo prima di diventare paurosa",
+    s_m_match_ungram: "Il ragazzo ha nascosto la ragazza prima di diventare paurosa",
+    s_f_match_ungram: "La ragazza ha nascosto il ragazzo prima di diventare pauroso",
+  },
+  10: {
+    s_m_match_gram: "Il ragazzo ha incontrato la ragazza prima di diventare bello",
+    s_f_match_gram: "La ragazza ha incontrato il ragazzo prima di diventare bella",
+    s_m_match_ungram: "Il ragazzo ha incontrato la ragazza prima di diventare bella",
+    s_f_match_ungram: "La ragazza ha incontrato il ragazzo prima di diventare bello",
+  },
+  11: {
+    s_m_match_gram: "Il ragazzo ha abbracciato la ragazza prima di diventare contento",
+    s_f_match_gram: "La ragazza ha abbracciato il ragazzo prima di diventare contenta",
+    s_m_match_ungram: "Il ragazzo ha abbracciato la ragazza prima di diventare contenta",
+    s_f_match_ungram: "La ragazza ha abbracciato il ragazzo prima di diventare contento",
+  },
+  12: {
+    s_m_match_gram: "Il ragazzo ha pulito la ragazza prima di diventare furioso",
+    s_f_match_gram: "La ragazza ha pulito il ragazzo prima di diventare furiosa",
+    s_m_match_ungram: "Il ragazzo ha pulito la ragazza prima di diventare furiosa",
+    s_f_match_ungram: "La ragazza ha pulito il ragazzo prima di diventare furioso",
+  },
+  13: {
+    s_m_match_gram: "Il ragazzo ha pettinato la ragazza prima di diventare affettuoso",
+    s_f_match_gram: "La ragazza ha pettinato il ragazzo prima di diventare affettuosa",
+    s_m_match_ungram: "Il ragazzo ha pettinato la ragazza prima di diventare affettuosa",
+    s_f_match_ungram: "La ragazza ha pettinato il ragazzo prima di diventare affettuoso",
+  },
+  14: {
+    s_m_match_gram: "Il ragazzo ha dato da mangiare alla ragazza prima di rimanere addormentato",
+    s_f_match_gram: "La ragazza ha dato da mangiare al ragazzo prima di rimanere addormentata",
+    s_m_match_ungram: "Il ragazzo ha dato da mangiare alla ragazza prima di rimanere addormentata",
+    s_f_match_ungram: "La ragazza ha dato da mangiare al ragazzo prima di rimanere addormentato",
+  },
+  15: {
+    s_m_match_gram: "Il ragazzo ha visto la ragazza prima di sentirsi arrabbiato",
+    s_f_match_gram: "La ragazza ha visto il ragazzo prima di sentirsi arrabbiata",
+    s_m_match_ungram: "Il ragazzo ha visto la ragazza prima di sentirsi arrabbiata",
+    s_f_match_ungram: "La ragazza ha visto il ragazzo prima di sentirsi arrabbiato",
+  },
+  16: {
+    s_m_match_gram: "Il ragazzo ha spinto la ragazza prima di sentirsi sconcertato",
+    s_f_match_gram: "La ragazza ha spinto il ragazzo prima di sentirsi sconcertata",
+    s_m_match_ungram: "Il ragazzo ha spinto la ragazza prima di sentirsi sconcertata",
+    s_f_match_ungram: "La ragazza ha spinto il ragazzo prima di sentirsi sconcertato",
+  },
+  17: {
+    s_m_match_gram: "Il ragazzo ha ammirato la ragazza prima di sentirsi frustrato",
+    s_f_match_gram: "La ragazza ha ammirato il ragazzo prima di sentirsi frustrata",
+    s_m_match_ungram: "Il ragazzo ha ammirato la ragazza prima di sentirsi frustrata",
+    s_f_match_ungram: "La ragazza ha ammirato il ragazzo prima di sentirsi frustrato",
+  },
+  18: {
+    s_m_match_gram: "Il ragazzo ha abbandonato la ragazza prima di sentirsi depresso",
+    s_f_match_gram: "La ragazza ha abbandonato il ragazzo prima di sentirsi depressa",
+    s_m_match_ungram: "Il ragazzo ha abbandonato la ragazza prima di sentirsi depressa",
+    s_f_match_ungram: "La ragazza ha abbandonato il ragazzo prima di sentirsi depresso",
+  },
+  19: {
+    s_m_match_gram: "Il ragazzo ha fatto il solletico alla ragazza prima di sentirsi imbarazzato",
+    s_f_match_gram: "La ragazza ha fatto il solletico al ragazzo prima di sentirsi imbarazzata",
+    s_m_match_ungram: "Il ragazzo ha fatto il solletico alla ragazza prima di sentirsi imbarazzata",
+    s_f_match_ungram: "La ragazza ha fatto il solletico al ragazzo prima di sentirsi imbarazzato",
+  },
+  20: {
+    s_m_match_gram: "Il ragazzo ha allenato la ragazza prima di sentirsi infastidito",
+    s_f_match_gram: "La ragazza ha allenato il ragazzo prima di sentirsi infastidita",
+    s_m_match_ungram: "Il ragazzo ha allenato la ragazza prima di sentirsi infastidita",
+    s_f_match_ungram: "La ragazza ha allenato il ragazzo prima di sentirsi infastidito",
+  },
+  21: {
+    s_m_match_gram: "Il ragazzo ha consolato la ragazza prima di diventare pallido",
+    s_f_match_gram: "La ragazza ha consolato il ragazzo prima di diventare pallida",
+    s_m_match_ungram: "Il ragazzo ha consolato la ragazza prima di diventare pallida",
+    s_f_match_ungram: "La ragazza ha consolato il ragazzo prima di diventare pallido",
+  },
+  22: {
+    s_m_match_gram: "Il ragazzo ha lusingato la ragazza prima di diventare rosso",
+    s_f_match_gram: "La ragazza ha lusingato il ragazzo prima di diventare rossa",
+    s_m_match_ungram: "Il ragazzo ha lusingato la ragazza prima di diventare rossa",
+    s_f_match_ungram: "La ragazza ha lusingato il ragazzo prima di diventare rosso",
+  },
+  23: {
+    s_m_match_gram: "Il ragazzo ha guardato la ragazza prima di sentirsi apatico",
+    s_f_match_gram: "La ragazza ha guardato il ragazzo prima di sentirsi apatica",
+    s_m_match_ungram: "Il ragazzo ha guardato la ragazza prima di sentirsi apatica",
+    s_f_match_ungram: "La ragazza ha guardato il ragazzo prima di sentirsi apatico",
+  },
+  24: {
+    s_m_match_gram: "Il ragazzo ha seguito la ragazza prima di sentirsi rilassato",
+    s_f_match_gram: "La ragazza ha seguito il ragazzo prima di sentirsi rilassata",
+    s_m_match_ungram: "Il ragazzo ha seguito la ragazza prima di sentirsi rilassata",
+    s_f_match_ungram: "La ragazza ha seguito il ragazzo prima di sentirsi rilassato",
+  },
+  25: {
+    s_m_match_gram: "Il ragazzo ha avvertito la ragazza prima di sentirsi stanco",
+    s_f_match_gram: "La ragazza ha avvertito il ragazzo prima di sentirsi stanca",
+    s_m_match_ungram: "Il ragazzo ha avvertito la ragazza prima di sentirsi stanca",
+    s_f_match_ungram: "La ragazza ha avvertito il ragazzo prima di sentirsi stanco",
+  },
+  26: {
+    s_m_match_gram: "Il ragazzo ha istruito la ragazza prima di sentirsi preparato",
+    s_f_match_gram: "La ragazza ha istruito il ragazzo prima di sentirsi preparata",
+    s_m_match_ungram: "Il ragazzo ha istruito la ragazza prima di sentirsi preparata",
+    s_f_match_ungram: "La ragazza ha istruito il ragazzo prima di sentirsi preparato",
+  },
+  27: {
+    s_m_match_gram: "Il ragazzo ha preso in giro la ragazza prima di sentirsi affamato",
+    s_f_match_gram: "La ragazza ha preso in giro il ragazzo prima di sentirsi affamata",
+    s_m_match_ungram: "Il ragazzo ha preso in giro la ragazza prima di sentirsi affamata",
+    s_f_match_ungram: "La ragazza ha preso in giro il ragazzo prima di sentirsi affamato",
+  },
+  28: {
+    s_m_match_gram: "Il ragazzo ha lasciato la ragazza prima di diventare freddo",
+    s_f_match_gram: "La ragazza ha lasciato il ragazzo prima di diventare fredda",
+    s_m_match_ungram: "Il ragazzo ha lasciato la ragazza prima di diventare fredda",
+    s_f_match_ungram: "La ragazza ha lasciato il ragazzo prima di diventare freddo",
+  },
+  29: {
+    s_m_match_gram: "Il ragazzo ha bendato la ragazza prima di diventare isterico",
+    s_f_match_gram: "La ragazza ha bendato il ragazzo prima di diventare isterica",
+    s_m_match_ungram: "Il ragazzo ha bendato la ragazza prima di diventare isterica",
+    s_f_match_ungram: "La ragazza ha bendato il ragazzo prima di diventare isterico",
+  },
+  30: {
+    s_m_match_gram: "Il ragazzo ha interrogato la ragazza prima di sentirsi scoraggiato",
+    s_f_match_gram: "La ragazza ha interrogato il ragazzo prima di sentirsi scoraggiata",
+    s_m_match_ungram: "Il ragazzo ha interrogato la ragazza prima di sentirsi scoraggiata",
+    s_f_match_ungram: "La ragazza ha interrogato il ragazzo prima di sentirsi scoraggiato",
+  },
+  31: {
+    s_m_match_gram: "Il ragazzo ha baciato la ragazza prima di rimanere zitto",
+    s_f_match_gram: "La ragazza ha baciato il ragazzo prima di rimanere zitta",
+    s_m_match_ungram: "Il ragazzo ha baciato la ragazza prima di rimanere zitta",
+    s_f_match_ungram: "La ragazza ha baciato il ragazzo prima di rimanere zitto",
+  },
+  32: {
+    s_m_match_gram: "Il ragazzo ha sedotto la ragazza prima di diventare euforico",
+    s_f_match_gram: "La ragazza ha sedotto il ragazzo prima di diventare euforica",
+    s_m_match_ungram: "Il ragazzo ha sedotto la ragazza prima di diventare euforica",
+    s_f_match_ungram: "La ragazza ha sedotto il ragazzo prima di diventare euforico",
+  },
+};
+
+const filler_sentences = [
+  ["La ragazza ha preparato lo zaino per la scuola e si è sentita contenta", true],
+  ["Il ragazzo ha dimenticato i compiti ed è rimasto arrabbiata", false],
+  ["La donna ha spiegato l'errore, ma sembrava frustrata", true],
+  ["L'uomo ha buttato via il grafico e si è sentito preoccupata per questo", false],
+  ["Il ragazzo era infastidito perché ha dovuto prendere un fazzoletto durante la lezione", true],
+  ["La ragazza che era distratto si è ripresa in fretta dietro le quinte", false],
+  ["L'uomo si è sentito orgoglioso dopo aver finito il rapporto", true],
+  ["La donna si è mostrata simpatico prima di iniziare la formazione", false],
+  ["La ragazza ha dipinto un biglietto e si è sentita entusiasta del risultato", true],
+  ["Il ragazzo è inciampato nel corridoio e si è sentito imbarazzata", false],
+  ["La donna ha programmato gli appuntamenti e si è mostrata arrabbiata per la mancanza di tempo libero", true],
+  ["L'uomo ha organizzato i file, ma sembrava confusa per le date", false],
+  ["Il ragazzo ha incartato il regalo e si è mostrato discreto su cosa c'era dentro", true],
+  ["La ragazza ha dimenticato il pranzo a casa e si è sentito imbarazzato", false],
+  ["L'uomo si è guardato allo specchio e ha sentito di essere preparato per il colloquio", true],
+  ["La donna si sentiva sicuro di sé e rispondeva a domande difficili", false],
+  ["Il ragazzo è diventato competitivo e ha deciso di finire il puzzle più in fretta", true],
+  ["La ragazza è stata rispettoso e ha deciso di non interrompere lo spettacolo", false],
+  ["La donna è rimasta tranquilla e ha riflettuto in silenzio", true],
+  ["L'uomo ha parlato troppo presto e si è sentita infastidita per questo", false],
+];
+
+const slider_block = (function(){
+
+  // Latin square: 8 lists; item i gets condition (start + i) mod 8, as in the Romanian version
+  const cond_order = ['s_m_match_gram', 's_m_mismatch_gram', 's_f_match_gram', 's_f_mismatch_gram',
+                      's_m_match_ungram', 'p_m_mismatch_ungram', 's_f_match_ungram', 'p_f_mismatch_ungram'];
+  const list_starts = [0, 1, 7, 2, 6, 3, 5, 4];
+  const list_number = jsPsych.randomization.randomInt(0, 7);   // 0..7
+  jsPsych.data.addProperties({slider_list: list_number + 1});
+
+  const practice_items = [
+    {sentence: 'Questa è una frase di prova',   condition: 'training', grammaticality: 'Yes', item: '1_training'},
+    {sentence: 'Di prova una frase è questa',   condition: 'training', grammaticality: 'No',  item: '2_training'},
+    {sentence: 'Questa frase ha qualcosa di sbagliato in sé stesso', condition: 'training', grammaticality: 'No', item: '3_training'}
+  ];
+
+  // No plural sentences in this study: the 4 'mismatch' conditions (plural subject or object) are dropped.
+  // Each list still assigns a condition to every item, so each participant sees the 16 items that
+  // fall into the 4 singular ('match') conditions, 4 per condition.
+  const trial_items = [];
+  for(let i = 1; i <= 32; i++){
+    const cond = cond_order[(list_starts[list_number] + i - 1) % 8];
+    if(cond.indexOf('mismatch') !== -1){ continue; }
+    trial_items.push({
+      sentence: test_sentences[i][cond],
+      condition: cond,
+      grammaticality: cond.endsWith('_ungram') ? 'No' : 'Yes',
+      item: i + '_test'
+    });
+  }
+  filler_sentences.forEach(function(f, k){
+    trial_items.push({sentence: f[0], condition: 'filler', grammaticality: f[1] ? 'Yes' : 'No', item: (k + 1) + '_filler'});
+  });
+
+  const instructions = {
+    type: jsPsychInstructions,
+    pages: [
+      '<div class="directions" style="width:80%; margin:auto;" align="left">' +
+        '<p>Ora leggerai alcune frasi di prova.</p>' +
+        '<p>Per favore, valuta quanto sono grammaticali le frasi scegliendo un punteggio sulla scala.</p>' +
+        '<p><b>Devi rispondere il più velocemente possibile, ma con precisione, e scegliere punteggi in <i>qualsiasi</i> punto della scala (<i>non solo</i> agli estremi).</b></p>' +
+        '<p>Per favore, affidati alla tua prima reazione, senza cercare di analizzare la frase.</p>' +
+        '<p>Non esiste un\'unica risposta corretta; usa la tua intuizione per scegliere un punteggio.</p></div>'
+    ],
+    button_label_next: 'Avanti',
+    allow_backward: false,
+    show_clickable_nav: true,
+    on_start: setStyle('slider-task'),
+    data: {trial_phase: 'slider_instructions'}
+  };
+
+  const instructions2 = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p>Ora inizieremo l\'esperimento.</p>',
+    choices: ['Avanti'],
+    on_start: requireLandscape,
+    data: {trial_phase: 'slider_start'}
+  };
+
+  const sentence2 = {
+    type: jsPsychHtmlSliderResponse,
+    stimulus: function(){ return jsPsych.evaluateTimelineVariable('sentence') + '.'; },
+    prompt: '<p style="margin:0.3em 0;">Quanto è grammaticale questa frase? Usa il cursore qui sopra.</p>',
+    labels: ['Scorretta (Agrammaticale)', 'Corretta (Grammaticale)'],
+    // jsPsych draws each end label in a box as wide as the slider, centred on the slider's end,
+    // so the slider must be at most ~half the screen width or the page overflows and phones zoom out.
+    slider_width: function(){ return Math.max(160, Math.min(500, Math.floor(window.innerWidth * 0.45))); },
+    require_movement: true,
+    button_label: 'Avanti',
+    on_start: requireLandscape,
+    post_trial_gap: 500,
+    data: {
+      trial_phase: 'slider_sentence',
+      sentence: jsPsych.timelineVariable('sentence'),
+      condition: jsPsych.timelineVariable('condition'),
+      grammaticality: jsPsych.timelineVariable('grammaticality'),
+      item: jsPsych.timelineVariable('item')
+    },
+    on_finish: advance
+  };
+
+  // Practice sentences: the answer must be on the right side of the midline (50).
+  //   grammatical sentence ('Yes')   -> rating must not be below 50
+  //   ungrammatical sentence ('No')  -> rating must not be above 50
+  // If it is on the wrong side, the "Avanti" click is blocked and a red message is shown
+  // on the same screen; the participant can adjust the slider and try again.
+  const practice_trial = function(item){
+    return Object.assign({}, sentence2, {
+      stimulus: item.sentence + '.',
+      data: {trial_phase: 'slider_practice', sentence: item.sentence, condition: item.condition,
+             grammaticality: item.grammaticality, item: item.item},
+      on_load: function(){
+        const container = jsPsych.getDisplayElement();
+        const slider = container.querySelector('#jspsych-html-slider-response-response');
+        const button = container.querySelector('#jspsych-html-slider-response-next');
+
+        // red message, space reserved so the layout does not jump
+        const msg = document.createElement('p');
+        msg.textContent = 'Sei sicuro/a della tua risposta?';
+        msg.setAttribute('role', 'alert');
+        msg.style.cssText = 'color:red; font-weight:bold; visibility:hidden; margin:0.3em 0;';
+        button.parentNode.insertBefore(msg, button);
+
+        const is_wrong = function(){
+          const v = Number(slider.value);
+          return (item.grammaticality === 'Yes') ? (v < 50) : (v > 50);
+        };
+        // capture phase on the container: runs before the plugin's own click handler
+        container.addEventListener('click', function(e){
+          if(e.target === button && is_wrong()){
+            e.stopPropagation();
+            msg.style.visibility = 'visible';
+          }
+        }, true);
+        slider.addEventListener('input', function(){ msg.style.visibility = 'hidden'; });
+      }
+    });
+  };
+
+  const practice1 = {
+    timeline: practice_items.map(practice_trial),
+    randomize_order: false
+  };
+
+  // Shuffle the 32 test items and the 20 fillers separately, then spread the fillers
+  // evenly through the trials. All test items and all fillers are shown.
+  const tests = jsPsych.randomization.shuffle(trial_items.filter(function(t){ return t.condition !== 'filler'; }));
+  const fills = jsPsych.randomization.shuffle(trial_items.filter(function(t){ return t.condition === 'filler'; }));
+  const n_all = tests.length + fills.length;
+  const ordered_items = [];
+  let ti = 0, fi = 0;
+  for(let k = 0; k < n_all; k++){
+    const filler_due = Math.floor((k + 1) * fills.length / n_all) > Math.floor(k * fills.length / n_all);
+    ordered_items.push(filler_due ? fills[fi++] : tests[ti++]);
+  }
+
+  total_trials += practice_items.length + ordered_items.length;
+
+  const procedure = {
+    timeline: [sentence2],
+    timeline_variables: ordered_items,
+    randomize_order: false
+  };
+
+  return {timeline: [instructions, practice1, instructions2, procedure], data: {task: 'slider'}};
+})();
+
+/* ============================ END ============================ */
+
+const final = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p>Grazie per la tua partecipazione!</p> <p>Fai clic su \"Invia\" per registrare le tue risposte:</p>',
+  choices: ['Invia'],
+  on_start: setStyle(''),
+  data: {trial_phase: 'final'}
+};
+
+function saveData(name, data){
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'write_data.php');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(JSON.stringify({filename: name, filedata: data}));
+  xhr.onload = function(){
+    window.location = REDIRECT_URL; // where participants go after finishing
+  };
+}
+
+/* ======================= FULL TIMELINE ======================= */
+
+const blocks = {picture: picture_block, slider: slider_block};
+
+jsPsych.run([
+  consent,
+  transition_language,
+  leap_survey1,
+  leap_survey2,
+  transition_ready,
+  blocks[task_order[0]],
+  transition_between,
+  blocks[task_order[1]],
+  final
+]);
+
+</script>
+</body>
+</html>
