@@ -12,6 +12,7 @@ Online judgment tasks (jsPsych 8, loaded from a CDN). Each folder is one task an
 | `tvjt-ajt-italian/` | Italian picture task + judgment task, with `italian_translations.xlsx` | Italian study (placeholders to fill in) |
 | `server/` | `write_data.php`: stores the data files (needed by every task) | - |
 | `docs/` | Notes, e.g. how the old English data relate to the new design | - |
+| `analysis/` | `eng_gram.r`: R script that loads the English data (old and new task versions together) | - |
 
 ## Shared design (judgment tasks)
 
