@@ -1,47 +1,45 @@
 # Pooling the earlier English data with the new English task
 
-**Short answer:** yes for the four singular conditions, as long as the version is kept in the analysis. The old and
-the new task use the same 16 items, the same sentences and the same slider, but the trial mix differs, so treat
-them as two versions of one design, not as one uninterrupted sample.
+**Short answer:** yes. The new English task has the same design as the earlier version (same 16 items, same 8 conditions,
+2 sentences per condition, same slider), so the files can be stacked. A few small differences remain; keep a `version`
+column and check that it does not interact with the effects of interest.
 
 ## What is the same
 
-- The 16 items and their sentences (`english_items_lookup.csv` lists all 128 sentences: item, condition, the
-  sentence exactly as saved in `stimulus`, and its label).
-- Condition names (`s_m_match_gram`, `s_f_match_gram`, `s_m_match_ungram`, `s_f_match_ungram`; the old file also has
-  the plural ones) and the `filler` controls.
-- 0-100 slider, start 50, labels, instructions and rating question ("grammatical"), column names `response`,
-  `rt`, `stimulus`, `condition`.
+- The 16 items and their sentences; `english_items_lookup.csv` lists all 128 sentences (item, condition, the sentence
+  exactly as saved in `stimulus`, and what each condition is).
+- The 8 conditions (`s_m_match_gram`, `s_m_mismatch_gram`, `s_f_match_gram`, `s_f_mismatch_gram`, `s_m_match_ungram`,
+  `p_m_mismatch_ungram`, `s_f_match_ungram`, `p_f_mismatch_ungram`) and the `filler` controls.
+- The structure of a session: 8 lists (Latin square) and one list per participant; every participant sees all 16 items,
+  each in a different condition, 2 per condition (8 match + 8 mismatch).
+- 0-100 slider, start 50, labels, instructions and rating question ("grammatical"); column names `response`, `rt`,
+  `stimulus`, `condition`.
 
 ## What differs
 
-| | Old version | New task |
+| | Earlier version | New task |
 |---|---|---|
-| Conditions per participant | all 8 (2 each), half of the test sentences plural | 4 singular only, 4 each |
-| Controls | 16 drawn at random from 20 (balance varies) | 8 grammatical + 8 ungrammatical |
-| Practice | no check | wrong-side practice answers blocked ("Are you sure...?") |
-| Layout | fixed 500 px slider; phones zoomed out | responsive, landscape prompt on phones |
-| Columns | no `item`, `grammaticality`, `trial_phase` | these are saved |
+| Controls | 16 drawn at random from 20 (the grammatical / ungrammatical balance varied) | 8 grammatical + 8 ungrammatical |
+| Practice | no check | wrong-side practice answers are blocked ("Are you sure...?") |
+| Layout | fixed 500 px slider; phones could zoom out | responsive, landscape prompt on phones |
+| Columns | no `item`, `grammaticality`, `trial_phase` | these are saved, plus `platform` and the IDs |
 | Platform | Prolific | Prolific and SONA |
-| Filler 11 | "made the appointments" | "scheduled the appointments" (controls only) |
+| Filler 11 | "made the appointments" | "scheduled the appointments" (a control only) |
 | Practice sentence 2 | "Practice a this sentence is" | "Practice of this sentence is" (practice only) |
 
-The old `grammaticality` label was never saved; use `condition` (and the lookup) instead.
+The earlier `grammaticality` label was never saved; use `condition` (and the lookup) instead.
 
 ## Suggested way to analyse
 
-1. Old data: keep the four singular conditions and the controls; drop the plural conditions (or analyse them
-   separately - the new design has no counterpart).
-2. Get `item` from the lookup by matching the old `stimulus` to `stimulus_as_saved`.
-3. Add `version` (old / new) and, for the new data, `platform` (Prolific / SONA) as columns.
-4. If you z-score ratings per participant, do it on the same trial subset in both versions (singular test + controls),
-   because the old participants also rated plural sentences, which changes their rating distribution.
-5. Fit the model with `version` (and its interaction with subject-match / object-match). If the interaction is
-   absent, pool; also report old-only and new-only results as a sensitivity check.
+1. Stack the files. Get `item` for the earlier data by matching its `stimulus` to `stimulus_as_saved` in the lookup.
+2. Add `version` (earlier / new) and, for the new data, `platform` (Prolific / SONA).
+3. Keep only the test conditions and controls (drop practice trials). Z-scoring per participant works the same way in both
+   versions because the trial mix is the same; the only difference is the control balance.
+4. Fit the model with `version` and its interaction with the effect of interest. If there is no interaction, pool; also
+   report earlier-only and new-only results as a sensitivity check.
 
-## Why it is not a strict replication
+## Residual differences to keep in mind
 
-Half of the test trials in the old version had a plural noun, so participants saw a different mix of sentences
-and may have used the scale differently (context and range effects). The practice check and the layout fix may
-also change how people use the slider on phones. These are the reasons to keep `version` in the model rather than
-to merge the files silently.
+The practice check may help people understand the scale, the responsive layout may change how phone users move the slider,
+and SONA participants are a different population from Prolific participants. These are the reasons to keep `version` and
+`platform` in the model rather than merging the files silently.

@@ -16,9 +16,12 @@ Online judgment tasks (jsPsych 8, loaded from a CDN). Each folder is one task an
 ## Shared design (judgment tasks)
 
 - 0-100 slider; 3 practice sentences (a practice answer on the wrong side of the midline cannot be submitted);
-  16 test sentences, 4 per condition; 16 controls, 8 grammatical + 8 ungrammatical, drawn at random from 20.
-- Plural conditions are not used. The four conditions per item are
-  `s_m_match_gram`, `s_f_match_gram`, `s_m_match_ungram`, `s_f_match_ungram`.
+  16 test sentences; 16 controls, 8 grammatical + 8 ungrammatical, drawn at random from 20.
+- The 16 test sentences cover all 8 conditions, 2 each: 4 **match** conditions (singular nouns) and 4 **mismatch**
+  conditions (one plural noun), i.e. half match, half mismatch, half grammatical, half ungrammatical:
+  `s_m_match_gram`, `s_m_mismatch_gram`, `s_f_match_gram`, `s_f_mismatch_gram`,
+  `s_m_match_ungram`, `p_m_mismatch_ungram`, `s_f_match_ungram`, `p_f_mismatch_ungram`.
+  Eight lists (Latin square) rotate the conditions over the items; one list is drawn at random per participant.
 - Data are saved as CSV through `server/write_data.php`. The participant is only sent on (to Prolific, SONA or
   the fallback page) after the server has accepted the data; saving is retried, and after three failures the
   participant can retry, download their responses or continue.

@@ -5,14 +5,15 @@ for SONA.
 
 ## Design
 
-- 16 test sentences: 16 items x 4 conditions (`s_m_match_gram`, `s_f_match_gram`, `s_m_match_ungram`,
-  `s_f_match_ungram`), one of four lists drawn at random, so every participant sees all 16 items, 4 per condition.
-  Plural conditions are not used.
+- 16 test sentences: 16 items x 8 conditions, as in the original English task. One of eight lists is drawn at
+  random, so every participant sees all 16 items, each in a different condition and 2 per condition: 8 *match*
+  sentences (singular nouns: boy/girl + himself/herself) and 8 *mismatch* sentences (one plural noun, e.g.
+  *The boys washed the girl before hearing herself*); half grammatical, half ungrammatical.
 - 16 controls (one referent), 8 grammatical + 8 ungrammatical, drawn at random from 20.
 - 3 practice sentences; a practice answer on the wrong side of the midline shows "Are you sure about your
   response?" and cannot be submitted.
 - Rating 0-100 on a slider, labelled *Bad (Ungrammatical)* / *Good (Grammatical)*.
-- Same stimuli, wording and conditions as the English task in `ajt-spanish-english-combo/`.
+- Same stimuli, wording and design as the English task in `ajt-spanish-english-combo/` and as the original English study.
 
 ## Settings (top of the script in `index.html`)
 

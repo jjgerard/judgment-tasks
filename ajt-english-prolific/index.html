@@ -117,8 +117,8 @@
    English grammaticality-judgement task (reflexives: himself / herself)
    Platform: Prolific
    Design (same as the English task in the Spanish-English combo):
-     - 16 test sentences: 16 items x 4 singular conditions (4 lists, one drawn at random),
-       4 sentences per condition. Plural conditions are not used.
+     - 16 test sentences: 16 items x 8 conditions (8 lists, one drawn at random), 2 sentences per
+       condition: half 'match' (singular nouns), half 'mismatch' (one plural noun), as in the original English task.
      - 16 control sentences, 8 grammatical + 8 ungrammatical, drawn at random from 20.
      - 3 practice sentences. A practice answer on the wrong side of the midline cannot be submitted.
    ------------------------------------------------------------------ */
@@ -231,99 +231,163 @@ const consent = {
 const en_test_sentences = {
   1: {
     s_m_match_gram: "The boy washed the girl before hearing himself",
+    s_m_mismatch_gram: "The boy washed the girls before hearing himself",
     s_f_match_gram: "The girl washed the boy before hearing herself",
+    s_f_mismatch_gram: "The girl washed the boys before hearing herself",
     s_m_match_ungram: "The boy washed the girl before hearing herself",
+    p_m_mismatch_ungram: "The boys washed the girl before hearing herself",
     s_f_match_ungram: "The girl washed the boy before hearing himself",
+    p_f_mismatch_ungram: "The girls washed the boy before hearing himself",
   },
   2: {
     s_m_match_gram: "The boy fanned the girl before hugging himself",
+    s_m_mismatch_gram: "The boy fanned the girls before hugging himself",
     s_f_match_gram: "The girl fanned the boy before hugging herself",
+    s_f_mismatch_gram: "The girl fanned the boys before hugging herself",
     s_m_match_ungram: "The boy fanned the girl before hugging herself",
+    p_m_mismatch_ungram: "The boys fanned the girl before hugging herself",
     s_f_match_ungram: "The girl fanned the boy before hugging himself",
+    p_f_mismatch_ungram: "The girls fanned the boy before hugging himself",
   },
   3: {
     s_m_match_gram: "The boy painted the girl before washing himself",
+    s_m_mismatch_gram: "The boy painted the girls before washing himself",
     s_f_match_gram: "The girl painted the boy before washing herself",
+    s_f_mismatch_gram: "The girl painted the boys before washing herself",
     s_m_match_ungram: "The boy painted the girl before washing herself",
+    p_m_mismatch_ungram: "The boys painted the girl before washing herself",
     s_f_match_ungram: "The girl painted the boy before washing himself",
+    p_f_mismatch_ungram: "The girls painted the boy before washing himself",
   },
   4: {
     s_m_match_gram: "The boy tagged the girl before hiding himself",
+    s_m_mismatch_gram: "The boy tagged the girls before hiding himself",
     s_f_match_gram: "The girl tagged the boy before hiding herself",
+    s_f_mismatch_gram: "The girl tagged the boys before hiding herself",
     s_m_match_ungram: "The boy tagged the girl before hiding herself",
+    p_m_mismatch_ungram: "The boys tagged the girl before hiding herself",
     s_f_match_ungram: "The girl tagged the boy before hiding himself",
+    p_f_mismatch_ungram: "The girls tagged the boy before hiding himself",
   },
   5: {
     s_m_match_gram: "The boy brushed the girl before covering himself",
+    s_m_mismatch_gram: "The boy brushed the girls before covering himself",
     s_f_match_gram: "The girl brushed the boy before covering herself",
+    s_f_mismatch_gram: "The girl brushed the boys before covering herself",
     s_m_match_ungram: "The boy brushed the girl before covering herself",
+    p_m_mismatch_ungram: "The boys brushed the girl before covering herself",
     s_f_match_ungram: "The girl brushed the boy before covering himself",
+    p_f_mismatch_ungram: "The girls brushed the boy before covering himself",
   },
   6: {
     s_m_match_gram: "The boy dried the girl before feeding himself",
+    s_m_mismatch_gram: "The boy dried the girls before feeding himself",
     s_f_match_gram: "The girl dried the boy before feeding herself",
+    s_f_mismatch_gram: "The girl dried the boys before feeding herself",
     s_m_match_ungram: "The boy dried the girl before feeding herself",
+    p_m_mismatch_ungram: "The boys dried the girl before feeding herself",
     s_f_match_ungram: "The girl dried the boy before feeding himself",
+    p_f_mismatch_ungram: "The girls dried the boy before feeding himself",
   },
   7: {
     s_m_match_gram: "The boy lifted the girl before dressing himself",
+    s_m_mismatch_gram: "The boy lifted the girls before dressing himself",
     s_f_match_gram: "The girl lifted the boy before dressing herself",
+    s_f_mismatch_gram: "The girl lifted the boys before dressing herself",
     s_m_match_ungram: "The boy lifted the girl before dressing herself",
+    p_m_mismatch_ungram: "The boys lifted the girl before dressing herself",
     s_f_match_ungram: "The girl lifted the boy before dressing himself",
+    p_f_mismatch_ungram: "The girls lifted the boy before dressing himself",
   },
   8: {
     s_m_match_gram: "The boy splashed the girl before cleaning himself",
+    s_m_mismatch_gram: "The boy splashed the girls before cleaning himself",
     s_f_match_gram: "The girl splashed the boy before cleaning herself",
+    s_f_mismatch_gram: "The girl splashed the boys before cleaning herself",
     s_m_match_ungram: "The boy splashed the girl before cleaning herself",
+    p_m_mismatch_ungram: "The boys splashed the girl before cleaning herself",
     s_f_match_ungram: "The girl splashed the boy before cleaning himself",
+    p_f_mismatch_ungram: "The girls splashed the boy before cleaning himself",
   },
   9: {
     s_m_match_gram: "The boy buried the girl before drawing himself",
+    s_m_mismatch_gram: "The boy buried the girls before drawing himself",
     s_f_match_gram: "The girl buried the boy before drawing herself",
+    s_f_mismatch_gram: "The girl buried the boys before drawing herself",
     s_m_match_ungram: "The boy buried the girl before drawing herself",
+    p_m_mismatch_ungram: "The boys buried the girl before drawing herself",
     s_f_match_ungram: "The girl buried the boy before drawing himself",
+    p_f_mismatch_ungram: "The girls buried the boy before drawing himself",
   },
   10: {
     s_m_match_gram: "The boy patted the girl before combing himself",
+    s_m_mismatch_gram: "The boy patted the girls before combing himself",
     s_f_match_gram: "The girl patted the boy before combing herself",
+    s_f_mismatch_gram: "The girl patted the boys before combing herself",
     s_m_match_ungram: "The boy patted the girl before combing herself",
+    p_m_mismatch_ungram: "The boys patted the girl before combing herself",
     s_f_match_ungram: "The girl patted the boy before combing himself",
+    p_f_mismatch_ungram: "The girls patted the boy before combing himself",
   },
   11: {
     s_m_match_gram: "The boy hugged the girl before patting himself",
+    s_m_mismatch_gram: "The boy hugged the girls before patting himself",
     s_f_match_gram: "The girl hugged the boy before patting herself",
+    s_f_mismatch_gram: "The girl hugged the boys before patting herself",
     s_m_match_ungram: "The boy hugged the girl before patting herself",
+    p_m_mismatch_ungram: "The boys hugged the girl before patting herself",
     s_f_match_ungram: "The girl hugged the boy before patting himself",
+    p_f_mismatch_ungram: "The girls hugged the boy before patting himself",
   },
   12: {
     s_m_match_gram: "The boy scrubbed the girl before seeing himself",
+    s_m_mismatch_gram: "The boy scrubbed the girls before seeing himself",
     s_f_match_gram: "The girl scrubbed the boy before seeing herself",
+    s_f_mismatch_gram: "The girl scrubbed the boys before seeing herself",
     s_m_match_ungram: "The boy scrubbed the girl before seeing herself",
+    p_m_mismatch_ungram: "The boys scrubbed the girl before seeing herself",
     s_f_match_ungram: "The girl scrubbed the boy before seeing himself",
+    p_f_mismatch_ungram: "The girls scrubbed the boy before seeing himself",
   },
   13: {
     s_m_match_gram: "The boy combed the girl before scrubbing himself",
+    s_m_mismatch_gram: "The boy combed the girls before scrubbing himself",
     s_f_match_gram: "The girl combed the boy before scrubbing herself",
+    s_f_mismatch_gram: "The girl combed the boys before scrubbing herself",
     s_m_match_ungram: "The boy combed the girl before scrubbing herself",
+    p_m_mismatch_ungram: "The boys combed the girl before scrubbing herself",
     s_f_match_ungram: "The girl combed the boy before scrubbing himself",
+    p_f_mismatch_ungram: "The girls combed the boy before scrubbing himself",
   },
   14: {
     s_m_match_gram: "The boy fed the girl before painting himself",
+    s_m_mismatch_gram: "The boy fed the girls before painting himself",
     s_f_match_gram: "The girl fed the boy before painting herself",
+    s_f_mismatch_gram: "The girl fed the boys before painting herself",
     s_m_match_ungram: "The boy fed the girl before painting herself",
+    p_m_mismatch_ungram: "The boys fed the girl before painting herself",
     s_f_match_ungram: "The girl fed the boy before painting himself",
+    p_f_mismatch_ungram: "The girls fed the boy before painting himself",
   },
   15: {
     s_m_match_gram: "The boy saw the girl before hearing himself",
+    s_m_mismatch_gram: "The boy saw the girls before hearing himself",
     s_f_match_gram: "The girl saw the boy before hearing herself",
+    s_f_mismatch_gram: "The girl saw the boys before hearing herself",
     s_m_match_ungram: "The boy saw the girl before hearing herself",
+    p_m_mismatch_ungram: "The boys saw the girl before hearing herself",
     s_f_match_ungram: "The girl saw the boy before hearing himself",
+    p_f_mismatch_ungram: "The girls saw the boy before hearing himself",
   },
   16: {
     s_m_match_gram: "The boy pushed the girl before splashing himself",
+    s_m_mismatch_gram: "The boy pushed the girls before splashing himself",
     s_f_match_gram: "The girl pushed the boy before splashing herself",
+    s_f_mismatch_gram: "The girl pushed the boys before splashing herself",
     s_m_match_ungram: "The boy pushed the girl before splashing herself",
+    p_m_mismatch_ungram: "The boys pushed the girl before splashing herself",
     s_f_match_ungram: "The girl pushed the boy before splashing himself",
+    p_f_mismatch_ungram: "The girls pushed the boy before splashing himself",
   },
 };
 
@@ -352,6 +416,8 @@ const en_filler_sentences = [
 
 // Controls per participant: 16, half grammatical and half ungrammatical, drawn at random from the 20.
 const N_CONTROLS_PER_PARTICIPANT = 16;
+// Test sentences per participant: 2 for each of the 8 conditions = 16 (half 'match', half 'mismatch').
+const N_TEST_PER_CONDITION = 2;
 
 const SLIDER_TEXT = {
   next: 'Next',
@@ -367,10 +433,11 @@ const SLIDER_TEXT = {
   sure: 'Are you sure about your response?',
   practice: [['This is a practice sentence', 'Yes'], ['Practice of this sentence is', 'No'], ['This sentence has something wrong with himself', 'No']],
   tests: en_test_sentences, fillers: en_filler_sentences,
-  // 16 items x 4 singular conditions, 4 lists: every participant sees all 16 items, 4 per condition
+  // 16 items x 8 conditions in 8 lists: every participant sees all 16 items, 2 per condition
   n_items: 16,
-  cond_order: ['s_m_match_gram', 's_f_match_gram', 's_m_match_ungram', 's_f_match_ungram'],
-  list_starts: [0, 1, 2, 3]
+  cond_order: ['s_m_match_gram', 's_m_mismatch_gram', 's_f_match_gram', 's_f_mismatch_gram',
+               's_m_match_ungram', 'p_m_mismatch_ungram', 's_f_match_ungram', 'p_f_mismatch_ungram'],
+  list_starts: [0, 1, 7, 2, 6, 3, 5, 4]
 };
 
 function makeSliderBlock(){
@@ -383,21 +450,25 @@ function makeSliderBlock(){
     return {sentence: p[0], condition: 'training', grammaticality: p[1], item: (i + 1) + '_training'};
   });
 
-  // No plural sentences in this study: the 'mismatch' conditions (plural subject or object) are dropped.
-  // Spanish: each list assigns one of 8 conditions to every one of the 32 items, so each participant sees the
-  // 16 items that fall into the 4 singular ('match') conditions. English: 16 items x 4 conditions.
-  // Either way: 16 test sentences, 4 per condition.
-  const trial_items = [];
+  // Each list gives every item one of the 8 conditions: 4 'match' conditions (singular nouns) and
+  // 4 'mismatch' conditions (one plural noun). Each participant sees N_TEST_PER_CONDITION (2) sentences per
+  // condition, so half of the test sentences are 'match' and half 'mismatch'.
+  //   English: 16 items -> exactly 2 per condition, all 16 items are used.
+  //   Spanish: 32 items -> 4 per condition, 2 of them drawn at random.
+  const by_condition = {};
   for(let i = 1; i <= T.n_items; i++){
     const cond = T.cond_order[(T.list_starts[list_number] + i - 1) % T.cond_order.length];
-    if(cond.indexOf('mismatch') !== -1){ continue; }
-    trial_items.push({
+    (by_condition[cond] = by_condition[cond] || []).push({
       sentence: T.tests[i][cond],
       condition: cond,
       grammaticality: cond.endsWith('_ungram') ? 'No' : 'Yes',
       item: i + '_test'
     });
   }
+  const trial_items = [];
+  T.cond_order.forEach(function(cond){
+    jsPsych.randomization.shuffle(by_condition[cond]).slice(0, N_TEST_PER_CONDITION).forEach(function(x){ trial_items.push(x); });
+  });
   // controls: N_CONTROLS_PER_PARTICIPANT sentences, half grammatical and half ungrammatical, chosen at random
   const all_fillers = T.fillers.map(function(f, k){
     return {sentence: f[0], condition: 'filler', grammaticality: f[1] ? 'Yes' : 'No', item: (k + 1) + '_filler'};

@@ -1,129 +1,129 @@
-item,condition,stimulus_as_saved,sentence,analysis_label,in_new_design
-1,s_m_match_gram,The boy washed the girl before hearing himself.,The boy washed the girl before hearing himself,subject-match,yes
-1,s_m_mismatch_gram,The boy washed the girls before hearing himself.,The boy washed the girls before hearing himself,plural (not used in the new design),no
-1,s_f_match_gram,The girl washed the boy before hearing herself.,The girl washed the boy before hearing herself,subject-match,yes
-1,s_f_mismatch_gram,The girl washed the boys before hearing herself.,The girl washed the boys before hearing herself,plural (not used in the new design),no
-1,s_m_match_ungram,The boy washed the girl before hearing herself.,The boy washed the girl before hearing herself,object-match,yes
-1,p_m_mismatch_ungram,The boys washed the girl before hearing herself.,The boys washed the girl before hearing herself,plural (not used in the new design),no
-1,s_f_match_ungram,The girl washed the boy before hearing himself.,The girl washed the boy before hearing himself,object-match,yes
-1,p_f_mismatch_ungram,The girls washed the boy before hearing himself.,The girls washed the boy before hearing himself,plural (not used in the new design),no
-2,s_m_match_gram,The boy fanned the girl before hugging himself.,The boy fanned the girl before hugging himself,subject-match,yes
-2,s_m_mismatch_gram,The boy fanned the girls before hugging himself.,The boy fanned the girls before hugging himself,plural (not used in the new design),no
-2,s_f_match_gram,The girl fanned the boy before hugging herself.,The girl fanned the boy before hugging herself,subject-match,yes
-2,s_f_mismatch_gram,The girl fanned the boys before hugging herself.,The girl fanned the boys before hugging herself,plural (not used in the new design),no
-2,s_m_match_ungram,The boy fanned the girl before hugging herself.,The boy fanned the girl before hugging herself,object-match,yes
-2,p_m_mismatch_ungram,The boys fanned the girl before hugging herself.,The boys fanned the girl before hugging herself,plural (not used in the new design),no
-2,s_f_match_ungram,The girl fanned the boy before hugging himself.,The girl fanned the boy before hugging himself,object-match,yes
-2,p_f_mismatch_ungram,The girls fanned the boy before hugging himself.,The girls fanned the boy before hugging himself,plural (not used in the new design),no
-3,s_m_match_gram,The boy painted the girl before washing himself.,The boy painted the girl before washing himself,subject-match,yes
-3,s_m_mismatch_gram,The boy painted the girls before washing himself.,The boy painted the girls before washing himself,plural (not used in the new design),no
-3,s_f_match_gram,The girl painted the boy before washing herself.,The girl painted the boy before washing herself,subject-match,yes
-3,s_f_mismatch_gram,The girl painted the boys before washing herself.,The girl painted the boys before washing herself,plural (not used in the new design),no
-3,s_m_match_ungram,The boy painted the girl before washing herself.,The boy painted the girl before washing herself,object-match,yes
-3,p_m_mismatch_ungram,The boys painted the girl before washing herself.,The boys painted the girl before washing herself,plural (not used in the new design),no
-3,s_f_match_ungram,The girl painted the boy before washing himself.,The girl painted the boy before washing himself,object-match,yes
-3,p_f_mismatch_ungram,The girls painted the boy before washing himself.,The girls painted the boy before washing himself,plural (not used in the new design),no
-4,s_m_match_gram,The boy tagged the girl before hiding himself.,The boy tagged the girl before hiding himself,subject-match,yes
-4,s_m_mismatch_gram,The boy tagged the girls before hiding himself.,The boy tagged the girls before hiding himself,plural (not used in the new design),no
-4,s_f_match_gram,The girl tagged the boy before hiding herself.,The girl tagged the boy before hiding herself,subject-match,yes
-4,s_f_mismatch_gram,The girl tagged the boys before hiding herself.,The girl tagged the boys before hiding herself,plural (not used in the new design),no
-4,s_m_match_ungram,The boy tagged the girl before hiding herself.,The boy tagged the girl before hiding herself,object-match,yes
-4,p_m_mismatch_ungram,The boys tagged the girl before hiding herself.,The boys tagged the girl before hiding herself,plural (not used in the new design),no
-4,s_f_match_ungram,The girl tagged the boy before hiding himself.,The girl tagged the boy before hiding himself,object-match,yes
-4,p_f_mismatch_ungram,The girls tagged the boy before hiding himself.,The girls tagged the boy before hiding himself,plural (not used in the new design),no
-5,s_m_match_gram,The boy brushed the girl before covering himself.,The boy brushed the girl before covering himself,subject-match,yes
-5,s_m_mismatch_gram,The boy brushed the girls before covering himself.,The boy brushed the girls before covering himself,plural (not used in the new design),no
-5,s_f_match_gram,The girl brushed the boy before covering herself.,The girl brushed the boy before covering herself,subject-match,yes
-5,s_f_mismatch_gram,The girl brushed the boys before covering herself.,The girl brushed the boys before covering herself,plural (not used in the new design),no
-5,s_m_match_ungram,The boy brushed the girl before covering herself.,The boy brushed the girl before covering herself,object-match,yes
-5,p_m_mismatch_ungram,The boys brushed the girl before covering herself.,The boys brushed the girl before covering herself,plural (not used in the new design),no
-5,s_f_match_ungram,The girl brushed the boy before covering himself.,The girl brushed the boy before covering himself,object-match,yes
-5,p_f_mismatch_ungram,The girls brushed the boy before covering himself.,The girls brushed the boy before covering himself,plural (not used in the new design),no
-6,s_m_match_gram,The boy dried the girl before feeding himself.,The boy dried the girl before feeding himself,subject-match,yes
-6,s_m_mismatch_gram,The boy dried the girls before feeding himself.,The boy dried the girls before feeding himself,plural (not used in the new design),no
-6,s_f_match_gram,The girl dried the boy before feeding herself.,The girl dried the boy before feeding herself,subject-match,yes
-6,s_f_mismatch_gram,The girl dried the boys before feeding herself.,The girl dried the boys before feeding herself,plural (not used in the new design),no
-6,s_m_match_ungram,The boy dried the girl before feeding herself.,The boy dried the girl before feeding herself,object-match,yes
-6,p_m_mismatch_ungram,The boys dried the girl before feeding herself.,The boys dried the girl before feeding herself,plural (not used in the new design),no
-6,s_f_match_ungram,The girl dried the boy before feeding himself.,The girl dried the boy before feeding himself,object-match,yes
-6,p_f_mismatch_ungram,The girls dried the boy before feeding himself.,The girls dried the boy before feeding himself,plural (not used in the new design),no
-7,s_m_match_gram,The boy lifted the girl before dressing himself.,The boy lifted the girl before dressing himself,subject-match,yes
-7,s_m_mismatch_gram,The boy lifted the girls before dressing himself.,The boy lifted the girls before dressing himself,plural (not used in the new design),no
-7,s_f_match_gram,The girl lifted the boy before dressing herself.,The girl lifted the boy before dressing herself,subject-match,yes
-7,s_f_mismatch_gram,The girl lifted the boys before dressing herself.,The girl lifted the boys before dressing herself,plural (not used in the new design),no
-7,s_m_match_ungram,The boy lifted the girl before dressing herself.,The boy lifted the girl before dressing herself,object-match,yes
-7,p_m_mismatch_ungram,The boys lifted the girl before dressing herself.,The boys lifted the girl before dressing herself,plural (not used in the new design),no
-7,s_f_match_ungram,The girl lifted the boy before dressing himself.,The girl lifted the boy before dressing himself,object-match,yes
-7,p_f_mismatch_ungram,The girls lifted the boy before dressing himself.,The girls lifted the boy before dressing himself,plural (not used in the new design),no
-8,s_m_match_gram,The boy splashed the girl before cleaning himself.,The boy splashed the girl before cleaning himself,subject-match,yes
-8,s_m_mismatch_gram,The boy splashed the girls before cleaning himself.,The boy splashed the girls before cleaning himself,plural (not used in the new design),no
-8,s_f_match_gram,The girl splashed the boy before cleaning herself.,The girl splashed the boy before cleaning herself,subject-match,yes
-8,s_f_mismatch_gram,The girl splashed the boys before cleaning herself.,The girl splashed the boys before cleaning herself,plural (not used in the new design),no
-8,s_m_match_ungram,The boy splashed the girl before cleaning herself.,The boy splashed the girl before cleaning herself,object-match,yes
-8,p_m_mismatch_ungram,The boys splashed the girl before cleaning herself.,The boys splashed the girl before cleaning herself,plural (not used in the new design),no
-8,s_f_match_ungram,The girl splashed the boy before cleaning himself.,The girl splashed the boy before cleaning himself,object-match,yes
-8,p_f_mismatch_ungram,The girls splashed the boy before cleaning himself.,The girls splashed the boy before cleaning himself,plural (not used in the new design),no
-9,s_m_match_gram,The boy buried the girl before drawing himself.,The boy buried the girl before drawing himself,subject-match,yes
-9,s_m_mismatch_gram,The boy buried the girls before drawing himself.,The boy buried the girls before drawing himself,plural (not used in the new design),no
-9,s_f_match_gram,The girl buried the boy before drawing herself.,The girl buried the boy before drawing herself,subject-match,yes
-9,s_f_mismatch_gram,The girl buried the boys before drawing herself.,The girl buried the boys before drawing herself,plural (not used in the new design),no
-9,s_m_match_ungram,The boy buried the girl before drawing herself.,The boy buried the girl before drawing herself,object-match,yes
-9,p_m_mismatch_ungram,The boys buried the girl before drawing herself.,The boys buried the girl before drawing herself,plural (not used in the new design),no
-9,s_f_match_ungram,The girl buried the boy before drawing himself.,The girl buried the boy before drawing himself,object-match,yes
-9,p_f_mismatch_ungram,The girls buried the boy before drawing himself.,The girls buried the boy before drawing himself,plural (not used in the new design),no
-10,s_m_match_gram,The boy patted the girl before combing himself.,The boy patted the girl before combing himself,subject-match,yes
-10,s_m_mismatch_gram,The boy patted the girls before combing himself.,The boy patted the girls before combing himself,plural (not used in the new design),no
-10,s_f_match_gram,The girl patted the boy before combing herself.,The girl patted the boy before combing herself,subject-match,yes
-10,s_f_mismatch_gram,The girl patted the boys before combing herself.,The girl patted the boys before combing herself,plural (not used in the new design),no
-10,s_m_match_ungram,The boy patted the girl before combing herself.,The boy patted the girl before combing herself,object-match,yes
-10,p_m_mismatch_ungram,The boys patted the girl before combing herself.,The boys patted the girl before combing herself,plural (not used in the new design),no
-10,s_f_match_ungram,The girl patted the boy before combing himself.,The girl patted the boy before combing himself,object-match,yes
-10,p_f_mismatch_ungram,The girls patted the boy before combing himself.,The girls patted the boy before combing himself,plural (not used in the new design),no
-11,s_m_match_gram,The boy hugged the girl before patting himself.,The boy hugged the girl before patting himself,subject-match,yes
-11,s_m_mismatch_gram,The boy hugged the girls before patting himself.,The boy hugged the girls before patting himself,plural (not used in the new design),no
-11,s_f_match_gram,The girl hugged the boy before patting herself.,The girl hugged the boy before patting herself,subject-match,yes
-11,s_f_mismatch_gram,The girl hugged the boys before patting herself.,The girl hugged the boys before patting herself,plural (not used in the new design),no
-11,s_m_match_ungram,The boy hugged the girl before patting herself.,The boy hugged the girl before patting herself,object-match,yes
-11,p_m_mismatch_ungram,The boys hugged the girl before patting herself.,The boys hugged the girl before patting herself,plural (not used in the new design),no
-11,s_f_match_ungram,The girl hugged the boy before patting himself.,The girl hugged the boy before patting himself,object-match,yes
-11,p_f_mismatch_ungram,The girls hugged the boy before patting himself.,The girls hugged the boy before patting himself,plural (not used in the new design),no
-12,s_m_match_gram,The boy scrubbed the girl before seeing himself.,The boy scrubbed the girl before seeing himself,subject-match,yes
-12,s_m_mismatch_gram,The boy scrubbed the girls before seeing himself.,The boy scrubbed the girls before seeing himself,plural (not used in the new design),no
-12,s_f_match_gram,The girl scrubbed the boy before seeing herself.,The girl scrubbed the boy before seeing herself,subject-match,yes
-12,s_f_mismatch_gram,The girl scrubbed the boys before seeing herself.,The girl scrubbed the boys before seeing herself,plural (not used in the new design),no
-12,s_m_match_ungram,The boy scrubbed the girl before seeing herself.,The boy scrubbed the girl before seeing herself,object-match,yes
-12,p_m_mismatch_ungram,The boys scrubbed the girl before seeing herself.,The boys scrubbed the girl before seeing herself,plural (not used in the new design),no
-12,s_f_match_ungram,The girl scrubbed the boy before seeing himself.,The girl scrubbed the boy before seeing himself,object-match,yes
-12,p_f_mismatch_ungram,The girls scrubbed the boy before seeing himself.,The girls scrubbed the boy before seeing himself,plural (not used in the new design),no
-13,s_m_match_gram,The boy combed the girl before scrubbing himself.,The boy combed the girl before scrubbing himself,subject-match,yes
-13,s_m_mismatch_gram,The boy combed the girls before scrubbing himself.,The boy combed the girls before scrubbing himself,plural (not used in the new design),no
-13,s_f_match_gram,The girl combed the boy before scrubbing herself.,The girl combed the boy before scrubbing herself,subject-match,yes
-13,s_f_mismatch_gram,The girl combed the boys before scrubbing herself.,The girl combed the boys before scrubbing herself,plural (not used in the new design),no
-13,s_m_match_ungram,The boy combed the girl before scrubbing herself.,The boy combed the girl before scrubbing herself,object-match,yes
-13,p_m_mismatch_ungram,The boys combed the girl before scrubbing herself.,The boys combed the girl before scrubbing herself,plural (not used in the new design),no
-13,s_f_match_ungram,The girl combed the boy before scrubbing himself.,The girl combed the boy before scrubbing himself,object-match,yes
-13,p_f_mismatch_ungram,The girls combed the boy before scrubbing himself.,The girls combed the boy before scrubbing himself,plural (not used in the new design),no
-14,s_m_match_gram,The boy fed the girl before painting himself.,The boy fed the girl before painting himself,subject-match,yes
-14,s_m_mismatch_gram,The boy fed the girls before painting himself.,The boy fed the girls before painting himself,plural (not used in the new design),no
-14,s_f_match_gram,The girl fed the boy before painting herself.,The girl fed the boy before painting herself,subject-match,yes
-14,s_f_mismatch_gram,The girl fed the boys before painting herself.,The girl fed the boys before painting herself,plural (not used in the new design),no
-14,s_m_match_ungram,The boy fed the girl before painting herself.,The boy fed the girl before painting herself,object-match,yes
-14,p_m_mismatch_ungram,The boys fed the girl before painting herself.,The boys fed the girl before painting herself,plural (not used in the new design),no
-14,s_f_match_ungram,The girl fed the boy before painting himself.,The girl fed the boy before painting himself,object-match,yes
-14,p_f_mismatch_ungram,The girls fed the boy before painting himself.,The girls fed the boy before painting himself,plural (not used in the new design),no
-15,s_m_match_gram,The boy saw the girl before hearing himself.,The boy saw the girl before hearing himself,subject-match,yes
-15,s_m_mismatch_gram,The boy saw the girls before hearing himself.,The boy saw the girls before hearing himself,plural (not used in the new design),no
-15,s_f_match_gram,The girl saw the boy before hearing herself.,The girl saw the boy before hearing herself,subject-match,yes
-15,s_f_mismatch_gram,The girl saw the boys before hearing herself.,The girl saw the boys before hearing herself,plural (not used in the new design),no
-15,s_m_match_ungram,The boy saw the girl before hearing herself.,The boy saw the girl before hearing herself,object-match,yes
-15,p_m_mismatch_ungram,The boys saw the girl before hearing herself.,The boys saw the girl before hearing herself,plural (not used in the new design),no
-15,s_f_match_ungram,The girl saw the boy before hearing himself.,The girl saw the boy before hearing himself,object-match,yes
-15,p_f_mismatch_ungram,The girls saw the boy before hearing himself.,The girls saw the boy before hearing himself,plural (not used in the new design),no
-16,s_m_match_gram,The boy pushed the girl before splashing himself.,The boy pushed the girl before splashing himself,subject-match,yes
-16,s_m_mismatch_gram,The boy pushed the girls before splashing himself.,The boy pushed the girls before splashing himself,plural (not used in the new design),no
-16,s_f_match_gram,The girl pushed the boy before splashing herself.,The girl pushed the boy before splashing herself,subject-match,yes
-16,s_f_mismatch_gram,The girl pushed the boys before splashing herself.,The girl pushed the boys before splashing herself,plural (not used in the new design),no
-16,s_m_match_ungram,The boy pushed the girl before splashing herself.,The boy pushed the girl before splashing herself,object-match,yes
-16,p_m_mismatch_ungram,The boys pushed the girl before splashing herself.,The boys pushed the girl before splashing herself,plural (not used in the new design),no
-16,s_f_match_ungram,The girl pushed the boy before splashing himself.,The girl pushed the boy before splashing himself,object-match,yes
-16,p_f_mismatch_ungram,The girls pushed the boy before splashing himself.,The girls pushed the boy before splashing himself,plural (not used in the new design),no
+item,condition,stimulus_as_saved,sentence,match_or_mismatch,plural_noun,reflexive,grammaticality
+1,s_m_match_gram,The boy washed the girl before hearing himself.,The boy washed the girl before hearing himself,match,singular,agrees with the subject,grammatical
+1,s_m_mismatch_gram,The boy washed the girls before hearing himself.,The boy washed the girls before hearing himself,mismatch,plural object,agrees with the subject,grammatical
+1,s_f_match_gram,The girl washed the boy before hearing herself.,The girl washed the boy before hearing herself,match,singular,agrees with the subject,grammatical
+1,s_f_mismatch_gram,The girl washed the boys before hearing herself.,The girl washed the boys before hearing herself,mismatch,plural object,agrees with the subject,grammatical
+1,s_m_match_ungram,The boy washed the girl before hearing herself.,The boy washed the girl before hearing herself,match,singular,agrees with the object,ungrammatical
+1,p_m_mismatch_ungram,The boys washed the girl before hearing herself.,The boys washed the girl before hearing herself,mismatch,plural subject,agrees with the object,ungrammatical
+1,s_f_match_ungram,The girl washed the boy before hearing himself.,The girl washed the boy before hearing himself,match,singular,agrees with the object,ungrammatical
+1,p_f_mismatch_ungram,The girls washed the boy before hearing himself.,The girls washed the boy before hearing himself,mismatch,plural subject,agrees with the object,ungrammatical
+2,s_m_match_gram,The boy fanned the girl before hugging himself.,The boy fanned the girl before hugging himself,match,singular,agrees with the subject,grammatical
+2,s_m_mismatch_gram,The boy fanned the girls before hugging himself.,The boy fanned the girls before hugging himself,mismatch,plural object,agrees with the subject,grammatical
+2,s_f_match_gram,The girl fanned the boy before hugging herself.,The girl fanned the boy before hugging herself,match,singular,agrees with the subject,grammatical
+2,s_f_mismatch_gram,The girl fanned the boys before hugging herself.,The girl fanned the boys before hugging herself,mismatch,plural object,agrees with the subject,grammatical
+2,s_m_match_ungram,The boy fanned the girl before hugging herself.,The boy fanned the girl before hugging herself,match,singular,agrees with the object,ungrammatical
+2,p_m_mismatch_ungram,The boys fanned the girl before hugging herself.,The boys fanned the girl before hugging herself,mismatch,plural subject,agrees with the object,ungrammatical
+2,s_f_match_ungram,The girl fanned the boy before hugging himself.,The girl fanned the boy before hugging himself,match,singular,agrees with the object,ungrammatical
+2,p_f_mismatch_ungram,The girls fanned the boy before hugging himself.,The girls fanned the boy before hugging himself,mismatch,plural subject,agrees with the object,ungrammatical
+3,s_m_match_gram,The boy painted the girl before washing himself.,The boy painted the girl before washing himself,match,singular,agrees with the subject,grammatical
+3,s_m_mismatch_gram,The boy painted the girls before washing himself.,The boy painted the girls before washing himself,mismatch,plural object,agrees with the subject,grammatical
+3,s_f_match_gram,The girl painted the boy before washing herself.,The girl painted the boy before washing herself,match,singular,agrees with the subject,grammatical
+3,s_f_mismatch_gram,The girl painted the boys before washing herself.,The girl painted the boys before washing herself,mismatch,plural object,agrees with the subject,grammatical
+3,s_m_match_ungram,The boy painted the girl before washing herself.,The boy painted the girl before washing herself,match,singular,agrees with the object,ungrammatical
+3,p_m_mismatch_ungram,The boys painted the girl before washing herself.,The boys painted the girl before washing herself,mismatch,plural subject,agrees with the object,ungrammatical
+3,s_f_match_ungram,The girl painted the boy before washing himself.,The girl painted the boy before washing himself,match,singular,agrees with the object,ungrammatical
+3,p_f_mismatch_ungram,The girls painted the boy before washing himself.,The girls painted the boy before washing himself,mismatch,plural subject,agrees with the object,ungrammatical
+4,s_m_match_gram,The boy tagged the girl before hiding himself.,The boy tagged the girl before hiding himself,match,singular,agrees with the subject,grammatical
+4,s_m_mismatch_gram,The boy tagged the girls before hiding himself.,The boy tagged the girls before hiding himself,mismatch,plural object,agrees with the subject,grammatical
+4,s_f_match_gram,The girl tagged the boy before hiding herself.,The girl tagged the boy before hiding herself,match,singular,agrees with the subject,grammatical
+4,s_f_mismatch_gram,The girl tagged the boys before hiding herself.,The girl tagged the boys before hiding herself,mismatch,plural object,agrees with the subject,grammatical
+4,s_m_match_ungram,The boy tagged the girl before hiding herself.,The boy tagged the girl before hiding herself,match,singular,agrees with the object,ungrammatical
+4,p_m_mismatch_ungram,The boys tagged the girl before hiding herself.,The boys tagged the girl before hiding herself,mismatch,plural subject,agrees with the object,ungrammatical
+4,s_f_match_ungram,The girl tagged the boy before hiding himself.,The girl tagged the boy before hiding himself,match,singular,agrees with the object,ungrammatical
+4,p_f_mismatch_ungram,The girls tagged the boy before hiding himself.,The girls tagged the boy before hiding himself,mismatch,plural subject,agrees with the object,ungrammatical
+5,s_m_match_gram,The boy brushed the girl before covering himself.,The boy brushed the girl before covering himself,match,singular,agrees with the subject,grammatical
+5,s_m_mismatch_gram,The boy brushed the girls before covering himself.,The boy brushed the girls before covering himself,mismatch,plural object,agrees with the subject,grammatical
+5,s_f_match_gram,The girl brushed the boy before covering herself.,The girl brushed the boy before covering herself,match,singular,agrees with the subject,grammatical
+5,s_f_mismatch_gram,The girl brushed the boys before covering herself.,The girl brushed the boys before covering herself,mismatch,plural object,agrees with the subject,grammatical
+5,s_m_match_ungram,The boy brushed the girl before covering herself.,The boy brushed the girl before covering herself,match,singular,agrees with the object,ungrammatical
+5,p_m_mismatch_ungram,The boys brushed the girl before covering herself.,The boys brushed the girl before covering herself,mismatch,plural subject,agrees with the object,ungrammatical
+5,s_f_match_ungram,The girl brushed the boy before covering himself.,The girl brushed the boy before covering himself,match,singular,agrees with the object,ungrammatical
+5,p_f_mismatch_ungram,The girls brushed the boy before covering himself.,The girls brushed the boy before covering himself,mismatch,plural subject,agrees with the object,ungrammatical
+6,s_m_match_gram,The boy dried the girl before feeding himself.,The boy dried the girl before feeding himself,match,singular,agrees with the subject,grammatical
+6,s_m_mismatch_gram,The boy dried the girls before feeding himself.,The boy dried the girls before feeding himself,mismatch,plural object,agrees with the subject,grammatical
+6,s_f_match_gram,The girl dried the boy before feeding herself.,The girl dried the boy before feeding herself,match,singular,agrees with the subject,grammatical
+6,s_f_mismatch_gram,The girl dried the boys before feeding herself.,The girl dried the boys before feeding herself,mismatch,plural object,agrees with the subject,grammatical
+6,s_m_match_ungram,The boy dried the girl before feeding herself.,The boy dried the girl before feeding herself,match,singular,agrees with the object,ungrammatical
+6,p_m_mismatch_ungram,The boys dried the girl before feeding herself.,The boys dried the girl before feeding herself,mismatch,plural subject,agrees with the object,ungrammatical
+6,s_f_match_ungram,The girl dried the boy before feeding himself.,The girl dried the boy before feeding himself,match,singular,agrees with the object,ungrammatical
+6,p_f_mismatch_ungram,The girls dried the boy before feeding himself.,The girls dried the boy before feeding himself,mismatch,plural subject,agrees with the object,ungrammatical
+7,s_m_match_gram,The boy lifted the girl before dressing himself.,The boy lifted the girl before dressing himself,match,singular,agrees with the subject,grammatical
+7,s_m_mismatch_gram,The boy lifted the girls before dressing himself.,The boy lifted the girls before dressing himself,mismatch,plural object,agrees with the subject,grammatical
+7,s_f_match_gram,The girl lifted the boy before dressing herself.,The girl lifted the boy before dressing herself,match,singular,agrees with the subject,grammatical
+7,s_f_mismatch_gram,The girl lifted the boys before dressing herself.,The girl lifted the boys before dressing herself,mismatch,plural object,agrees with the subject,grammatical
+7,s_m_match_ungram,The boy lifted the girl before dressing herself.,The boy lifted the girl before dressing herself,match,singular,agrees with the object,ungrammatical
+7,p_m_mismatch_ungram,The boys lifted the girl before dressing herself.,The boys lifted the girl before dressing herself,mismatch,plural subject,agrees with the object,ungrammatical
+7,s_f_match_ungram,The girl lifted the boy before dressing himself.,The girl lifted the boy before dressing himself,match,singular,agrees with the object,ungrammatical
+7,p_f_mismatch_ungram,The girls lifted the boy before dressing himself.,The girls lifted the boy before dressing himself,mismatch,plural subject,agrees with the object,ungrammatical
+8,s_m_match_gram,The boy splashed the girl before cleaning himself.,The boy splashed the girl before cleaning himself,match,singular,agrees with the subject,grammatical
+8,s_m_mismatch_gram,The boy splashed the girls before cleaning himself.,The boy splashed the girls before cleaning himself,mismatch,plural object,agrees with the subject,grammatical
+8,s_f_match_gram,The girl splashed the boy before cleaning herself.,The girl splashed the boy before cleaning herself,match,singular,agrees with the subject,grammatical
+8,s_f_mismatch_gram,The girl splashed the boys before cleaning herself.,The girl splashed the boys before cleaning herself,mismatch,plural object,agrees with the subject,grammatical
+8,s_m_match_ungram,The boy splashed the girl before cleaning herself.,The boy splashed the girl before cleaning herself,match,singular,agrees with the object,ungrammatical
+8,p_m_mismatch_ungram,The boys splashed the girl before cleaning herself.,The boys splashed the girl before cleaning herself,mismatch,plural subject,agrees with the object,ungrammatical
+8,s_f_match_ungram,The girl splashed the boy before cleaning himself.,The girl splashed the boy before cleaning himself,match,singular,agrees with the object,ungrammatical
+8,p_f_mismatch_ungram,The girls splashed the boy before cleaning himself.,The girls splashed the boy before cleaning himself,mismatch,plural subject,agrees with the object,ungrammatical
+9,s_m_match_gram,The boy buried the girl before drawing himself.,The boy buried the girl before drawing himself,match,singular,agrees with the subject,grammatical
+9,s_m_mismatch_gram,The boy buried the girls before drawing himself.,The boy buried the girls before drawing himself,mismatch,plural object,agrees with the subject,grammatical
+9,s_f_match_gram,The girl buried the boy before drawing herself.,The girl buried the boy before drawing herself,match,singular,agrees with the subject,grammatical
+9,s_f_mismatch_gram,The girl buried the boys before drawing herself.,The girl buried the boys before drawing herself,mismatch,plural object,agrees with the subject,grammatical
+9,s_m_match_ungram,The boy buried the girl before drawing herself.,The boy buried the girl before drawing herself,match,singular,agrees with the object,ungrammatical
+9,p_m_mismatch_ungram,The boys buried the girl before drawing herself.,The boys buried the girl before drawing herself,mismatch,plural subject,agrees with the object,ungrammatical
+9,s_f_match_ungram,The girl buried the boy before drawing himself.,The girl buried the boy before drawing himself,match,singular,agrees with the object,ungrammatical
+9,p_f_mismatch_ungram,The girls buried the boy before drawing himself.,The girls buried the boy before drawing himself,mismatch,plural subject,agrees with the object,ungrammatical
+10,s_m_match_gram,The boy patted the girl before combing himself.,The boy patted the girl before combing himself,match,singular,agrees with the subject,grammatical
+10,s_m_mismatch_gram,The boy patted the girls before combing himself.,The boy patted the girls before combing himself,mismatch,plural object,agrees with the subject,grammatical
+10,s_f_match_gram,The girl patted the boy before combing herself.,The girl patted the boy before combing herself,match,singular,agrees with the subject,grammatical
+10,s_f_mismatch_gram,The girl patted the boys before combing herself.,The girl patted the boys before combing herself,mismatch,plural object,agrees with the subject,grammatical
+10,s_m_match_ungram,The boy patted the girl before combing herself.,The boy patted the girl before combing herself,match,singular,agrees with the object,ungrammatical
+10,p_m_mismatch_ungram,The boys patted the girl before combing herself.,The boys patted the girl before combing herself,mismatch,plural subject,agrees with the object,ungrammatical
+10,s_f_match_ungram,The girl patted the boy before combing himself.,The girl patted the boy before combing himself,match,singular,agrees with the object,ungrammatical
+10,p_f_mismatch_ungram,The girls patted the boy before combing himself.,The girls patted the boy before combing himself,mismatch,plural subject,agrees with the object,ungrammatical
+11,s_m_match_gram,The boy hugged the girl before patting himself.,The boy hugged the girl before patting himself,match,singular,agrees with the subject,grammatical
+11,s_m_mismatch_gram,The boy hugged the girls before patting himself.,The boy hugged the girls before patting himself,mismatch,plural object,agrees with the subject,grammatical
+11,s_f_match_gram,The girl hugged the boy before patting herself.,The girl hugged the boy before patting herself,match,singular,agrees with the subject,grammatical
+11,s_f_mismatch_gram,The girl hugged the boys before patting herself.,The girl hugged the boys before patting herself,mismatch,plural object,agrees with the subject,grammatical
+11,s_m_match_ungram,The boy hugged the girl before patting herself.,The boy hugged the girl before patting herself,match,singular,agrees with the object,ungrammatical
+11,p_m_mismatch_ungram,The boys hugged the girl before patting herself.,The boys hugged the girl before patting herself,mismatch,plural subject,agrees with the object,ungrammatical
+11,s_f_match_ungram,The girl hugged the boy before patting himself.,The girl hugged the boy before patting himself,match,singular,agrees with the object,ungrammatical
+11,p_f_mismatch_ungram,The girls hugged the boy before patting himself.,The girls hugged the boy before patting himself,mismatch,plural subject,agrees with the object,ungrammatical
+12,s_m_match_gram,The boy scrubbed the girl before seeing himself.,The boy scrubbed the girl before seeing himself,match,singular,agrees with the subject,grammatical
+12,s_m_mismatch_gram,The boy scrubbed the girls before seeing himself.,The boy scrubbed the girls before seeing himself,mismatch,plural object,agrees with the subject,grammatical
+12,s_f_match_gram,The girl scrubbed the boy before seeing herself.,The girl scrubbed the boy before seeing herself,match,singular,agrees with the subject,grammatical
+12,s_f_mismatch_gram,The girl scrubbed the boys before seeing herself.,The girl scrubbed the boys before seeing herself,mismatch,plural object,agrees with the subject,grammatical
+12,s_m_match_ungram,The boy scrubbed the girl before seeing herself.,The boy scrubbed the girl before seeing herself,match,singular,agrees with the object,ungrammatical
+12,p_m_mismatch_ungram,The boys scrubbed the girl before seeing herself.,The boys scrubbed the girl before seeing herself,mismatch,plural subject,agrees with the object,ungrammatical
+12,s_f_match_ungram,The girl scrubbed the boy before seeing himself.,The girl scrubbed the boy before seeing himself,match,singular,agrees with the object,ungrammatical
+12,p_f_mismatch_ungram,The girls scrubbed the boy before seeing himself.,The girls scrubbed the boy before seeing himself,mismatch,plural subject,agrees with the object,ungrammatical
+13,s_m_match_gram,The boy combed the girl before scrubbing himself.,The boy combed the girl before scrubbing himself,match,singular,agrees with the subject,grammatical
+13,s_m_mismatch_gram,The boy combed the girls before scrubbing himself.,The boy combed the girls before scrubbing himself,mismatch,plural object,agrees with the subject,grammatical
+13,s_f_match_gram,The girl combed the boy before scrubbing herself.,The girl combed the boy before scrubbing herself,match,singular,agrees with the subject,grammatical
+13,s_f_mismatch_gram,The girl combed the boys before scrubbing herself.,The girl combed the boys before scrubbing herself,mismatch,plural object,agrees with the subject,grammatical
+13,s_m_match_ungram,The boy combed the girl before scrubbing herself.,The boy combed the girl before scrubbing herself,match,singular,agrees with the object,ungrammatical
+13,p_m_mismatch_ungram,The boys combed the girl before scrubbing herself.,The boys combed the girl before scrubbing herself,mismatch,plural subject,agrees with the object,ungrammatical
+13,s_f_match_ungram,The girl combed the boy before scrubbing himself.,The girl combed the boy before scrubbing himself,match,singular,agrees with the object,ungrammatical
+13,p_f_mismatch_ungram,The girls combed the boy before scrubbing himself.,The girls combed the boy before scrubbing himself,mismatch,plural subject,agrees with the object,ungrammatical
+14,s_m_match_gram,The boy fed the girl before painting himself.,The boy fed the girl before painting himself,match,singular,agrees with the subject,grammatical
+14,s_m_mismatch_gram,The boy fed the girls before painting himself.,The boy fed the girls before painting himself,mismatch,plural object,agrees with the subject,grammatical
+14,s_f_match_gram,The girl fed the boy before painting herself.,The girl fed the boy before painting herself,match,singular,agrees with the subject,grammatical
+14,s_f_mismatch_gram,The girl fed the boys before painting herself.,The girl fed the boys before painting herself,mismatch,plural object,agrees with the subject,grammatical
+14,s_m_match_ungram,The boy fed the girl before painting herself.,The boy fed the girl before painting herself,match,singular,agrees with the object,ungrammatical
+14,p_m_mismatch_ungram,The boys fed the girl before painting herself.,The boys fed the girl before painting herself,mismatch,plural subject,agrees with the object,ungrammatical
+14,s_f_match_ungram,The girl fed the boy before painting himself.,The girl fed the boy before painting himself,match,singular,agrees with the object,ungrammatical
+14,p_f_mismatch_ungram,The girls fed the boy before painting himself.,The girls fed the boy before painting himself,mismatch,plural subject,agrees with the object,ungrammatical
+15,s_m_match_gram,The boy saw the girl before hearing himself.,The boy saw the girl before hearing himself,match,singular,agrees with the subject,grammatical
+15,s_m_mismatch_gram,The boy saw the girls before hearing himself.,The boy saw the girls before hearing himself,mismatch,plural object,agrees with the subject,grammatical
+15,s_f_match_gram,The girl saw the boy before hearing herself.,The girl saw the boy before hearing herself,match,singular,agrees with the subject,grammatical
+15,s_f_mismatch_gram,The girl saw the boys before hearing herself.,The girl saw the boys before hearing herself,mismatch,plural object,agrees with the subject,grammatical
+15,s_m_match_ungram,The boy saw the girl before hearing herself.,The boy saw the girl before hearing herself,match,singular,agrees with the object,ungrammatical
+15,p_m_mismatch_ungram,The boys saw the girl before hearing herself.,The boys saw the girl before hearing herself,mismatch,plural subject,agrees with the object,ungrammatical
+15,s_f_match_ungram,The girl saw the boy before hearing himself.,The girl saw the boy before hearing himself,match,singular,agrees with the object,ungrammatical
+15,p_f_mismatch_ungram,The girls saw the boy before hearing himself.,The girls saw the boy before hearing himself,mismatch,plural subject,agrees with the object,ungrammatical
+16,s_m_match_gram,The boy pushed the girl before splashing himself.,The boy pushed the girl before splashing himself,match,singular,agrees with the subject,grammatical
+16,s_m_mismatch_gram,The boy pushed the girls before splashing himself.,The boy pushed the girls before splashing himself,mismatch,plural object,agrees with the subject,grammatical
+16,s_f_match_gram,The girl pushed the boy before splashing herself.,The girl pushed the boy before splashing herself,match,singular,agrees with the subject,grammatical
+16,s_f_mismatch_gram,The girl pushed the boys before splashing herself.,The girl pushed the boys before splashing herself,mismatch,plural object,agrees with the subject,grammatical
+16,s_m_match_ungram,The boy pushed the girl before splashing herself.,The boy pushed the girl before splashing herself,match,singular,agrees with the object,ungrammatical
+16,p_m_mismatch_ungram,The boys pushed the girl before splashing herself.,The boys pushed the girl before splashing herself,mismatch,plural subject,agrees with the object,ungrammatical
+16,s_f_match_ungram,The girl pushed the boy before splashing himself.,The girl pushed the boy before splashing himself,match,singular,agrees with the object,ungrammatical
+16,p_f_mismatch_ungram,The girls pushed the boy before splashing himself.,The girls pushed the boy before splashing himself,mismatch,plural subject,agrees with the object,ungrammatical
