@@ -25,7 +25,7 @@ column and check that it does not interact with the effects of interest.
 | Columns | no `item`, `grammaticality`, `trial_phase` | these are saved, plus `platform` and the IDs |
 | Platform | Prolific | Prolific and SONA |
 | Filler 11 | "made the appointments" | "scheduled the appointments" (a control only) |
-| Practice sentence 2 | "Practice a this sentence is" | "Practice of this sentence is" (practice only) |
+| Practice sentences 2 and 3 | "Practice a this sentence is" / "This sentence has something wrong with himself" | "Practice of this sentence is" / "The girl saw himself in the mirror" (practice only) |
 
 The earlier `grammaticality` label was never saved; use `condition` (and the lookup) instead.
 
