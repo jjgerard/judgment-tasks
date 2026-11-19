@@ -93,7 +93,7 @@
 <body>
 <div id="rotate-prompt" role="alert">
   <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="30" y="8" width="40" height="84" rx="7" fill="none" stroke="#000" stroke-width="5"/><circle cx="50" cy="84" r="3" fill="#000"/></svg>
-  <p>Per favore, ruota il telefono in orizzontale per continuare.</p>
+  <p>Per favore, ruota il telefono in posizione orizzontale per continuare.</p>
 </div>
 <script>
 
@@ -174,9 +174,9 @@ const consent9 = "Procedura";
 const consent10 = "Lo studio durerà meno di 20 minuti.";
 const consent11 = "Per prima cosa, risponderai a due domande sulla tua conoscenza delle lingue.";
 const consent12 = "Poi svolgerai due brevi compiti.";
-const consent13 = "In uno di essi, ti verrà chiesto di guardare una serie di disegni con personaggi di una serie televisiva per bambini e di rispondere a domande vero o falso sui disegni. Per favore, guarda i disegni e leggi la descrizione prima di rispondere a ogni domanda.";
-const consent14 = "Nell'altro, ti verrà chiesto di leggere in silenzio frasi che possono contenere errori grammaticali e di valutarne la grammaticalità selezionando un punteggio su una scala scorrevole.";
-const consent15 = "Tieni presente che alcune domande sono pensate per verificare la tua attenzione.";
+const consent13 = "In uno di essi, ti verrà chiesto di guardare una serie di disegni con personaggi di una serie televisiva per bambini e di rispondere a domande 'vero' o 'falso' sui disegni. Per favore, guarda i disegni e leggi la descrizione prima di rispondere a ogni domanda.";
+const consent14 = "Nell'altro, ti verrà chiesto di leggere in silenzio frasi che possono contenere errori grammaticali e di valutarne la grammaticalità selezionando un punteggio su una scala di valori.";
+const consent15 = "Tieni presente che alcune domande sono pensate per verificare il tuo stato di attenzione.";
 const consent16 = "Il tuo consenso indica che:";
 const consent17 = "Hai almeno 18 anni.";
 const consent18 = "Scegli di partecipare a questo progetto di ricerca liberamente e volontariamente.";
@@ -331,7 +331,7 @@ const leap_survey2 = {
 
 const picture_block = (function(){
 
-  let s1 = "Questo è Joey. <br> A lui piace colorare le cose in modi divertenti.";
+  let s1 = "Questo è Joey. <br> A lui piace colorare le cose in modo divertente.";
   let s2 = "Joey ha colorato alcuni disegni di Dora, Diego e Topolino.";
   let s3 = "Questo è Koko, l'amico di Joey.<br>Koko ci dirà cosa c'è nei disegni, ma a volte Koko sbaglia il colore.";
   let s4 = "Per favore, guarda i disegni e le loro descrizioni. <br><br>Dopo ogni descrizione, Koko dirà una frase sui colori del disegno.";
@@ -339,18 +339,18 @@ const picture_block = (function(){
   let test_pngs = ["wash_eat_mickey", "fan_hug_mickey", "paint_pick_mickey", "tag_read_mickey", "brush_pet_mickey", "dry_bake_mickey", "lift_catch_mickey", "splash_fly_mickey"];
   let control_pngs = ["bury_kick_mickey_control", "pat_paint", "hug_open", "scrub_build_mickey_control", "comb_ring_mickey_control", "feed_ride", "poke_throw_mickey_control", "push_drive"];
   let training_pngs = ["training_1", "training_1", "training_2_mickey", "training_3_mickey"];
-  let training_descriptions = ["In questo disegno, abbiamo Dora con dell'uva e Diego con una fragola.", "Riprova, Koko: In questo disegno, abbiamo Dora con dell'uva e Diego con una fragola.", "In questo disegno, Dora e Topolino si stanno provando dei vestiti<br>e poi Dora ha un cappello e anche Topolino ha un cappello.", "In questo disegno, Diego e Topolino hanno un pastello a cera e un pennello<br>e poi Diego ha un secchiello e anche Topolino ha un secchiello."];
-  let test_descriptions = ["In questo disegno, Topolino sta lavando Diego<br>e poi Topolino sta mangiando una mela e anche Diego sta mangiando una mela.", "In questo disegno, Topolino sta facendo vento a Diego<br>e poi Diego sta abbracciando un orso e anche Topolino sta abbracciando un orso.", "In questo disegno, Topolino sta dipingendo Diego<br>e poi Topolino sta cogliendo un fiore e anche Diego sta cogliendo un fiore.", "In questo disegno, Topolino sta acchiappando Diego<br>e poi Topolino sta leggendo un libro e anche Diego sta leggendo un libro.", "In questo disegno, Diego sta spazzolando Topolino<br>e poi Topolino sta accarezzando un cane e anche Diego sta accarezzando un cane.", "In questo disegno, Diego sta asciugando Topolino<br>e poi Diego sta preparando una torta e anche Topolino sta preparando una torta.", "In questo disegno, Diego sta sollevando Topolino<br>e poi Diego sta pescando un pesce e anche Topolino sta pescando un pesce.", "In questo disegno, Diego sta schizzando Topolino<br>e poi Topolino sta facendo volare un aquilone e anche Diego sta facendo volare un aquilone."];
-  let control_descriptions = ["In questo disegno, Dora sta seppellendo Topolino<br>e poi Dora sta dando un calcio a un pallone e anche Topolino sta dando un calcio a un pallone.", "In questo disegno, Dora sta dando un colpetto a Diego<br>e poi Diego sta dipingendo un leone e anche Dora sta dipingendo un leone.", "In questo disegno, Dora sta abbracciando Diego<br>e poi Diego sta aprendo una scatola e anche Dora sta aprendo una scatola.", "In questo disegno, Dora sta strofinando Topolino<br>e poi Dora sta costruendo una torre e anche Topolino sta costruendo una torre.", "In questo disegno, Topolino sta pettinando Dora<br>e poi Topolino sta suonando una campana e anche Dora sta suonando una campana.", "In questo disegno, Diego sta dando da mangiare a Dora<br>e poi Diego sta andando in bici e anche Dora sta andando in bici.", "In questo disegno, Topolino sta toccando Dora con il dito<br>e poi Topolino sta lanciando una palla e anche Dora sta lanciando una palla.", "In questo disegno, Diego sta spingendo Dora<br>e poi Diego sta guidando una macchina e anche Dora sta guidando una macchina."];
+  let training_descriptions = ["In questo disegno, abbiamo Dora con dell'uva e Diego con una fragola.", "Riprova, Koko: In questo disegno, abbiamo Dora con dell'uva e Diego con una fragola.", "In questo disegno, Dora e Topolino si stanno provando dei vestiti<br>e poi Dora ha un cappello e anche Topolino ha un cappello.", "In questo disegno, Diego e Topolino hanno un pastello a cera e un pennello.<br>Diego ha un secchiello e anche Topolino ha un secchiello."];
+  let test_descriptions = ["In questa immagine, prima Topolino lava Diego.<br>Poi Topolino mangia una mela e anche Diego mangia una mela.", "In questa immagine, prima Topolino fa vento a Diego.<br>Poi Diego abbraccia un orso e anche Topolino abbraccia un orso.", "In questo disegno, Topolino sta dipingendo Diego<br>e poi Topolino sta cogliendo un fiore e anche Diego sta cogliendo un fiore.", "In questo disegno, Topolino sta acchiappando Diego<br>e poi Topolino sta leggendo un libro e anche Diego sta leggendo un libro.", "In questo disegno, Diego sta spazzolando Topolino<br>e poi Topolino sta accarezzando un cane e anche Diego sta accarezzando un cane.", "In questo disegno, Diego sta asciugando Topolino<br>e poi Diego sta preparando una torta e anche Topolino sta preparando una torta.", "In questo disegno, Diego sta sollevando Topolino<br>e poi Diego prende un pesce e anche Topolino prende un pesce.", "In questo disegno, Diego sta schizzando Topolino<br>e poi Topolino sta facendo volare un aquilone e anche Diego sta facendo volare un aquilone."];
+  let control_descriptions = ["In questo disegno, Dora sta insabbiando Topolino<br>e poi Dora sta dando un calcio a un pallone e anche Topolino sta dando un calcio a un pallone.", "In questo disegno, Dora sta dando un colpetto a Diego<br>e poi Diego sta dipingendo un leone e anche Dora sta dipingendo un leone.", "In questo disegno, Dora sta abbracciando Diego<br>e poi Diego sta aprendo una scatola e anche Dora sta aprendo una scatola.", "In questo disegno, Dora sta strofinando Topolino<br>e poi Dora sta costruendo una torre e anche Topolino sta costruendo una torre.", "In questo disegno, Topolino sta pettinando Dora<br>e poi Topolino sta suonando una campana e anche Dora sta suonando una campana.", "In questo disegno, Diego sta dando da mangiare a Dora<br>e poi Diego sta andando in bici e anche Dora sta andando in bici.", "In questo disegno, Topolino sta toccando Dora con il dito<br>e poi Topolino sta lanciando una palla e anche Dora sta lanciando una palla.", "In questo disegno, Diego sta spingendo Dora<br>e poi Diego sta guidando una macchina e anche Dora sta guidando una macchina."];
   let training_sentences = ["Dora ha dell'uva gialla!\"", "Diego ha una fragola gialla!\"", "Dora si è provata una sciarpa prima che Topolino comprasse il cappello verde\"", "Topolino ha preso un pennello prima che Diego disegnasse il secchiello rosso\""];
-  let true_ac = ["Topolino ha lavato Diego prima di mangiare la mela arancione\"", "Topolino ha fatto vento a Diego prima di abbracciare l'orso rosso\"", "Topolino ha dipinto Diego prima di cogliere il fiore verde\"", "Topolino ha acchiappato Diego prima di leggere il libro giallo\"", "Diego ha spazzolato Topolino prima di accarezzare il cane verde\"", "Diego ha asciugato Topolino prima di preparare la torta viola\"", "Diego ha sollevato Topolino prima di pescare il pesce rosso\"", "Diego ha schizzato Topolino prima di far volare l'aquilone rosso\""];
-  let false_ac = ["Topolino ha lavato Diego prima di mangiare la mela blu\"", "Topolino ha fatto vento a Diego prima di abbracciare l'orso blu\"", "Topolino ha dipinto Diego prima di cogliere il fiore marrone\"", "Topolino ha acchiappato Diego prima di leggere il libro verde\"", "Diego ha spazzolato Topolino prima di accarezzare il cane viola\"", "Diego ha asciugato Topolino prima di preparare la torta rossa\"", "Diego ha sollevato Topolino prima di pescare il pesce marrone\"", "Diego ha schizzato Topolino prima di far volare l'aquilone blu\""];
-  let true_subj = ["Topolino ha lavato Diego prima che mangiasse la mela arancione\"", "Topolino ha fatto vento a Diego prima che abbracciasse l'orso rosso\"", "Topolino ha dipinto Diego prima che cogliesse il fiore verde\"", "Topolino ha acchiappato Diego prima che leggesse il libro giallo\"", "Diego ha spazzolato Topolino prima che accarezzasse il cane verde\"", "Diego ha asciugato Topolino prima che preparasse la torta viola\"", "Diego ha sollevato Topolino prima che pescasse il pesce rosso\"", "Diego ha schizzato Topolino prima che facesse volare l'aquilone rosso\""];
-  let false_subj = ["Topolino ha lavato Diego prima che mangiasse la mela blu\"", "Topolino ha fatto vento a Diego prima che abbracciasse l'orso blu\"", "Topolino ha dipinto Diego prima che cogliesse il fiore marrone\"", "Topolino ha acchiappato Diego prima che leggesse il libro verde\"", "Diego ha spazzolato Topolino prima che accarezzasse il cane viola\"", "Diego ha asciugato Topolino prima che preparasse la torta rossa\"", "Diego ha sollevato Topolino prima che pescasse il pesce marrone\"", "Diego ha schizzato Topolino prima che facesse volare l'aquilone blu\""];
-  let true_control_subject = ["Dora ha seppellito Topolino prima che lei desse un calcio al pallone viola\"", "Dora ha dato un colpetto a Diego prima che lei dipingesse il leone blu\"", "Dora ha abbracciato Diego prima che lei aprisse la scatola verde\"", "Dora ha strofinato Topolino prima che lei costruisse la torre marrone\"", "Topolino ha pettinato Dora prima che lui suonasse la campana arancione\"", "Diego ha dato da mangiare a Dora prima che lui salisse sulla bici gialla\"", "Topolino ha toccato Dora con il dito prima che lui lanciasse la palla gialla\"", "Diego ha spinto Dora prima che lui guidasse la macchina verde\""];
-  let false_control_subject = ["Dora ha seppellito Topolino prima che lei desse un calcio al pallone arancione\"", "Dora ha dato un colpetto a Diego prima che lei dipingesse il leone verde\"", "Dora ha abbracciato Diego prima che lei aprisse la scatola blu\"", "Dora ha strofinato Topolino prima che lei costruisse la torre verde\"", "Topolino ha pettinato Dora prima che lui suonasse la campana verde\"", "Diego ha dato da mangiare a Dora prima che lui salisse sulla bici verde\"", "Topolino ha toccato Dora con il dito prima che lui lanciasse la palla rossa\"", "Diego ha spinto Dora prima che lui guidasse la macchina viola\""];
-  let false_control_object = ["Dora ha seppellito Topolino prima che lui desse un calcio al pallone viola\"", "Dora ha dato un colpetto a Diego prima che lui dipingesse il leone blu\"", "Dora ha abbracciato Diego prima che lui aprisse la scatola verde\"", "Dora ha strofinato Topolino prima che lui costruisse la torre marrone\"", "Topolino ha pettinato Dora prima che lei suonasse la campana arancione\"", "Diego ha dato da mangiare a Dora prima che lei salisse sulla bici gialla\"", "Topolino ha toccato Dora con il dito prima che lei lanciasse la palla gialla\"", "Diego ha spinto Dora prima che lei guidasse la macchina verde\""];
-  let true_control_object = ["Dora ha seppellito Topolino prima che lui desse un calcio al pallone arancione\"", "Dora ha dato un colpetto a Diego prima che lui dipingesse il leone verde\"", "Dora ha abbracciato Diego prima che lui aprisse la scatola blu\"", "Dora ha strofinato Topolino prima che lui costruisse la torre verde\"", "Topolino ha pettinato Dora prima che lei suonasse la campana verde\"", "Diego ha dato da mangiare a Dora prima che lei salisse sulla bici verde\"", "Topolino ha toccato Dora con il dito prima che lei lanciasse la palla rossa\"", "Diego ha spinto Dora prima che lei guidasse la macchina viola\""];
+  let true_ac = ["Topolino ha lavato Diego prima di mangiare la mela arancione\"", "Topolino ha fatto vento a Diego prima di abbracciare l'orso rosso\"", "Topolino ha dipinto Diego prima di cogliere il fiore verde\"", "Topolino ha acchiappato Diego prima di leggere il libro giallo\"", "Diego ha spazzolato Topolino prima di accarezzare il cane verde\"", "Diego ha asciugato Topolino prima di preparare la torta viola\"", "Diego ha sollevato Topolino prima di prendere il pesce rosso\"", "Diego ha schizzato Topolino prima di far volare l'aquilone rosso\""];
+  let false_ac = ["Topolino ha lavato Diego prima di mangiare la mela blu\"", "Topolino ha fatto vento a Diego prima di abbracciare l'orso blu\"", "Topolino ha dipinto Diego prima di cogliere il fiore marrone\"", "Topolino ha acchiappato Diego prima di leggere il libro verde\"", "Diego ha spazzolato Topolino prima di accarezzare il cane viola\"", "Diego ha asciugato Topolino prima di preparare la torta rossa\"", "Diego ha sollevato Topolino prima di prendere il pesce marrone\"", "Diego ha schizzato Topolino prima di far volare l'aquilone blu\""];
+  let true_subj = ["Topolino ha lavato Diego prima che mangiasse la mela arancione\"", "Topolino ha fatto vento a Diego prima che abbracciasse l'orso rosso\"", "Topolino ha dipinto Diego prima che cogliesse il fiore verde\"", "Topolino ha acchiappato Diego prima che leggesse il libro giallo\"", "Diego ha spazzolato Topolino prima che accarezzasse il cane verde\"", "Diego ha asciugato Topolino prima che preparasse la torta viola\"", "Diego ha sollevato Topolino prima che prendesse il pesce rosso\"", "Diego ha schizzato Topolino prima che facesse volare l'aquilone rosso\""];
+  let false_subj = ["Topolino ha lavato Diego prima che mangiasse la mela blu\"", "Topolino ha fatto vento a Diego prima che abbracciasse l'orso blu\"", "Topolino ha dipinto Diego prima che cogliesse il fiore marrone\"", "Topolino ha acchiappato Diego prima che leggesse il libro verde\"", "Diego ha spazzolato Topolino prima che accarezzasse il cane viola\"", "Diego ha asciugato Topolino prima che preparasse la torta rossa\"", "Diego ha sollevato Topolino prima che prendesse il pesce marrone\"", "Diego ha schizzato Topolino prima che facesse volare l'aquilone blu\""];
+  let true_control_subject = ["Dora ha insabbiato Topolino prima che lei desse un calcio al pallone viola\"", "Dora ha dato un colpetto a Diego prima che lei dipingesse il leone blu\"", "Dora ha abbracciato Diego prima che lei aprisse la scatola verde\"", "Dora ha strofinato Topolino prima che lei costruisse la torre marrone\"", "Topolino ha pettinato Dora prima che lui suonasse la campana arancione\"", "Diego ha dato da mangiare a Dora prima che lui salisse sulla bici gialla\"", "Topolino ha toccato Dora con il dito prima che lui lanciasse la palla gialla\"", "Diego ha spinto Dora prima che lui guidasse la macchina verde\""];
+  let false_control_subject = ["Dora ha insabbiato Topolino prima che lei desse un calcio al pallone arancione\"", "Dora ha dato un colpetto a Diego prima che lei dipingesse il leone verde\"", "Dora ha abbracciato Diego prima che lei aprisse la scatola blu\"", "Dora ha strofinato Topolino prima che lei costruisse la torre verde\"", "Topolino ha pettinato Dora prima che lui suonasse la campana verde\"", "Diego ha dato da mangiare a Dora prima che lui salisse sulla bici verde\"", "Topolino ha toccato Dora con il dito prima che lui lanciasse la palla rossa\"", "Diego ha spinto Dora prima che lui guidasse la macchina viola\""];
+  let false_control_object = ["Dora ha insabbiato Topolino prima che lui desse un calcio al pallone viola\"", "Dora ha dato un colpetto a Diego prima che lui dipingesse il leone blu\"", "Dora ha abbracciato Diego prima che lui aprisse la scatola verde\"", "Dora ha strofinato Topolino prima che lui costruisse la torre marrone\"", "Topolino ha pettinato Dora prima che lei suonasse la campana arancione\"", "Diego ha dato da mangiare a Dora prima che lei salisse sulla bici gialla\"", "Topolino ha toccato Dora con il dito prima che lei lanciasse la palla gialla\"", "Diego ha spinto Dora prima che lei guidasse la macchina verde\""];
+  let true_control_object = ["Dora ha insabbiato Topolino prima che lui desse un calcio al pallone arancione\"", "Dora ha dato un colpetto a Diego prima che lui dipingesse il leone verde\"", "Dora ha abbracciato Diego prima che lui aprisse la scatola blu\"", "Dora ha strofinato Topolino prima che lui costruisse la torre verde\"", "Topolino ha pettinato Dora prima che lei suonasse la campana verde\"", "Diego ha dato da mangiare a Dora prima che lei salisse sulla bici verde\"", "Topolino ha toccato Dora con il dito prima che lei lanciasse la palla rossa\"", "Diego ha spinto Dora prima che lei guidasse la macchina viola\""];
   let training_preambles = ["l'uva di Dora", "la fragola di Diego", "questo disegno di Topolino e Dora", "questo disegno di Topolino e Diego"];
   let test_preambles = [["questo disegno di Diego e Topolino"], ["questo disegno di Topolino e Diego"]];
   let control_preambles = [["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"], ["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"], ["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"]];
@@ -635,14 +635,14 @@ const test_sentences = {
     p_f_mismatch_ungram: "Le ragazze hanno dipinto il ragazzo prima di diventare pensieroso",
   },
   4: {
-    s_m_match_gram: "Il ragazzo ha toccato la ragazza prima di diventare nascosto",
-    s_m_mismatch_gram: "Il ragazzo ha toccato le ragazze prima di diventare nascosto",
-    s_f_match_gram: "La ragazza ha toccato il ragazzo prima di diventare nascosta",
-    s_f_mismatch_gram: "La ragazza ha toccato i ragazzi prima di diventare nascosta",
-    s_m_match_ungram: "Il ragazzo ha toccato la ragazza prima di diventare nascosta",
-    p_m_mismatch_ungram: "I ragazzi hanno toccato la ragazza prima di diventare nascosta",
-    s_f_match_ungram: "La ragazza ha toccato il ragazzo prima di diventare nascosto",
-    p_f_mismatch_ungram: "Le ragazze hanno toccato il ragazzo prima di diventare nascosto",
+    s_m_match_gram: "Il ragazzo ha toccato la ragazza prima di diventare timido",
+    s_m_mismatch_gram: "Il ragazzo ha toccato le ragazze prima di diventare timido",
+    s_f_match_gram: "La ragazza ha toccato il ragazzo prima di diventare timida",
+    s_f_mismatch_gram: "La ragazza ha toccato i ragazzi prima di diventare timida",
+    s_m_match_ungram: "Il ragazzo ha toccato la ragazza prima di diventare timida",
+    p_m_mismatch_ungram: "I ragazzi hanno toccato la ragazza prima di diventare timida",
+    s_f_match_ungram: "La ragazza ha toccato il ragazzo prima di diventare timido",
+    p_f_mismatch_ungram: "Le ragazze hanno toccato il ragazzo prima di diventare timido",
   },
   5: {
     s_m_match_gram: "Il ragazzo ha pettinato la ragazza prima di diventare ansioso",
@@ -675,24 +675,24 @@ const test_sentences = {
     p_f_mismatch_ungram: "Le ragazze hanno incoraggiato il ragazzo prima di diventare nervoso",
   },
   8: {
-    s_m_match_gram: "Il ragazzo ha schizzato la ragazza prima di diventare contento",
-    s_m_mismatch_gram: "Il ragazzo ha schizzato le ragazze prima di diventare contento",
-    s_f_match_gram: "La ragazza ha schizzato il ragazzo prima di diventare contenta",
-    s_f_mismatch_gram: "La ragazza ha schizzato i ragazzi prima di diventare contenta",
-    s_m_match_ungram: "Il ragazzo ha schizzato la ragazza prima di diventare contenta",
-    p_m_mismatch_ungram: "I ragazzi hanno schizzato la ragazza prima di diventare contenta",
-    s_f_match_ungram: "La ragazza ha schizzato il ragazzo prima di diventare contento",
-    p_f_mismatch_ungram: "Le ragazze hanno schizzato il ragazzo prima di diventare contento",
+    s_m_match_gram: "Il ragazzo ha schizzato la ragazza prima di diventare timido",
+    s_m_mismatch_gram: "Il ragazzo ha schizzato le ragazze prima di diventare timido",
+    s_f_match_gram: "La ragazza ha schizzato il ragazzo prima di diventare timida",
+    s_f_mismatch_gram: "La ragazza ha schizzato i ragazzi prima di diventare timida",
+    s_m_match_ungram: "Il ragazzo ha schizzato la ragazza prima di diventare timido",
+    p_m_mismatch_ungram: "I ragazzi hanno schizzato la ragazza prima di diventare timido",
+    s_f_match_ungram: "La ragazza ha schizzato il ragazzo prima di diventare timida",
+    p_f_mismatch_ungram: "Le ragazze hanno schizzato il ragazzo prima di diventare timida",
   },
   9: {
-    s_m_match_gram: "Il ragazzo ha nascosto la ragazza prima di diventare pauroso",
-    s_m_mismatch_gram: "Il ragazzo ha nascosto le ragazze prima di diventare pauroso",
-    s_f_match_gram: "La ragazza ha nascosto il ragazzo prima di diventare paurosa",
-    s_f_mismatch_gram: "La ragazza ha nascosto i ragazzi prima di diventare paurosa",
-    s_m_match_ungram: "Il ragazzo ha nascosto la ragazza prima di diventare paurosa",
-    p_m_mismatch_ungram: "I ragazzi hanno nascosto la ragazza prima di diventare paurosa",
-    s_f_match_ungram: "La ragazza ha nascosto il ragazzo prima di diventare pauroso",
-    p_f_mismatch_ungram: "Le ragazze hanno nascosto il ragazzo prima di diventare pauroso",
+    s_m_match_gram: "Il ragazzo ha rincorso la ragazza prima di diventare pauroso",
+    s_m_mismatch_gram: "Il ragazzo ha rincorso le ragazze prima di diventare pauroso",
+    s_f_match_gram: "La ragazza ha rincorso il ragazzo prima di diventare paurosa",
+    s_f_mismatch_gram: "La ragazza ha rincorso i ragazzi prima di diventare paurosa",
+    s_m_match_ungram: "Il ragazzo ha rincorso la ragazza prima di diventare paurosa",
+    p_m_mismatch_ungram: "I ragazzi hanno rincorso la ragazza prima di diventare paurosa",
+    s_f_match_ungram: "La ragazza ha rincorso il ragazzo prima di diventare pauroso",
+    p_f_mismatch_ungram: "Le ragazze hanno rincorso il ragazzo prima di diventare pauroso",
   },
   10: {
     s_m_match_gram: "Il ragazzo ha incontrato la ragazza prima di diventare bello",
@@ -705,14 +705,14 @@ const test_sentences = {
     p_f_mismatch_ungram: "Le ragazze hanno incontrato il ragazzo prima di diventare bello",
   },
   11: {
-    s_m_match_gram: "Il ragazzo ha abbracciato la ragazza prima di diventare contento",
-    s_m_mismatch_gram: "Il ragazzo ha abbracciato le ragazze prima di diventare contento",
-    s_f_match_gram: "La ragazza ha abbracciato il ragazzo prima di diventare contenta",
-    s_f_mismatch_gram: "La ragazza ha abbracciato i ragazzi prima di diventare contenta",
-    s_m_match_ungram: "Il ragazzo ha abbracciato la ragazza prima di diventare contenta",
-    p_m_mismatch_ungram: "I ragazzi hanno abbracciato la ragazza prima di diventare contenta",
-    s_f_match_ungram: "La ragazza ha abbracciato il ragazzo prima di diventare contento",
-    p_f_mismatch_ungram: "Le ragazze hanno abbracciato il ragazzo prima di diventare contento",
+    s_m_match_gram: "Il ragazzo ha abbracciato la ragazza prima di diventare timido",
+    s_m_mismatch_gram: "Il ragazzo ha abbracciato le ragazze prima di diventare timido",
+    s_f_match_gram: "La ragazza ha abbracciato il ragazzo prima di diventare timida",
+    s_f_mismatch_gram: "La ragazza ha abbracciato i ragazzi prima di diventare timida",
+    s_m_match_ungram: "Il ragazzo ha abbracciato la ragazza prima di diventare timida",
+    p_m_mismatch_ungram: "I ragazzi hanno abbracciato la ragazza prima di diventare timida",
+    s_f_match_ungram: "La ragazza ha abbracciato il ragazzo prima di diventare timido",
+    p_f_mismatch_ungram: "Le ragazze hanno abbracciato il ragazzo prima di diventare timido",
   },
   12: {
     s_m_match_gram: "Il ragazzo ha pulito la ragazza prima di diventare furioso",
@@ -735,34 +735,34 @@ const test_sentences = {
     p_f_mismatch_ungram: "Le ragazze hanno pettinato il ragazzo prima di diventare affettuoso",
   },
   14: {
-    s_m_match_gram: "Il ragazzo ha dato da mangiare alla ragazza prima di rimanere addormentato",
-    s_m_mismatch_gram: "Il ragazzo ha dato da mangiare alle ragazze prima di rimanere addormentato",
-    s_f_match_gram: "La ragazza ha dato da mangiare al ragazzo prima di rimanere addormentata",
-    s_f_mismatch_gram: "La ragazza ha dato da mangiare ai ragazzi prima di rimanere addormentata",
-    s_m_match_ungram: "Il ragazzo ha dato da mangiare alla ragazza prima di rimanere addormentata",
-    p_m_mismatch_ungram: "I ragazzi hanno dato da mangiare alla ragazza prima di rimanere addormentata",
-    s_f_match_ungram: "La ragazza ha dato da mangiare al ragazzo prima di rimanere addormentato",
-    p_f_mismatch_ungram: "Le ragazze hanno dato da mangiare al ragazzo prima di rimanere addormentato",
+    s_m_match_gram: "Il ragazzo ha dato da mangiare alla ragazza prima di rimanere nervoso",
+    s_m_mismatch_gram: "Il ragazzo ha dato da mangiare alle ragazze prima di rimanere nervoso",
+    s_f_match_gram: "La ragazza ha dato da mangiare al ragazzo prima di rimanere nervosa",
+    s_f_mismatch_gram: "La ragazza ha dato da mangiare ai ragazzi prima di rimanere nervosa",
+    s_m_match_ungram: "Il ragazzo ha dato da mangiare alla ragazza prima di rimanere nervosa",
+    p_m_mismatch_ungram: "I ragazzi hanno dato da mangiare alla ragazza prima di rimanere nervosa",
+    s_f_match_ungram: "La ragazza ha dato da mangiare al ragazzo prima di rimanere nervoso",
+    p_f_mismatch_ungram: "Le ragazze hanno dato da mangiare al ragazzo prima di rimanere nervoso",
   },
   15: {
-    s_m_match_gram: "Il ragazzo ha visto la ragazza prima di sentirsi arrabbiato",
-    s_m_mismatch_gram: "Il ragazzo ha visto le ragazze prima di sentirsi arrabbiato",
-    s_f_match_gram: "La ragazza ha visto il ragazzo prima di sentirsi arrabbiata",
-    s_f_mismatch_gram: "La ragazza ha visto i ragazzi prima di sentirsi arrabbiata",
-    s_m_match_ungram: "Il ragazzo ha visto la ragazza prima di sentirsi arrabbiata",
-    p_m_mismatch_ungram: "I ragazzi hanno visto la ragazza prima di sentirsi arrabbiata",
-    s_f_match_ungram: "La ragazza ha visto il ragazzo prima di sentirsi arrabbiato",
-    p_f_mismatch_ungram: "Le ragazze hanno visto il ragazzo prima di sentirsi arrabbiato",
+    s_m_match_gram: "Il ragazzo ha visto la ragazza prima di sentirsi stizzito",
+    s_m_mismatch_gram: "Il ragazzo ha visto le ragazze prima di sentirsi stizzito",
+    s_f_match_gram: "La ragazza ha visto il ragazzo prima di sentirsi stizzita",
+    s_f_mismatch_gram: "La ragazza ha visto i ragazzi prima di sentirsi stizzita",
+    s_m_match_ungram: "Il ragazzo ha visto la ragazza prima di sentirsi stizzita",
+    p_m_mismatch_ungram: "I ragazzi hanno visto la ragazza prima di sentirsi stizzita",
+    s_f_match_ungram: "La ragazza ha visto il ragazzo prima di sentirsi stizzito",
+    p_f_mismatch_ungram: "Le ragazze hanno visto il ragazzo prima di sentirsi stizzito",
   },
   16: {
-    s_m_match_gram: "Il ragazzo ha spinto la ragazza prima di sentirsi sconcertato",
-    s_m_mismatch_gram: "Il ragazzo ha spinto le ragazze prima di sentirsi sconcertato",
-    s_f_match_gram: "La ragazza ha spinto il ragazzo prima di sentirsi sconcertata",
-    s_f_mismatch_gram: "La ragazza ha spinto i ragazzi prima di sentirsi sconcertata",
-    s_m_match_ungram: "Il ragazzo ha spinto la ragazza prima di sentirsi sconcertata",
-    p_m_mismatch_ungram: "I ragazzi hanno spinto la ragazza prima di sentirsi sconcertata",
-    s_f_match_ungram: "La ragazza ha spinto il ragazzo prima di sentirsi sconcertato",
-    p_f_mismatch_ungram: "Le ragazze hanno spinto il ragazzo prima di sentirsi sconcertato",
+    s_m_match_gram: "Il ragazzo ha spinto la ragazza prima di sentirsi distratto",
+    s_m_mismatch_gram: "Il ragazzo ha spinto le ragazze prima di sentirsi distratto",
+    s_f_match_gram: "La ragazza ha spinto il ragazzo prima di sentirsi distratta",
+    s_f_mismatch_gram: "La ragazza ha spinto i ragazzi prima di sentirsi distratta",
+    s_m_match_ungram: "Il ragazzo ha spinto la ragazza prima di sentirsi distratta",
+    p_m_mismatch_ungram: "I ragazzi hanno spinto la ragazza prima di sentirsi distratta",
+    s_f_match_ungram: "La ragazza ha spinto il ragazzo prima di sentirsi distratto",
+    p_f_mismatch_ungram: "Le ragazze hanno spinto il ragazzo prima di sentirsi distratto",
   },
   17: {
     s_m_match_gram: "Il ragazzo ha ammirato la ragazza prima di sentirsi frustrato",
@@ -961,7 +961,7 @@ const slider_block = (function(){
   const practice_items = [
     {sentence: 'Questa è una frase di prova',   condition: 'training', grammaticality: 'Yes', item: '1_training'},
     {sentence: 'Di prova una frase è questa',   condition: 'training', grammaticality: 'No',  item: '2_training'},
-    {sentence: 'Questa frase ha qualcosa di sbagliato in sé stesso', condition: 'training', grammaticality: 'No', item: '3_training'}
+    {sentence: 'Questa frase ha qualcosa di sbagliato con sé stesso', condition: 'training', grammaticality: 'No', item: '3_training'}
   ];
 
   // Each list gives every item one of the 8 conditions: 4 'match' conditions (singular nouns) and
@@ -990,8 +990,8 @@ const slider_block = (function(){
     pages: [
       '<div class="directions" style="width:80%; margin:auto;" align="left">' +
         '<p>Ora leggerai alcune frasi di prova.</p>' +
-        '<p>Per favore, valuta quanto sono grammaticali le frasi scegliendo un punteggio sulla scala.</p>' +
-        '<p><b>Devi rispondere il più velocemente possibile, ma con precisione, e scegliere punteggi in <i>qualsiasi</i> punto della scala (<i>non solo</i> agli estremi).</b></p>' +
+        '<p>Per favore, valuta quanto sono grammaticali le frasi scegliendo un punteggio sulla scala di valori.</p>' +
+        '<p><b>Devi rispondere il più velocemente possibile, ma con precisione, e scegliere punteggi in <i>qualsiasi</i> punto della scala di valori (<i>non solo</i> agli estremi).</b></p>' +
         '<p>Per favore, affidati alla tua prima reazione, senza cercare di analizzare la frase.</p>' +
         '<p>Non esiste un\'unica risposta corretta; usa la tua intuizione per scegliere un punteggio.</p></div>'
     ],
