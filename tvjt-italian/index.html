@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ricerca sull'acquisizione del linguaggio</title>
+<script src="https://unpkg.com/jspsych@8.3.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
+<script src="https://unpkg.com/@jspsych/plugin-survey-html-form@2.1.0"></script>
+<link href="https://unpkg.com/jspsych@8.3.0/css/jspsych.css" rel="stylesheet">
+<style>
+/* ---- Base text size: consent, language questions, transitions ---- */
+.jspsych-display-element { font-size: clamp(20px, 3.4vw, 32px); line-height: 1.35; }
+/* picture task uses slightly smaller text so picture + sentence + buttons fit a landscape phone */
+.jspsych-display-element.picture-task { font-size: clamp(22px, min(3.8vw, 7.4vh), 34px); }   /* limited by screen height too */
+.picture-task .jspsych-content { position: relative; }   /* so the logo sits below the progress bar, not over it */
+@media (min-width: 1000px) {   /* desktop: big text (up to the original 64px) */
+  .jspsych-display-element, .jspsych-display-element.picture-task { font-size: clamp(40px, 4vw, 64px); }
+}
+
+/* compact progress bar (the default one wastes a lot of height on a landscape phone) */
+#jspsych-progressbar-container { font-size: 14px; padding: 4px 0; margin-bottom: 0.3em; }
+
+/* ---- Accessibility: big tap targets, visible focus, text can always be pinch-zoomed ---- */
+.jspsych-btn { font-size: 1em; min-height: 44px; padding: 0.35em 1.1em; }
+.jspsych-display-element select { font-size: 1em; min-height: 44px; max-width: 100%; }
+.jspsych-display-element img { max-width: 100%; height: auto; }
+.jspsych-display-element :focus-visible { outline: 3px solid #005fcc; outline-offset: 2px; }
+
+/* ---- Consent ---- */
+.consent-page { max-width: 100%; margin: 0 auto; padding: 4px 8px; text-align: left; line-height: 1.3; }
+.consent-page h1 { font-size: 1.2em; margin: 0.5em 0 0.2em; line-height: 1.2; }
+.consent-page h1.consent-title > div { margin: 0.15em 0; }
+.consent-page p { margin: 0.3em 0; }
+.consent-page ul { margin: 0.2em 0 0.2em 1.2em; padding-left: 0; }
+.consent-page li { margin: 0.2em 0; }
+.consent-page img.crest { width: 22%; max-width: 300px; margin: 4px 0; }
+.jspsych-display-element img.page-logo { position: fixed; top: var(--logo-top, 30px); right: 6px; z-index: 5; width: 20%; max-width: 350px; height: auto; max-height: 12vh; object-fit: contain; object-position: right top; }
+.transition-logo { text-align: right; padding: 4px; }
+.transition-logo img { width: 30%; max-width: 450px; }
+.transition-text { padding: 4px 10px; font-size: 1.5em; line-height: 1.25; }
+.transition-text p { margin: 0.3em 0; }
+
+/* ---- Language questions: two columns to save height ---- */
+.lang-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.3em 1em; text-align: left; margin: 0.3em auto; padding: 0 0.6em; max-width: 100%; box-sizing: border-box; }
+.lang-grid .lang-row { display: flex; align-items: center; gap: 0.4em; }
+.lang-grid label { white-space: nowrap; }
+/* proficiency question: language name above its dropdown, so the longer level names (e.g. "Principiante (A1-A2)") fit */
+.lang-grid .lang-row.stacked { flex-direction: column; align-items: stretch; gap: 0.1em; }
+.lang-grid .lang-row.stacked select { width: 100%; }
+@media (orientation: portrait) { .lang-grid { grid-template-columns: 1fr; } }   /* dropdowns stacked vertically on upright phones */
+.lang-grid select { flex: 1 1 auto; min-width: 0; }
+.jspsych-content p { margin: 0.3em 0; }
+
+/* ---- Picture task ---- */
+.intro-img { width: 45%; max-width: 400px; }
+/* Koko sits directly above the sentence, so the sentence gets the full width (less wrapping) */
+.koko-row { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 0.1em 0 0.2em; text-align: center; }
+.koko-row > div { line-height: 1.2; }
+.jspsych-display-element img.intro-img { height: auto; max-height: 40vh; object-fit: contain; }
+.jspsych-display-element img.story-img { display: block; width: 100%; height: 34vh; object-fit: contain; margin: 0 auto; }
+.jspsych-display-element img.monkey-img { display: block; height: 12vh; width: auto; max-width: 30%; flex: none; margin: 0 auto; }
+
+/* ---- Grammaticality-slider task ---- */
+.jspsych-display-element.slider-task { font-size: 18px; line-height: 1.4; }
+.slider-task .jspsych-content { width: 60%; max-width: 650px; margin-top: 0; font-size: 1.5em; line-height: 1.3; }
+.slider-task div.directions { width: 100%; }
+.slider-task div.directions p { margin: 0.35em 0; }
+.slider-task div#jspsych-html-slider-response-wrapper { margin: 0.4em 0 2.6em !important; width: 100%; }
+@media (max-width: 1200px) {
+  .slider-task .jspsych-content { width: 100%; max-width: 100%; }
+}
+@media (max-height: 420px) {   /* short landscape phones: keep the Siguiente button in view */
+  .jspsych-display-element.slider-task { font-size: 15px; }
+  .slider-task div#jspsych-html-slider-response-wrapper { margin: 0.2em 0 2.2em !important; }
+}
+@media (max-height: 340px) {
+  .jspsych-display-element.slider-task { font-size: 12.5px; }
+}
+
+/* ---- Landscape prompt: shown on phones held upright ---- */
+#rotate-prompt { display: none; position: fixed; inset: 0; z-index: 99999; background: #fff; color: #000;
+  flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1em; }
+#rotate-prompt p { font-size: 6.5vw; font-weight: bold; margin: 0.5em 0 0; line-height: 1.25; max-width: 90%; }
+#rotate-prompt svg { width: 22vw; height: 22vw; }
+/* only while the slider trials are running (class set by those trials, removed by every other screen) */
+@media (orientation: portrait) and (max-width: 820px) and (pointer: coarse) { html.landscape-required #rotate-prompt { display: flex; } }
+@media (prefers-reduced-motion: no-preference) {
+  #rotate-prompt svg { animation: turn 2.4s ease-in-out infinite; }
+  @keyframes turn { 0%, 25% { transform: rotate(0deg); } 65%, 100% { transform: rotate(-90deg); } }
+}
+</style>
+</head>
+<body>
+<div id="rotate-prompt" role="alert">
+  <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="30" y="8" width="40" height="84" rx="7" fill="none" stroke="#000" stroke-width="5"/><circle cx="50" cy="84" r="3" fill="#000"/></svg>
+  <p>Per favore, ruota il telefono in posizione orizzontale per continuare.</p>
+</div>
+<script>
+
+/* ------------------------------------------------------------------
+   Spanish picture true/false task (TVJT): a single stand-alone experiment.
+   Consent -> language questions -> picture task.
+   ------------------------------------------------------------------ */
+
+const timestamp = Date.now();
+const experiment_version = 'italian_tvjt';
+const filename = timestamp + '_' + experiment_version;
+
+const jsPsych = initJsPsych({
+  show_progress_bar: true,
+  auto_update_progress_bar: false,   // updated manually
+  message_progress_bar: 'Avanzamento',
+  on_finish: function(){ saveData(filename, jsPsych.data.get().csv()); }
+});
+
+jsPsych.data.addProperties({
+  subject: timestamp,
+  experiment: experiment_version
+});
+
+// progress bar: the 20 picture trials (4 training + 16 test/control)
+const total_trials = 20;
+let trials_done = 0;
+function advance(){
+  trials_done++;
+  jsPsych.progressBar.progress = Math.min(trials_done / total_trials, 1);
+}
+
+// switch between CSS looks
+function setStyle(cls){
+  return function(){
+    const d = jsPsych.getDisplayContainerElement();
+    d.classList.remove('slider-task', 'picture-task');
+    if(cls){ d.classList.add(cls); }
+  };
+}
+
+// The logo is fixed to the top right of the screen, just below the progress bar
+// (measured, so it never covers the bar whatever the bar's height or the page's scroll position).
+function placeLogo(){
+  const bar = document.getElementById('jspsych-progressbar-container');
+  const bottom = bar ? bar.getBoundingClientRect().bottom : 0;
+  document.documentElement.style.setProperty('--logo-top', Math.round(bottom + 4) + 'px');
+}
+window.addEventListener('resize', placeLogo);
+
+const logo = '<img class="page-logo" src="media/coloring/logo_it.png" alt="Logo">';
+
+/* ============================ CONSENT ============================ */
+
+const consent1 = "<div>Ricerca sull'acquisizione del linguaggio presso [NOME DELL'UNIVERSITÀ ITALIANA]</div><div>Elaborazione delle frasi e meccanismi di memoria in bambini e adulti</div><div>Modulo di consenso informato del partecipante</div>";
+const consent2 = "Grazie per aver accettato di partecipare a questo studio per la Scuola di Comunicazione e Media dell'Università dell'Ulster. Ti siamo molto grati per la tua partecipazione, che fornirà dati preziosi per lo studio scientifico del linguaggio.";
+const consent4 = "Scopo dello studio";
+const consent5 = "Questa ricerca è condotta da [NOMI DEI RICERCATORI] dell'[UNIVERSITÀ ITALIANA] e dalla Dott.ssa Juliana Gerard dell'Università dell'Ulster.";
+const consent6 = "Ti invitiamo a partecipare a questo progetto di ricerca perché sei un adulto di madrelingua italiana.";
+const consent7 = "Lo scopo di questo progetto di ricerca è comprendere meglio come gli esseri umani comprendono il linguaggio.";
+const consent8 = "Questo studio è stato progettato anche per i bambini della scuola dell'infanzia, per comprendere lo sviluppo del linguaggio nei bambini.";
+const consent9 = "Procedura";
+const consent10 = "Lo studio durerà meno di 10 minuti.";
+const consent11 = "Per prima cosa, risponderai a due domande sulla tua conoscenza delle lingue.";
+const consent12 = "Poi ti verrà chiesto di guardare una serie di disegni con personaggi di una serie televisiva per bambini e di rispondere a domande 'vero' o 'falso' sui disegni.";
+const consent13 = "Per favore, guarda i disegni e leggi la descrizione prima di rispondere a ogni domanda.";
+const consent16 = "Il tuo consenso indica che:";
+const consent17 = "Hai almeno 18 anni.";
+const consent18 = "Scegli di partecipare a questo progetto di ricerca liberamente e volontariamente.";
+const consent19 = "Comprendi che la tua partecipazione è volontaria e che sei libero/a di ritirarti dallo studio in qualsiasi momento.";
+const consent20 = "Accetti che le ricercatrici registrino i dati di questa sessione, sapendo che questo materiale sarà salvato sul disco rigido della ricercatrice principale di questo progetto senza alcuna informazione personale identificativa e sarà utilizzato esclusivamente per gli obiettivi di questo progetto.";
+const consent21 = "Se accetti di partecipare, fai clic su \"Avanti\" per continuare:";
+
+// list item, only shown when the text is not empty (a consent line can be switched off by setting it to '')
+const li = function(t, bold){ return t ? '<li>' + (bold ? '<b>' + t + '</b>' : t) + '</li>' : ''; };
+
+const consent = {
+  type: jsPsychInstructions,
+  pages: [
+    '<div class="consent-page">' +
+      '<img class="crest" src="media/coloring/logo_it.png" alt="Logo">' +
+      '<h1 class="consent-title">' + consent1 + '</h1>' +
+      '<p>' + consent2 + '</p>' +
+      '<h1>' + consent4 + '</h1>' +
+      '<ul>' + li(consent5) + li(consent6) + li(consent7) + li(consent8, true) + '</ul>' +
+      '<h1>' + consent9 + '</h1>' +
+      '<ul>' + li(consent10) + li(consent11) + li(consent12) + li(consent13, true) + '</ul>' +
+      '<h1>' + consent16 + '</h1>' +
+      '<ul>' + li(consent17) + li(consent18) + li(consent19) + li(consent20) + '</ul>' +
+      '<p>' + consent21 + '</p>' +
+    '</div>'
+  ],
+  button_label_next: 'Avanti',
+  allow_backward: false,
+  show_clickable_nav: true,
+  on_start: setStyle(''),
+  data: {trial_phase: 'consent'}
+};
+
+/* ===================== TRANSITION SCREENS ===================== */
+
+function transitionScreen(text, phase){
+  return {
+    type: jsPsychInstructions,
+    pages: [
+      '<div class="transition-logo"><img src="media/coloring/logo_it.png" alt="Logo"></div>' +
+      '<div class="transition-text"><p>' + text + '</p></div>'
+    ],
+    button_label_next: 'Avanti',
+    allow_backward: false,
+    show_clickable_nav: true,
+    on_start: setStyle(''),
+    data: {trial_phase: phase}
+  };
+}
+
+const transition_language = transitionScreen("Ora ti chiederemo alcuni brevi dati sul tuo profilo linguistico", 'transition_language');
+const transition_ready    = transitionScreen("Sei pronto/a per iniziare il compito successivo?", 'transition_ready');
+
+/* ===================== LANGUAGE QUESTIONS ===================== */
+/* Presented after the consent form, before the picture task. */
+
+const language_names = ["Italiano", "Inglese", "Spagnolo", "Francese", "Tedesco", "Portoghese", "Rumeno", "Catalano", "Afrikaans", "Albanese", "Amarico", "Arabo", "Armeno", "Azerbaigiano", "Basco", "Bielorusso", "Bengalese", "Bosniaco", "Bulgaro", "Birmano", "Cinese semplificato", "Cinese tradizionale", "Corso", "Croato", "Ceco", "Danese", "Olandese", "Esperanto", "Estone", "Filippino", "Finlandese", "Frisone occidentale", "Galiziano", "Georgiano", "Greco", "Gujarati", "Creolo haitiano", "Hausa", "Hawaiano", "Ebraico", "Hindi", "Hmong", "Ungherese", "Islandese", "Igbo", "Indonesiano", "Irlandese", "Giapponese", "Giavanese", "Kannada", "Kazako", "Khmer", "Kinyarwanda", "Coreano", "Curdo", "Kirghiso", "Lao", "Latino", "Lettone", "Lituano", "Lussemburghese", "Macedone", "Malgascio", "Malese", "Malayalam", "Maltese", "Maori", "Marathi", "Mongolo", "Nepalese", "Norvegese", "Odia", "Pashto", "Persiano", "Polacco", "Punjabi", "Russo", "Samoano", "Gaelico scozzese", "Serbo", "Sotho del sud", "Shona", "Sindhi", "Singalese", "Slovacco", "Sloveno", "Somalo", "Sundanese", "Swahili", "Svedese", "Tagico", "Tamil", "Tataro", "Telugu", "Thailandese", "Turco", "Turcomanno", "Ucraino", "Urdu", "Uiguro", "Uzbeco", "Vietnamita", "Gallese", "Xhosa", "Yiddish", "Yoruba", "Zulu", "Sardo", "Friulano", "Napoletano", "Siciliano", "Veneto"];
+
+
+// Browser validation messages for required <select> fields, in Italian
+function italianValidation(){
+  document.querySelectorAll('select[required]').forEach(function(sel){
+    sel.addEventListener('invalid', function(){ sel.setCustomValidity('Per favore, seleziona un\'opzione dall\'elenco.'); });
+    sel.addEventListener('change',  function(){ sel.setCustomValidity(''); });
+  });
+}
+
+let reported_languages = [];   // filled after the first language question
+
+const language_options = '<option value=""></option>' +
+  language_names.map(function(l){ return '<option value="' + l + '">' + l + '</option>'; }).join('');
+
+const leap_survey1 = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>Per favore, indica tutte le lingue che parli <b>in ordine di dominanza</b>:</p>',
+  html: function(){
+    let h = '<div class="lang-grid">';
+    for(let i = 1; i <= 5; i++){
+      h += '<div class="lang-row"><label for="language' + i + '">' + i + '</label>' +
+           '<select id="language' + i + '" name="language' + i + '"' + (i === 1 ? ' required' : '') + '>' +
+           language_options + '</select></div>';
+    }
+    return h + '</div>';
+  },
+  button_label: 'Avanti',
+  on_start: setStyle(''),
+  on_load: italianValidation,
+  data: {trial_phase: 'languages'},
+  on_finish: function(data){
+    reported_languages = [];
+    for(let i = 1; i <= 5; i++){
+      const l = (data.response['language' + i] || '').trim();
+      if(l.length > 0){ reported_languages.push(l); }
+    }
+    data.languages = reported_languages.join('|');
+  }
+};
+
+const leap_survey2 = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>Per favore, indica il tuo <b>livello di competenza linguistica</b> in ciascuna delle lingue indicate di seguito:</p>',
+  html: function(){
+    const fluencies = '<option value=""></option><option value="Principiante (A1-A2)">Principiante (A1-A2)</option><option value="Intermedio (B1-B2)">Intermedio (B1-B2)</option><option value="Avanzato (C1-C2)">Avanzato (C1-C2)</option><option value="Madrelingua">Madrelingua</option>';
+    let h = '';
+    reported_languages.forEach(function(language, i){
+      h += '<div class="lang-row stacked"><label for="fluency' + (i + 1) + '">' + language + ':</label>' +
+           '<select id="fluency' + (i + 1) + '" name="fluency' + (i + 1) + '" required>' + fluencies + '</select></div>';
+    });
+    return '<div class="lang-grid">' + h + '</div>';
+  },
+  button_label: 'Avanti',
+  on_load: italianValidation,
+  data: {trial_phase: 'languages_fluency'},
+  on_finish: function(data){ data.languages = reported_languages.join('|'); }
+};
+
+/* ============================================================
+   PICTURE TRUE/FALSE TASK (from ac_spa1)
+   ============================================================ */
+
+const picture_block = (function(){
+
+        let s1 = "Questo è Joey. <br> A lui piace colorare le cose in modo divertente.";
+        let s2 = "Joey ha colorato alcuni disegni di Dora, Diego e Topolino.";
+        let s3 = "Questo è Koko, l'amico di Joey.<br>Koko ci dirà cosa c'è nei disegni, ma a volte Koko sbaglia il colore.";
+        let s4 = "Per favore, guarda i disegni e le loro descrizioni. <br><br>Dopo ogni descrizione, Koko dirà una frase sui colori del disegno.";
+        let s5 = "<b>Per favore, rispondi se la frase è vera o falsa.</b><br>Dovresti rispondere in fretta, in base alla tua prima impressione (senza pensarci troppo).";
+let test_pngs = ['wash_eat_mickey',
+             'fan_hug_mickey',
+             'paint_pick_mickey',
+             'tag_read_mickey',
+             'brush_pet_mickey',
+             'dry_bake_mickey',
+             'lift_catch_mickey',
+             'splash_fly_mickey'];
+             
+let control_pngs = ['bury_kick_mickey_control',
+                     'pat_paint',
+                     'hug_open',
+                     'scrub_build_mickey_control',
+                     'comb_ring_mickey_control',
+                     'feed_ride',
+                     'poke_throw_mickey_control',
+                     'push_drive']
+
+let training_pngs = ['training_1','training_1','training_2_mickey','training_3_mickey'];
+
+
+let training_descriptions = ["In questa immagine, abbiamo Dora con dell'uva e Diego con una fragola.", "Riprova, Koko: In questa immagine, abbiamo Dora con dell'uva e Diego con una fragola.", "In questa immagine, prima Dora e Topolino si provano dei vestiti.<br>Poi Dora ha un cappello e anche Topolino ha un cappello.", "In questa immagine, prima Diego e Topolino hanno un pastello a cera e un pennello.<br>Poi Diego ha un secchiello e anche Topolino ha un secchiello."];
+
+
+
+let test_descriptions = ["In questa immagine, prima Topolino lava Diego.<br>Poi Topolino mangia una mela e anche Diego mangia una mela.", "In questa immagine, prima Topolino fa vento a Diego.<br>Poi Diego abbraccia un orso e anche Topolino abbraccia un orso.", "In questa immagine, prima Topolino dipinge Diego.<br>Poi Topolino coglie un fiore e anche Diego coglie un fiore.", "In questa immagine, prima Topolino acchiappa Diego.<br>Poi Topolino legge un libro e anche Diego legge un libro.", "In questa immagine, prima Diego spazzola Topolino.<br>Poi Topolino accarezza un cane e anche Diego accarezza un cane.", "In questa immagine, prima Diego asciuga Topolino.<br>Poi Diego prepara una torta e anche Topolino prepara una torta.", "In questa immagine, prima Diego solleva Topolino.<br>Poi Diego prende un pesce e anche Topolino prende un pesce.", "In questa immagine, prima Diego schizza Topolino.<br>Poi Topolino fa volare un aquilone e anche Diego fa volare un aquilone."];
+
+                     
+
+                        
+let control_descriptions = ["In questa immagine, prima Dora insabbia Topolino.<br>Poi Dora dà un calcio a un pallone e anche Topolino dà un calcio a un pallone.", "In questa immagine, prima Dora dà un colpetto a Diego.<br>Poi Diego dipinge un leone e anche Dora dipinge un leone.", "In questa immagine, prima Dora abbraccia Diego.<br>Poi Diego apre una scatola e anche Dora apre una scatola.", "In questa immagine, prima Dora strofina Topolino.<br>Poi Dora costruisce una torre e anche Topolino costruisce una torre.", "In questa immagine, prima Topolino pettina Dora.<br>Poi Topolino suona una campana e anche Dora suona una campana.", "In questa immagine, prima Diego dà da mangiare a Dora.<br>Poi Diego va in bici e anche Dora va in bici.", "In questa immagine, prima Topolino tocca Dora con il dito.<br>Poi Topolino lancia una palla e anche Dora lancia una palla.", "In questa immagine, prima Diego spinge Dora.<br>Poi Diego guida una macchina e anche Dora guida una macchina."];
+
+
+
+//NOTE: be careful to keep the quotation marks as they are here!
+let training_sentences = ["Dora ha dell'uva gialla!\"", "Diego ha una fragola gialla!\"", "Dora si è provata una sciarpa prima che Topolino comprasse il cappello verde\"", "Topolino ha preso un pennello prima che Diego disegnasse il secchiello rosso\""];
+
+
+//true infinitive versions
+let true_ac = ["Topolino ha lavato Diego prima di mangiare la mela arancione\"", "Topolino ha fatto vento a Diego prima di abbracciare l'orso rosso\"", "Topolino ha dipinto Diego prima di cogliere il fiore verde\"", "Topolino ha acchiappato Diego prima di leggere il libro giallo\"", "Diego ha spazzolato Topolino prima di accarezzare il cane verde\"", "Diego ha asciugato Topolino prima di preparare la torta viola\"", "Diego ha sollevato Topolino prima di prendere il pesce rosso\"", "Diego ha schizzato Topolino prima di far volare l'aquilone rosso\""];
+   
+                        
+//false infinitive versions                        
+let false_ac = ["Topolino ha lavato Diego prima di mangiare la mela blu\"", "Topolino ha fatto vento a Diego prima di abbracciare l'orso blu\"", "Topolino ha dipinto Diego prima di cogliere il fiore marrone\"", "Topolino ha acchiappato Diego prima di leggere il libro verde\"", "Diego ha spazzolato Topolino prima di accarezzare il cane viola\"", "Diego ha asciugato Topolino prima di preparare la torta rossa\"", "Diego ha sollevato Topolino prima di prendere il pesce marrone\"", "Diego ha schizzato Topolino prima di far volare l'aquilone blu\""];
+
+
+
+//subjunctive versions without pronouns (pro)
+let true_subj = ["Topolino ha lavato Diego prima che mangiasse la mela arancione\"", "Topolino ha fatto vento a Diego prima che abbracciasse l'orso rosso\"", "Topolino ha dipinto Diego prima che cogliesse il fiore verde\"", "Topolino ha acchiappato Diego prima che leggesse il libro giallo\"", "Diego ha spazzolato Topolino prima che accarezzasse il cane verde\"", "Diego ha asciugato Topolino prima che preparasse la torta viola\"", "Diego ha sollevato Topolino prima che prendesse il pesce rosso\"", "Diego ha schizzato Topolino prima che facesse volare l'aquilone rosso\""];
+
+
+//false subjunctive versions without pronouns (pro)               
+let false_subj = ["Topolino ha lavato Diego prima che mangiasse la mela blu\"", "Topolino ha fatto vento a Diego prima che abbracciasse l'orso blu\"", "Topolino ha dipinto Diego prima che cogliesse il fiore marrone\"", "Topolino ha acchiappato Diego prima che leggesse il libro verde\"", "Diego ha spazzolato Topolino prima che accarezzasse il cane viola\"", "Diego ha asciugato Topolino prima che preparasse la torta rossa\"", "Diego ha sollevato Topolino prima che prendesse il pesce marrone\"", "Diego ha schizzato Topolino prima che facesse volare l'aquilone blu\""];
+
+//true control versions with OVERT SUBJECT pronoun
+let true_control_subject = ["Dora ha insabbiato Topolino prima che lei desse un calcio al pallone viola\"", "Dora ha dato un colpetto a Diego prima che lei dipingesse il leone blu\"", "Dora ha abbracciato Diego prima che lei aprisse la scatola verde\"", "Dora ha strofinato Topolino prima che lei costruisse la torre marrone\"", "Topolino ha pettinato Dora prima che lui suonasse la campana arancione\"", "Diego ha dato da mangiare a Dora prima che lui salisse sulla bici gialla\"", "Topolino ha toccato Dora con il dito prima che lui lanciasse la palla gialla\"", "Diego ha spinto Dora prima che lui guidasse la macchina verde\""];
+
+                        
+//false control versions with OVERT SUBJECT pronoun
+let false_control_subject = ["Dora ha insabbiato Topolino prima che lei desse un calcio al pallone arancione\"", "Dora ha dato un colpetto a Diego prima che lei dipingesse il leone verde\"", "Dora ha abbracciato Diego prima che lei aprisse la scatola blu\"", "Dora ha strofinato Topolino prima che lei costruisse la torre verde\"", "Topolino ha pettinato Dora prima che lui suonasse la campana verde\"", "Diego ha dato da mangiare a Dora prima che lui salisse sulla bici verde\"", "Topolino ha toccato Dora con il dito prima che lui lanciasse la palla rossa\"", "Diego ha spinto Dora prima che lui guidasse la macchina viola\""];
+
+
+                   
+//false control versions with OVERT OBJECT pronoun
+let false_control_object = ["Dora ha insabbiato Topolino prima che lui desse un calcio al pallone viola\"", "Dora ha dato un colpetto a Diego prima che lui dipingesse il leone blu\"", "Dora ha abbracciato Diego prima che lui aprisse la scatola verde\"", "Dora ha strofinato Topolino prima che lui costruisse la torre marrone\"", "Topolino ha pettinato Dora prima che lei suonasse la campana arancione\"", "Diego ha dato da mangiare a Dora prima che lei salisse sulla bici gialla\"", "Topolino ha toccato Dora con il dito prima che lei lanciasse la palla gialla\"", "Diego ha spinto Dora prima che lei guidasse la macchina verde\""];
+
+                        
+//true control versions with OVERT OBJECT pronoun
+let true_control_object = ["Dora ha insabbiato Topolino prima che lui desse un calcio al pallone arancione\"", "Dora ha dato un colpetto a Diego prima che lui dipingesse il leone verde\"", "Dora ha abbracciato Diego prima che lui aprisse la scatola blu\"", "Dora ha strofinato Topolino prima che lui costruisse la torre verde\"", "Topolino ha pettinato Dora prima che lei suonasse la campana verde\"", "Diego ha dato da mangiare a Dora prima che lei salisse sulla bici verde\"", "Topolino ha toccato Dora con il dito prima che lei lanciasse la palla rossa\"", "Diego ha spinto Dora prima che lei guidasse la macchina viola\""];
+
+
+
+//preambles (after "Can you tell us how Joey colored ___")
+let training_preambles = ["l'uva di Dora", "la fragola di Diego", "questo disegno di Topolino e Dora", "questo disegno di Topolino e Diego"];
+
+
+let test_preambles = [["questo disegno di Diego e Topolino"], ["questo disegno di Topolino e Diego"]];
+
+
+let control_preambles = [["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"], ["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"], ["questo disegno di Topolino e Dora", "questo disegno di Dora e Topolino"], ["questo disegno di Diego e Dora", "questo disegno di Dora e Diego"]];
+function shuffle(array) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+}
+ 
+
+var control_list = [];
+var test_list = [];
+
+for (var i = 0; i < true_subj.length; i++) { //for length of items (8)
+   control_list.push(i);       // push item numbers (0-7)
+   test_list.push(i);       // push item numbers (0-7)
+}
+
+shuffle(control_list);
+shuffle(test_list);
+//assigned separately so that the same items don't always follow each other
+
+var alt = [];
+
+for (var i = 0; i < true_subj.flat().length+4; i++) {
+   alt.push(i);
+}
+
+
+let training_correct = ['1','0','1','0']; //note coding for truth values: 1 = false, 0 = true - based on order of presentation b/c true is presented first
+
+
+let corrects = ['1','0','1','0','1','0','1','0','1','0','1','0','1','0','1','0']
+
+shuffle(corrects)
+
+var conditions = [];
+let training_conditions = ['training','training','training','training'];
+
+if(corrects[1]=='1'){ // assign tense condition (infinitive or subjunctive based on the SECOND item in 'conditions' - if 1, then infinitive
+    if(corrects[2]=='1'){  // assign list order based on the THIRD item in 'conditions' - if 1, then subject first
+        conditions.push([' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive']);
+    }else{ // else 0, then object first
+        conditions.push([' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive',' object',' infinitive',' subject',' infinitive']);
+    }
+    var true_test_sentences = true_ac;
+    var false_test_sentences = false_ac;
+} else { // else 0, then subjunctive
+    if(corrects[2]=='1'){ // assign list order based on the THIRD item in 'conditions' - if 1, then subject first
+        conditions.push([' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive']);
+       //   conditions.push([' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun']);
+    }else{ // else 0, then object first
+        conditions.push([' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive',' object',' subjunctive',' subject',' subjunctive']);
+        //conditions.push([' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun',' object',' pronoun',' subject',' pronoun']);
+    }
+    var true_test_sentences = true_subj;
+    var false_test_sentences = false_subj;
+    //var true_test_sentences = true_pronoun;
+    //var false_test_sentences = false_pronoun;
+}
+
+//build sentence list
+
+var true_false = 0; //to keep track of which true/false to use
+var sentence_counts = 0; //to keep track of the trial_items;
+var sentences = [];
+var control_sentences = [];
+
+var descriptions = [];
+var preambles = [];
+var pngs = [];
+
+var c = 0
+var t = 0
+
+for(var i = 0; i < control_list.length/2; i++){
+    
+    c = control_list[sentence_counts]; // c & t are the number of the item from the SHUFFLED test/control lists
+    t = test_list[sentence_counts];   //(e.g. if the shuffled list starts with the 5th item and sentence_counts is 0, then item_list[sentence_counts] = 5])
+                        // this way, c/t reference the same item across sentences, conditions, preambles and descriptions
+                        // while true/false is independently assigned via the shuffled 'corrects' variable
+    
+        //add control item
+    if(corrects[2]=='1'){ //if list 1, starting with subject
+        if(corrects[true_false]=='0'){ // if the item is true (remember coding with 0 for true, see above)
+            sentences.push(true_control_subject[c]); //push the true control SUBJECT version for that item
+        } else {  // else false
+            sentences.push(false_control_subject[c]); // push the false SUBJECT version
+        }
+    } else { //else list 2, starting with object
+        if(corrects[true_false]=='0'){ // if the item is true
+            sentences.push(true_control_object[c]); //push the true control OBJECT version for that item
+        } else {  // else false
+            sentences.push(false_control_object[c]); //push the false control OBJECT version for that item
+        }
+    }
+    
+    descriptions.push(control_descriptions[c]);
+    pngs.push(control_pngs[c]);
+    preambles.push(control_preambles[c][c%2]); //extra c needed since different control items have different choices between 2 options
+    
+    true_false++; //increment the true_false variable to the next item
+    
+    //add test item
+    if(corrects[true_false]=='0'){ // if true
+            sentences.push(true_test_sentences[t]);
+    } else {  // else false
+            sentences.push(false_test_sentences[t]);
+    }
+    
+    descriptions.push(test_descriptions[t]);
+    pngs.push(test_pngs[t]);
+    preambles.push(test_preambles[t%2]); //no extra t needed, since the 2 options are the same for all test items
+    
+    true_false++; //increment the true_false variable to the next item
+    sentence_counts++;  //increment the sentence counts variable for the next set of control and test items
+    c = control_list[sentence_counts]; //update values of c and t
+    t = test_list[sentence_counts];
+    
+    //add other condition control item
+    if(corrects[2]=='1'){ //if list 1, starting with subject
+        if(corrects[true_false]=='0'){ // if the item is true
+            sentences.push(true_control_object[c]); //now, push the true OBJECT control item
+        } else {  // else false
+            sentences.push(false_control_object[c]);
+        }
+    } else { //else list 2, starting with object
+        if(corrects[true_false]=='0'){ // if the item is true
+            sentences.push(true_control_subject[c]); // now, push the true SUBJECT control item
+        } else {  // else false
+            sentences.push(false_control_subject[c]);
+        }
+    }
+    
+    descriptions.push(control_descriptions[c]);
+    pngs.push(control_pngs[c]);
+    preambles.push(control_preambles[c][c%2]);
+    
+    true_false++; //increment the true_false variable to the next item
+    
+    //add test item
+    if(corrects[true_false]=='0'){ // if true
+            sentences.push(true_test_sentences[t]);
+    } else {  // else false
+            sentences.push(false_test_sentences[t]);
+    }
+    
+    descriptions.push(test_descriptions[t]);
+    pngs.push(test_pngs[t]);
+    preambles.push(test_preambles[t%2]);
+    
+    true_false++; //increment the true_false variable to the next item
+    sentence_counts++;  //increment the sentence counts variable for the next set of control and test items
+
+}
+
+var png = training_pngs.concat(pngs);//.flat();
+var description = training_descriptions.concat(descriptions);//.flat();
+var preamble = training_preambles.concat(preambles);//.flat();
+var sentence = training_sentences.concat(sentences);//.flat();
+var condition = training_conditions.concat(conditions[0]);//.flat();
+var correct_response = training_correct.concat(corrects);//.flat();
+
+  const nb = function(t){ return String(t).replace(/<br>/g, ' '); };   // line breaks -> spaces (saves space)
+
+  const setup = {
+    type: jsPsychInstructions,
+    pages: [
+      '<div style="width:100%">' + logo + '<img class="intro-img" src="coloring/joey.png" alt="">' + nb(s1) + '</div>',
+      '<div style="width:100%">' + logo + '<img class="story-img" src="coloring/joey2_mickey.png" alt="">' + nb(s2) + '</div>',
+      '<div style="width:100%">' + logo + '<img class="story-img" src="coloring/joey_koko_mickey.png" alt="">' + nb(s3) + '</div>',
+      '<div style="width:100%">' + logo + '<img class="story-img" src="coloring/joey_koko_mickey.png" alt="">' + nb(s4) + '</div>',
+      '<div style="width:100%">' + logo + '<img class="story-img" src="coloring/joey_koko.png" alt="">' + nb(s5) + '</div>'
+    ],
+    button_label_next: 'Avanti',
+    allow_backward: false,
+    show_clickable_nav: true,
+    on_start: setStyle('picture-task'),
+    on_load: placeLogo,
+    data: {trial_phase: 'picture_setup'}
+  };
+
+  const tv = function(name){ return jsPsych.evaluateTimelineVariable(name); };
+
+  const procedure = {
+    timeline: [
+      { // description
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function(){
+          return '<div style="width:100%">' + logo +
+            '<img class="story-img" src="coloring/' + tv('png') + '.png" alt="">' +
+            nb(tv('description')) + '</div>';
+        },
+        choices: ['Avanti'],
+        on_load: placeLogo,
+        data: {condition: jsPsych.timelineVariable('condition'), correct_response: jsPsych.timelineVariable('correct_response'), trial_phase: 'description'}
+      },
+      { // preamble
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function(){
+          const pre = 'Va bene Koko, puoi dirci come ha colorato Joey';
+          return '<div style="width:100%">' + logo +
+            '<img class="story-img" src="coloring/' + tv('png') + '.png" alt="">' +
+            '<div class="koko-row"><img class="monkey-img" src="coloring/monkey.jpg" alt="Koko"><div>' +
+            pre + ' ' + tv('preamble') + '?</div></div></div>';
+        },
+        choices: ['Avanti'],
+        on_load: placeLogo,
+        data: {condition: jsPsych.timelineVariable('condition'), correct_response: jsPsych.timelineVariable('correct_response'), trial_phase: 'preamble'}
+      },
+      { // test sentence
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function(){
+          return '<div style="width:100%">' + logo +
+            '<img class="story-img" src="coloring/' + tv('png') + '.png" alt="">' +
+            '<div class="koko-row"><img class="monkey-img" src="coloring/monkey.jpg" alt="Koko"><div>"Ok: ' +
+            nb(tv('sentence')) + '</div></div></div>';
+        },
+        choices: ['Vero', 'Falso'],
+        on_load: placeLogo,
+        data: {condition: jsPsych.timelineVariable('condition'), correct_response: jsPsych.timelineVariable('correct_response'), trial_phase: 'test_sentence'},
+        on_finish: function(data){
+          // coding: 0 = true (first button), 1 = false (second button)
+          data.accuracy = (String(data.response) === String(data.correct_response));
+          advance();
+        }
+      }
+    ],
+    timeline_variables: png.map(function(p, i){
+      return {png: png[i], description: description[i], preamble: preamble[i], sentence: sentence[i],
+              condition: condition[i], correct_response: correct_response[i]};
+    })
+  };
+
+  return {timeline: [setup, procedure], data: {task: 'picture'}};
+})();
+
+/* ============================ END ============================ */
+
+const final = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p>Grazie per la tua partecipazione!</p> <p>Fai clic su «Invia» per inviare le tue risposte.</p>',
+  choices: ['Invia'],
+  on_start: setStyle(''),
+  data: {trial_phase: 'final'}
+};
+
+const LEAVE_URL = "REDIRECT_URL";   // where participants go after finishing
+function leave(){ window.location = LEAVE_URL; }
+
+// The data are sent to the server and the participant is only sent on once the server has accepted them.
+// If saving fails it is retried; after 3 failed attempts the participant can try again, download the
+// answers, or continue anyway.
+function saveData(name, data){
+  let attempts = 0;
+  const showMsg = function(html){ jsPsych.getDisplayElement().innerHTML = '<div class="consent-page" style="text-align:center">' + html + '</div>'; };
+  const failed = function(){
+    if(attempts < 3){ setTimeout(attempt, 1500 * attempts); return; }
+    showMsg('<p>Non è stato possibile salvare le tue risposte.</p><p>Controlla la connessione a internet e riprova.</p>' +
+      '<div><button class="jspsych-btn" id="retry-save">Riprova</button> ' +
+      '<button class="jspsych-btn" id="download-save">Scarica le mie risposte</button> ' +
+      '<button class="jspsych-btn" id="continue-anyway">Continua comunque</button></div>');
+    document.getElementById('retry-save').onclick = function(){ attempts = 0; attempt(); };
+    document.getElementById('continue-anyway').onclick = leave;
+    document.getElementById('download-save').onclick = function(){
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([data], {type: 'text/csv'}));
+      a.download = name + '.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+    };
+  };
+  const attempt = function(){
+    attempts++;
+    showMsg('<p>Salvataggio delle risposte in corso... per favore, non chiudere questa pagina.</p>');
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'write_data.php');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.timeout = 20000;
+    xhr.onload = function(){
+      let ok = xhr.status >= 200 && xhr.status < 300;
+      try { const j = JSON.parse(xhr.responseText); if(j && j.ok === false){ ok = false; } } catch(e) {}
+      if(ok){ leave(); } else { failed(); }
+    };
+    xhr.onerror = failed;
+    xhr.ontimeout = failed;
+    xhr.send(JSON.stringify({filename: name, filedata: data}));
+  };
+  attempt();
+}
+
+/* ======================= FULL TIMELINE ======================= */
+
+jsPsych.run([
+  consent,
+  transition_language,
+  leap_survey1,
+  leap_survey2,
+  transition_ready,
+  picture_block,
+  final
+]);
+
+</script>
+</body>
+</html>

@@ -9,7 +9,9 @@ Online judgment tasks (jsPsych 8, loaded from a CDN). Each folder is one task an
 | `ajt-english-sona/` | The same English task | SONA |
 | `ajt-spanish-english-combo/` | Spanish + English judgment tasks back to back (order counterbalanced), reduced LEAP-Q, optional raffle e-mail | UNED |
 | `tvjt-spanish/` | Spanish picture true/false task (TVJT), stand-alone | UNED |
-| `tvjt-ajt-italian/` | Italian picture task + judgment task, with `italian_translations.xlsx` | Italian study (placeholders to fill in) |
+| `tvjt-italian/` | Italian picture task (standalone) | Italian study (placeholders to fill in) |
+| `ajt-italian-english-combo/` | Italian + English judgment tasks, back to back | Italian study (placeholders to fill in) |
+| `italian/` | `italian_translations.xlsx`: every Italian string for both studies | Translation workbook |
 | `server/` | `write_data.php`: stores the data files (needed by every task) | - |
 | `docs/` | Notes, e.g. how the old English data relate to the new design | - |
 | `analysis/` | `eng_gram.r`: R script that loads the English data (old and new task versions together) | - |

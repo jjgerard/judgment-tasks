@@ -7,7 +7,7 @@ optional raffle e-mail is collected at the end. Design (8 conditions, 2 sentence
 Spanish-English version.
 
 All Italian text comes from the sheet **Grammaticality task (IT+EN)** and the Italian items from
-**Judgement test sentences** / **Practice & fillers** in `../tvjt-ajt-italian/italian_translations.xlsx`.
+**Judgement test sentences** / **Practice & fillers** in `../italian/italian_translations.xlsx`.
 
 To fill in before use:
 - the university and researchers in the consent form (`[...]`);
